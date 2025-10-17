@@ -114,8 +114,6 @@ export default function InspectPage({ params }: InspectPageProps) {
         assessments: inspectionData.assessments,
         overallComment: inspectionData.overallComment,
         photoData: inspectionData.photoData,
-        latitude: inspectionData.geoData?.latitude,
-        longitude: inspectionData.geoData?.longitude,
       });
 
       // Success!
