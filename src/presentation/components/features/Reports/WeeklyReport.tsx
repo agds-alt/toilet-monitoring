@@ -30,7 +30,7 @@ export const WeeklyReport: React.FC<WeeklyReportProps> = ({ weekData }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedInspections, setSelectedInspections] = useState<any[]>([]);
   const [currentInspectionIndex, setCurrentInspectionIndex] = useState(0);
-  const scoreGrade = getScoreGrade(weekData.avgScore);
+  // const scoreGrade = getScoreGrade(weekData.avgScore);
 
   const dates = Object.keys(weekData.locationData[0]?.dates || {}).sort();
 

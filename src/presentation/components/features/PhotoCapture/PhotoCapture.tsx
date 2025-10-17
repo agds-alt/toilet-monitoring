@@ -1,30 +1,121 @@
 // src/presentation/components/features/PhotoCapture/PhotoCapture.tsx
 'use client';
 
-import React, { useRef, useState, useCallback } from 'react';
-import Image from 'next/image';
-import { Card } from '../../ui/Card/Card';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Button } from '../../ui/Button/Button';
+import { Card } from '../../ui/Card/Card';
 import styles from './PhotoCapture.module.css';
 
+// ✅ FIX: Interface yang benar dengan accuracy
 interface PhotoCaptureProps {
-  onPhotoCapture: (photoData: string) => void;
-  onSkip?: () => void;
+  onCapture: (data: { 
+    photoData: string; 
+    geoData?: { 
+      latitude: number; 
+      longitude: number; 
+      accuracy: number;
+    } 
+  }) => void;
+  onSkip: () => void;
+}
+
+interface LocationInfo {
+  latitude: number;
+  longitude: number;
+  accuracy: number;
+  address?: string;  // Untuk reverse geocoding
 }
 
 export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
-  onPhotoCapture,
+  onCapture,
   onSkip
 }) => {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [isCompressing, setIsCompressing] = useState(false);
+  const [locationInfo, setLocationInfo] = useState<LocationInfo | undefined>();
+  const [locationStatus, setLocationStatus] = useState<string>('Mendapatkan lokasi...');
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+
+  // Get geolocation on mount with reverse geocoding
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const geoData = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy
+          };
+          
+          console.log('📍 Location acquired:', geoData);
+          
+          // Try to get address using reverse geocoding
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${geoData.latitude}&lon=${geoData.longitude}&zoom=18&addressdetails=1`,
+              {
+                headers: {
+                  'User-Agent': 'ToiletMonitoring/1.0'
+                }
+              }
+            );
+            
+            if (response.ok) {
+              const data = await response.json();
+              const address = data.address;
+              
+              // Format: Desa/Kelurahan, Kecamatan, Kota
+              const location = [
+                address.village || address.suburb || address.neighbourhood,
+                address.county || address.city_district,
+                address.city || address.town
+              ].filter(Boolean).join(', ');
+              
+              setLocationInfo({
+                ...geoData,
+                address: location || 'Lokasi tidak diketahui'
+              });
+              setLocationStatus(`📍 ${location || 'Lokasi terekam'}`);
+            } else {
+              setLocationInfo(geoData);
+              setLocationStatus('📍 Lokasi terekam');
+            }
+          } catch (error) {
+            console.warn('Reverse geocoding error:', error);
+            setLocationInfo(geoData);
+            setLocationStatus('📍 Lokasi terekam');
+          }
+        },
+        (error) => {
+          console.warn('Geolocation error:', error);
+          setLocationInfo(undefined);
+          setLocationStatus('⚠️ Lokasi tidak tersedia');
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    } else {
+      setLocationStatus('⚠️ GPS tidak didukung');
+    }
+  }, []);
+
+  // Cleanup camera stream on unmount
+  useEffect(() => {
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [stream]);
 
   // Compress image before upload (max 800kb)
   const compressImage = useCallback(async (dataUrl: string): Promise<string> => {
@@ -58,7 +149,7 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
         
         ctx.drawImage(img, 0, 0, width, height);
         
-        // Compress to 0.7 quality (balance between size and quality)
+        // Compress to 0.7 quality
         let quality = 0.7;
         let compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
         
@@ -103,232 +194,144 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
       setStream(null);
+      setIsCameraActive(false);
     }
-    setIsCameraActive(false);
   }, [stream]);
 
   const capturePhoto = useCallback(async () => {
     if (!videoRef.current || !canvasRef.current) return;
-
+    
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    
+    if (!context) return;
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0);
+    
+    const photoDataUrl = canvas.toDataURL('image/jpeg', 0.95);
+    
+    stopCamera();
+    
     setIsCompressing(true);
-
-    try {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      const context = canvas.getContext('2d');
-
-      if (!context) return;
-
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      context.drawImage(video, 0, 0);
-
-      const photoData = canvas.toDataURL('image/jpeg', 0.9);
-      
-      // Compress photo
-      const compressedPhoto = await compressImage(photoData);
-      
-      setCapturedPhoto(compressedPhoto);
-      stopCamera();
-    } catch (error) {
-      console.error('Capture error:', error);
-      alert('Gagal mengambil foto. Silakan coba lagi.');
-    } finally {
-      setIsCompressing(false);
-    }
+    const compressedPhoto = await compressImage(photoDataUrl);
+    setIsCompressing(false);
+    
+    setCapturedPhoto(compressedPhoto);
   }, [stopCamera, compressImage]);
 
   const handleFileSelect = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    // Check file type
-    if (!file.type.startsWith('image/')) {
-      alert('File harus berupa gambar');
-      return;
-    }
-
-    // Check file size (max 10MB before compression)
-    if (file.size > 10 * 1024 * 1024) {
-      alert('Ukuran file maksimal 10MB');
-      return;
-    }
-
-    setIsCompressing(true);
-
-    try {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const photoData = e.target?.result as string;
-        
-        // Compress photo
-        const compressedPhoto = await compressImage(photoData);
-        
-        setCapturedPhoto(compressedPhoto);
-        setIsCompressing(false);
-      };
-      reader.onerror = () => {
-        alert('Gagal membaca file');
-        setIsCompressing(false);
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('File read error:', error);
-      alert('Gagal membaca file. Silakan coba lagi.');
+    
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const dataUrl = e.target?.result as string;
+      
+      setIsCompressing(true);
+      const compressedPhoto = await compressImage(dataUrl);
       setIsCompressing(false);
-    }
+      
+      setCapturedPhoto(compressedPhoto);
+    };
+    reader.readAsDataURL(file);
   }, [compressImage]);
 
-  const handleSubmit = () => {
-    if (capturedPhoto) {
-      onPhotoCapture(capturedPhoto);
-    }
-  };
-
-  const handleRetake = () => {
+  const handleRetake = useCallback(() => {
     setCapturedPhoto(null);
-    // Don't auto-start camera, let user choose again
+    startCamera();
+  }, [startCamera]);
+
+  const handleSubmit = useCallback(() => {
+    if (!capturedPhoto) {
+      alert('Silakan ambil foto terlebih dahulu');
+      return;
+    }
+    
+    // Pass data dengan accuracy
+    const geoData = locationInfo ? {
+      latitude: locationInfo.latitude,
+      longitude: locationInfo.longitude,
+      accuracy: locationInfo.accuracy
+    } : undefined;
+    
+    onCapture({ 
+      photoData: capturedPhoto,
+      geoData
+    });
+  }, [capturedPhoto, locationInfo, onCapture]);
+
+  // Format timestamp Indonesia
+  const getFormattedTimestamp = () => {
+    const now = new Date();
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'Asia/Jakarta'
+    };
+    return now.toLocaleString('id-ID', options);
   };
 
   return (
     <div className={styles.container}>
       <Card variant="elevated" padding="lg">
-        <h3 className={styles.title}>📸 Ambil Foto</h3>
+        <h2 className={styles.title}>📸 Ambil Foto</h2>
         <p className={styles.description}>
-          {isCompressing
-            ? 'Memproses foto...'
-            : capturedPhoto 
-            ? 'Foto sudah diambil. Kirim atau ambil ulang.'
-            : 'Foto diperlukan untuk dokumentasi'
+          {capturedPhoto 
+            ? 'Foto berhasil diambil' 
+            : isCameraActive 
+              ? 'Posisikan kamera dan tekan tombol capture'
+              : 'Ambil foto kondisi toilet'
           }
         </p>
 
+        {/* Photo Area */}
         <div className={styles.photoArea}>
-          {!capturedPhoto && !isCameraActive && !isCompressing && (
-            <div className={styles.placeholder}>
-              <div className={styles.placeholderIcon}>📷</div>
-              <p>Belum ada foto</p>
+          {isCompressing ? (
+            <div className={styles.loading}>
+              <div className={styles.spinner}></div>
+              <p>Mengkompresi foto...</p>
             </div>
-          )}
-
-          {isCameraActive && (
+          ) : capturedPhoto ? (
+            <div className={styles.preview}>
+              <img 
+                src={capturedPhoto} 
+                alt="Captured" 
+                className={styles.previewImage}
+              />
+              <div className={styles.photoInfo}>
+                {Math.round(capturedPhoto.length / 1024)} KB
+              </div>
+            </div>
+          ) : isCameraActive ? (
             <div className={styles.cameraView}>
-              <video
+              <video 
                 ref={videoRef}
                 autoPlay
                 playsInline
                 muted
                 className={styles.video}
               />
-              <canvas ref={canvasRef} style={{ display: 'none' }} />
             </div>
-          )}
-
-          {isCompressing && (
-            <div className={styles.loading}>
-              <div className={styles.spinner}></div>
-              <p>Memproses foto...</p>
-            </div>
-          )}
-
-          {capturedPhoto && !isCompressing && (
-            <div className={styles.preview}>
-              <div className={styles.previewImageWrapper}>
-                <Image
-                  src={capturedPhoto}
-                  alt="Captured photo preview"
-                  fill
-                  className={styles.previewImage}
-                  unoptimized
-                  priority
-                />
-              </div>
-              <div className={styles.photoInfo}>
-                <small>
-                  Ukuran: {Math.round(capturedPhoto.length / 1024)} KB
-                </small>
-              </div>
+          ) : (
+            <div className={styles.placeholder}>
+              <div className={styles.placeholderIcon}>📷</div>
+              <p>Siap mengambil foto</p>
             </div>
           )}
         </div>
 
-        <div className={styles.actions}>
-          {!capturedPhoto && !isCameraActive && !isCompressing && (
-            <>
-              <Button
-                variant="primary"
-                fullWidth
-                onClick={startCamera}
-                icon="📷"
-              >
-                Buka Kamera
-              </Button>
-              
-              <Button
-                variant="secondary"
-                fullWidth
-                onClick={() => fileInputRef.current?.click()}
-                icon="📁"
-              >
-                Pilih dari Galeri
-              </Button>
-              
-              {onSkip && (
-                <Button
-                  variant="secondary"
-                  fullWidth
-                  onClick={onSkip}
-                >
-                  Lewati Foto
-                </Button>
-              )}
-            </>
-          )}
+        {/* Hidden canvas for photo capture */}
+        <canvas ref={canvasRef} style={{ display: 'none' }} />
 
-          {isCameraActive && !isCompressing && (
-            <>
-              <Button
-                variant="success"
-                fullWidth
-                onClick={capturePhoto}
-                icon="📸"
-                disabled={isCompressing}
-              >
-                Ambil Foto
-              </Button>
-              <Button
-                variant="secondary"
-                fullWidth
-                onClick={stopCamera}
-                disabled={isCompressing}
-              >
-                Batal
-              </Button>
-            </>
-          )}
-
-          {capturedPhoto && !isCompressing && (
-            <>
-              <Button
-                variant="primary"
-                fullWidth
-                onClick={handleSubmit}
-                icon="✅"
-              >
-                Lanjutkan
-              </Button>
-              <Button
-                variant="secondary"
-                fullWidth
-                onClick={handleRetake}
-              >
-                Ambil Ulang
-              </Button>
-            </>
-          )}
-        </div>
-
-        {/* File input for gallery - NO capture attribute */}
+        {/* Hidden file inputs */}
         <input
           ref={fileInputRef}
           type="file"
@@ -336,8 +339,6 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
           onChange={handleFileSelect}
           style={{ display: 'none' }}
         />
-
-        {/* Hidden camera input as fallback - WITH capture attribute */}
         <input
           ref={cameraInputRef}
           type="file"
@@ -346,6 +347,85 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
           onChange={handleFileSelect}
           style={{ display: 'none' }}
         />
+
+        {/* Metadata Info */}
+        <div className={styles.metadata}>
+          <div className={styles.metadataItem}>
+            <span className={styles.metadataIcon}>🕐</span>
+            <span className={styles.metadataText}>{getFormattedTimestamp()}</span>
+          </div>
+          <div className={styles.metadataItem}>
+            <span className={styles.metadataIcon}>📍</span>
+            <span className={styles.metadataText}>
+              {locationInfo?.address || locationStatus}
+              {locationInfo && ` (±${Math.round(locationInfo.accuracy)}m)`}
+            </span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className={styles.actions}>
+          {capturedPhoto ? (
+            <>
+              <Button
+                variant="secondary"
+                fullWidth
+                onClick={handleRetake}
+              >
+                🔄 Ambil Ulang
+              </Button>
+              <Button
+                variant="primary"
+                fullWidth
+                onClick={handleSubmit}
+              >
+                ✅ Gunakan Foto Ini
+              </Button>
+            </>
+          ) : isCameraActive ? (
+            <>
+              <Button
+                variant="primary"
+                fullWidth
+                size="lg"
+                onClick={capturePhoto}
+              >
+                📸 Capture
+              </Button>
+              <Button
+                variant="secondary"
+                fullWidth
+                onClick={stopCamera}
+              >
+                ❌ Batal
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="primary"
+                fullWidth
+                onClick={startCamera}
+              >
+                📷 Buka Kamera
+              </Button>
+              <Button
+                variant="secondary"
+                fullWidth
+                onClick={() => cameraInputRef.current?.click()}
+              >
+                📁 Pilih dari Galeri
+              </Button>
+              <Button
+                variant="secondary"
+                fullWidth
+                onClick={onSkip}
+              >
+                ⏭️ Lewati Foto
+              </Button>
+            </>
+          )}
+        </div>
       </Card>
     </div>
   );

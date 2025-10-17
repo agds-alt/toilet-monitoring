@@ -1,0 +1,5 @@
+
+> toilet-monitoring@1.0.0 type-check
+> tsc --noEmit
+
+src/presentation/components/ui/Button/Button.tsx(50,1): error TS1128: Declaration or statement expected.

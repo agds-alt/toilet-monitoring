@@ -42,9 +42,3 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
-// Add to buttons
-const vibrate = () => {
-  if (navigator.vibrate) {
-    navigator.vibrate(10);
-  }
-};

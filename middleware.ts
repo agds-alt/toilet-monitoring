@@ -1,48 +1,24 @@
-// ============================================
-// 1. MIDDLEWARE - middleware.ts (ROOT LEVEL)
-// ============================================
-
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
-};
+// Middleware untuk protect routes
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
+  const token = req.cookies.get('sb-access-token');
+  const { pathname } = req.nextUrl;
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  // Public routes
-  const publicRoutes = ['/', '/login'];
-  const isPublicRoute = publicRoutes.includes(req.nextUrl.pathname);
-
-  // Protect dashboard routes
-const isDashboardRoute = 
-  req.nextUrl.pathname === '/' ||
-  req.nextUrl.pathname.startsWith('/scan') ||
-  req.nextUrl.pathname.startsWith('/inspect') ||
-  req.nextUrl.pathname.startsWith('/history') ||
-  req.nextUrl.pathname.startsWith('/reports');
-
-if (isDashboardRoute && !session) {
-
-  // Redirect to dashboard if accessing login/root with session
-  if (session && isPublicRoute) {
-    const redirectUrl = new URL('/dashboard', req.url);
-    return NextResponse.redirect(redirectUrl);
+  // Public routes yang tidak perlu auth
+  if (pathname === '/login' || pathname.startsWith('/api/')) {
+    return NextResponse.next();
   }
 
-  return res;
+  // Redirect ke login jika tidak ada token
+  if (!token && pathname.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/login', req.url));
+  }
+
+  return NextResponse.next();
 }
 
-
+export const config = {
+  matcher: ['/dashboard/:path*', '/login']
 };
-
-

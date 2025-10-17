@@ -1,6 +1,4 @@
 // src/app/dashboard/inspect/[locationId]/page.tsx
-// FIXED - Correct props for AssessmentForm
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -114,6 +112,7 @@ export default function InspectPage({ params }: InspectPageProps) {
         assessments: inspectionData.assessments,
         overallComment: inspectionData.overallComment,
         photoData: inspectionData.photoData,
+        geoData: inspectionData.geoData,
       });
 
       // Success!
@@ -121,7 +120,7 @@ export default function InspectPage({ params }: InspectPageProps) {
       router.push('/dashboard');
     } catch (err) {
       console.error('❌ Submission error:', err);
-      alert('Gagal menyimpan inspeksi. Silakan coba lagi.');
+      // Error already shown by useInspection hook
     }
   };
 
@@ -189,7 +188,6 @@ export default function InspectPage({ params }: InspectPageProps) {
 
       {/* Step Content */}
       <div className={styles.content}>
-        {/* FIXED: Pass locationName instead of locationId */}
         {step === 'assessment' && (
           <AssessmentForm
             locationName={location.name}
@@ -211,14 +209,14 @@ export default function InspectPage({ params }: InspectPageProps) {
 
         {step === 'review' && inspectionData && (
           <ReviewSubmit
-            location={location.name}
+            locationName={location.name}
             status={inspectionData.status}
             assessments={inspectionData.assessments}
             overallComment={inspectionData.overallComment}
-            photoData={inspectionData.photoData}
+            photoPreview={inspectionData.photoData}
             geoData={inspectionData.geoData}
+            onBack={handleBack}
             onSubmit={handleSubmit}
-            onEdit={() => setStep('assessment')}
             loading={loading}
           />
         )}

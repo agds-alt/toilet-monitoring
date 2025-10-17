@@ -4,13 +4,12 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { SupabaseAuthService } from '@/infrastructure/auth/supabase-auth';
 import { UserRole } from '@/core/types/enums';
 import styles from './login.module.css';
 
 export default function LoginPage() {
-  const router = useRouter();
+  // const router = useRouter(); // TODO: Add routing logic
   const authService = new SupabaseAuthService();
 
   const [mode, setMode] = useState<'login' | 'signup'>('login');

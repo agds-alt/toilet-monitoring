@@ -1,5 +1,5 @@
 // src/lib/utils/validation.ts
-import { Assessments } from '@/core/types/interfaces';
+// import { Assessments } // Unused for now from '@/core/types/interfaces';
 
 export const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

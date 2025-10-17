@@ -126,3 +126,41 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
 }
 // UPDATE handleFinalSubmit function:
 
+const handleFinalSubmit = async (photo: string | null) => {
+  if (!user || !assessmentData) return;
+
+  console.log('📝 ============================================');
+    console.log('📝 SUBMITTING INSPECTION');
+    console.log('📝 User:', user.email);
+    console.log('📝 Location:', location.name);
+    console.log('📝 ============================================');
+    
+    setStep('submitting');
+    try {
+      await createInspection({
+        userId: user.id,
+        locationId: location.id,
+        status: assessmentData.status,
+        assessments: assessmentData.assessments,
+        overallComment: assessmentData.overallComment,
+        photoData: photo || undefined,
+        geoData: geoData || undefined
+      });
+      
+      console.log('✅ Submit successful!');
+      setStep('success');
+    } catch (error: any) {
+      console.error('❌ Submit failed!');
+      console.error('Error:', error);
+      
+      // Show detailed error to user
+      const errorMsg = error.message || 'Unknown error';
+      alert(
+        `❌ GAGAL MENYIMPAN!\n\n` +
+        `Error: ${errorMsg}\n\n` +
+        `Cek console browser (F12) untuk detail lengkap.`
+      );
+      
+      setStep('photo');
+    }
+};

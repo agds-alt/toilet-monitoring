@@ -4,7 +4,7 @@
 // ===================================
 
 import React, { useEffect } from 'react';
-import { Button } from '../Button/Button';
+// import { Button } // TODO: Use Button component from '../Button/Button';
 import styles from './Modal.module.css';
 
 export interface ModalProps {
