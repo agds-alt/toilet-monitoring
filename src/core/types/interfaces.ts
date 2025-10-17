@@ -1,8 +1,20 @@
 // src/core/types/interfaces.ts
-import { UserRole, InspectionStatus, CleanlinessValue, AromaValue, AvailabilityValue } from './enums';
+import { 
+  UserRole, 
+  InspectionStatus, 
+  CleanlinessValue, 
+  AromaValue, 
+  AvailabilityValue 
+} from './enums';
 
-// Re-export enums for convenience
-export { UserRole, InspectionStatus, CleanlinessValue, AromaValue, AvailabilityValue };
+// ✅ Re-export enums agar bisa di-import dari interfaces
+export { 
+  UserRole, 
+  InspectionStatus, 
+  CleanlinessValue, 
+  AromaValue, 
+  AvailabilityValue 
+};
 
 export interface User {
   id: string;
@@ -39,7 +51,7 @@ export interface Assessments {
   hand_dryer: AssessmentItem;
 }
 
-// ✅ Geo data interface - accuracy is OPTIONAL
+// ✅ GeoData interface - EXPORTED dan accuracy OPTIONAL
 export interface GeoData {
   latitude: number;
   longitude: number;
@@ -69,7 +81,7 @@ export interface Inspection {
   createdAt: Date;
 }
 
-// ✅ CreateInspectionDTO - accuracy is OPTIONAL
+// ✅ CreateInspectionDTO menggunakan GeoData interface
 export interface CreateInspectionDTO {
   userId: string;
   locationId: string;

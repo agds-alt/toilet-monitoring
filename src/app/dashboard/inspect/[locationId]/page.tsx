@@ -8,9 +8,13 @@ import { PhotoCapture } from '@/presentation/components/features/PhotoCapture';
 import { ReviewSubmit } from '@/presentation/components/features/ReviewSubmit';
 import { useInspection } from '@/presentation/hooks/useInspection';
 import { useAuth } from '@/presentation/contexts/AuthContext';
-import { InspectionStatus } from '@/core/types/enums';
-import { Assessments } from '@/core/types/interfaces';
 import { Button } from '@/presentation/components/ui/Button/Button';
+// ✅ IMPORT LENGKAP DARI INTERFACES
+import { 
+  InspectionStatus, 
+  Assessments, 
+  GeoData 
+} from '@/core/types/interfaces';
 import styles from './page.module.css';
 
 interface InspectPageProps {
@@ -26,7 +30,7 @@ interface InspectionData {
   assessments: Assessments;
   overallComment?: string;
   photoData?: string;
-  geoData?: GeoData;
+  geoData?: GeoData; // ✅ Sekarang GeoData sudah di-import
 }
 
 export default function InspectPage({ params }: InspectPageProps) {
@@ -79,7 +83,7 @@ export default function InspectPage({ params }: InspectPageProps) {
 
   const handlePhotoComplete = (data: {
     photoData: string;
-    geoData?: { latitude: number; longitude: number };
+    geoData?: GeoData; // ✅ Type sudah konsisten
   }) => {
     console.log('📸 Photo captured');
     
@@ -112,7 +116,7 @@ export default function InspectPage({ params }: InspectPageProps) {
         assessments: inspectionData.assessments,
         overallComment: inspectionData.overallComment,
         photoData: inspectionData.photoData,
-        geoData: inspectionData.geoData,
+        geoData: inspectionData.geoData, // ✅ Sudah include accuracy (optional)
       });
 
       // Success!

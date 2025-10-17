@@ -1,7 +1,8 @@
 // src/presentation/components/features/PhotoCapture/PhotoCapture.tsx
 'use client';
 
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import NextImage from 'next/image';
 import { Button } from '../../ui/Button/Button';
 import { Card } from '../../ui/Card/Card';
 import { GeoData } from '@/core/types/interfaces';
@@ -29,7 +30,6 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   // Get geolocation on mount
   useEffect(() => {
@@ -238,7 +238,7 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
 
             <div className={styles.skipSection}>
               <Button
-                variant="ghost"
+                variant="secondary"
                 size="md"
                 onClick={onSkip}
                 fullWidth
@@ -280,10 +280,13 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
 
         {capturedPhoto && (
           <div className={styles.preview}>
-            <img
+            <NextImage
               src={capturedPhoto}
               alt="Preview"
+              width={800}
+              height={600}
               className={styles.previewImage}
+              unoptimized
             />
             
             <div className={styles.previewControls}>

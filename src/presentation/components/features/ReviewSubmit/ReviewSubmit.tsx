@@ -10,7 +10,7 @@ import { InspectionStatus } from '@/core/types/enums';
 import { ASSESSMENT_CONFIGS } from '@/lib/constants/assessments';
 import styles from './ReviewSubmit.module.css';
 
-interface ReviewSubmitProps {
+export interface ReviewSubmitProps {
   locationName: string;
   status: InspectionStatus;
   assessments: Assessments;
@@ -192,7 +192,7 @@ export const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
       {/* Action Buttons */}
       <div className={styles.actions}>
         <Button
-          variant="outline"
+          variant="secondary"
           size="lg"
           onClick={onBack}
           disabled={loading}
