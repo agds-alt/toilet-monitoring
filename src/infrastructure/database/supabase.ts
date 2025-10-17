@@ -1,10 +1,38 @@
-// src/infrastructure/database/supabase.ts
+// src/infrastructure/database/supabase.ts - ADD CONNECTION POOLING
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Optimized client with connection pooling
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+    storageKey: 'toilet-monitoring-auth', // Custom key
+  },
+  global: {
+    headers: {
+      'x-client-info': 'toilet-monitoring-web',
+    },
+  },
+  db: {
+    schema: 'public',
+  },
+  // Improve performance
+  realtime: {
+    params: {
+      eventsPerSecond: 2, // Reduce realtime overhead
+    },
+  },
+});
+
+// Preload session on client-side
+if (typeof window !== 'undefined') {
+  supabase.auth.getSession().catch(console.error);
+}
 
 export type Database = {
   public: {

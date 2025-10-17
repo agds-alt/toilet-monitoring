@@ -1,160 +1,123 @@
-// src/presentation/hooks/useAuth.ts
-// CLEAN VERSION - NO JSX, PURE HOOK
+// src/presentation/hooks/useAuth.ts - OPTIMIZED VERSION
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/infrastructure/database/supabase';
 import { UserEntity } from '@/core/entities/User';
 import { SupabaseUserRepository } from '@/infrastructure/database/repositories/SupabaseUserRepository';
 
-// Development mode flag
-const isDev = process.env.NODE_ENV === 'development';
-
-// Logger helper - only logs in development
-const log = {
-  info: (...args: any[]) => isDev && console.log(...args),
-  warn: (...args: any[]) => console.warn(...args),
-  error: (...args: any[]) => console.error(...args),
-};
+// In-memory cache untuk user profile
+let userCache: UserEntity | null = null;
+let cacheTimestamp = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export const useAuth = () => {
-  const [user, setUser] = useState<UserEntity | null>(null);
-  const [loading, setLoading] = useState(true);
-  
-  // Use useRef for repository - created once only
-  const userRepository = useRef(new SupabaseUserRepository());
-  
-  // Track if already initialized to prevent double calls
-  const isInitialized = useRef(false);
-  const isLoadingProfile = useRef(false);
+  const [user, setUser] = useState<UserEntity | null>(userCache);
+  const [loading, setLoading] = useState(!userCache); // Skip loading if cached
+  const userRepository = new SupabaseUserRepository();
 
-  useEffect(() => {
-    // Prevent double initialization
-    if (isInitialized.current) {
-      log.info('⚠️ useAuth already initialized, skipping...');
+  const isCacheValid = useCallback(() => {
+    return userCache && Date.now() - cacheTimestamp < CACHE_DURATION;
+  }, []);
+
+  const loadUserProfile = useCallback(async (userId: string, forceRefresh = false) => {
+    // Use cache if valid and not forcing refresh
+    if (!forceRefresh && isCacheValid()) {
+      setUser(userCache);
+      setLoading(false);
       return;
     }
-    
-    isInitialized.current = true;
-    log.info('🔐 useAuth: Initializing...');
 
-    // Check current session
+    try {
+      const profile = await userRepository.findById(userId);
+      
+      // Update cache
+      userCache = profile;
+      cacheTimestamp = Date.now();
+      
+      setUser(profile);
+    } catch (error) {
+      console.error('Failed to load user profile:', error);
+      // Clear cache on error
+      userCache = null;
+      cacheTimestamp = 0;
+    } finally {
+      setLoading(false);
+    }
+  }, [isCacheValid, userRepository]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    // Quick check: if we have valid cache, use it immediately
+    if (isCacheValid()) {
+      setUser(userCache);
+      setLoading(false);
+      return;
+    }
+
+    // Check active session (single call)
     const checkSession = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        log.info('Session status:', session ? '✅ Active' : '❌ None');
+        
+        if (!mounted) return;
 
         if (session?.user) {
           await loadUserProfile(session.user.id);
         } else {
-          setUser(null);
           setLoading(false);
+          userCache = null;
         }
       } catch (error) {
-        log.error('❌ Session check error:', error);
-        setUser(null);
-        setLoading(false);
+        console.error('Session check failed:', error);
+        if (mounted) setLoading(false);
       }
     };
 
     checkSession();
 
-    // Listen for auth changes
+    // Listen for auth changes (only setup once)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        log.info('🔐 Auth event:', event);
+        if (!mounted) return;
 
-        // Skip INITIAL_SESSION event to avoid duplicate load
-        if (event === 'INITIAL_SESSION') {
-          return;
-        }
-
-        if (event === 'SIGNED_IN' && session?.user) {
-          await loadUserProfile(session.user.id);
-        } else if (event === 'SIGNED_OUT') {
+        if (event === 'SIGNED_OUT') {
           setUser(null);
-          setLoading(false);
-        } else if (event === 'TOKEN_REFRESHED' && session?.user) {
-          log.info('🔄 Token refreshed');
+          userCache = null;
+          cacheTimestamp = 0;
+        } else if (session?.user) {
+          // Only reload if user ID changed or cache expired
+          if (!userCache || userCache.id !== session.user.id || !isCacheValid()) {
+            await loadUserProfile(session.user.id, true);
+          }
         }
       }
     );
 
-    // Cleanup subscription on unmount
     return () => {
-      log.info('🔐 useAuth: Cleaning up...');
+      mounted = false;
       subscription.unsubscribe();
-      isInitialized.current = false;
     };
+  }, [loadUserProfile, isCacheValid]);
+
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    userCache = null;
+    cacheTimestamp = 0;
   }, []);
 
-  const loadUserProfile = async (userId: string) => {
-    // Prevent concurrent profile loads
-    if (isLoadingProfile.current) {
-      log.info('⏳ Profile load already in progress, skipping...');
-      return;
+  const refreshUser = useCallback(async () => {
+    if (user?.id) {
+      await loadUserProfile(user.id, true);
     }
-
-    isLoadingProfile.current = true;
-
-    try {
-      log.info('👤 Loading profile for:', userId);
-      const profile = await userRepository.current.findById(userId);
-      
-      if (profile) {
-        log.info('✅ Profile loaded:', profile.fullName);
-        setUser(profile);
-      } else {
-        log.warn('⚠️ Profile not found for user:', userId);
-        setUser(null);
-      }
-    } catch (error) {
-      log.error('❌ Failed to load profile:', error);
-      setUser(null);
-    } finally {
-      setLoading(false);
-      isLoadingProfile.current = false;
-    }
-  };
-
-  const signOut = async () => {
-    log.info('🚪 Signing out...');
-    try {
-      await supabase.auth.signOut();
-      setUser(null);
-      log.info('✅ Signed out successfully');
-    } catch (error) {
-      log.error('❌ Sign out error:', error);
-    }
-  };
-
-  const refreshProfile = async () => {
-    if (user) {
-      log.info('🔄 Refreshing profile...');
-      isLoadingProfile.current = false; // Reset flag
-      await loadUserProfile(user.id);
-    }
-  };
+  }, [user?.id, loadUserProfile]);
 
   return { 
     user, 
     loading, 
     signOut,
-    refreshProfile
+    refreshUser // Expose refresh method
   };
-};
-
-// Helper hooks for role checking
-export const useRequireRole = (allowedRoles: string[]) => {
-  const { user, loading } = useAuth();
-  const hasAccess = user && allowedRoles.includes(user.role);
-  
-  return { hasAccess, loading, user };
-};
-
-export const useRequireAdmin = () => {
-  return useRequireRole([
-    'Cleaner/Team Leader/Spv',
-    'Perawat/Dokter'
-  ]);
 };
