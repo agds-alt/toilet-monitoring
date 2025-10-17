@@ -34,7 +34,7 @@ export default function ScanPage() {
   };
 
   const handleLocationSelect = (location: any) => {
-    router.push(`/inspect/${location.id}`);
+    router.push(`/dashboard/inspect/${location.id}`);
   };
 
   return (

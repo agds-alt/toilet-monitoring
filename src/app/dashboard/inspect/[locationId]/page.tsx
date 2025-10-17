@@ -39,7 +39,7 @@ export default function InspectPage() {
       <div className="container">
         <Card variant="elevated" padding="lg">
           <h2>Lokasi tidak ditemukan</h2>
-          <Button onClick={() => router.push('/scan')}>
+          <Button onClick={() => router.push('/dashboard/scan')}>
             Kembali ke Scanner
           </Button>
         </Card>
@@ -52,7 +52,7 @@ export default function InspectPage() {
               
                 <Card variant="elevated" padding="lg">
           <h2>Lokasi tidak ditemukan</h2>
-          <Button onClick={() => router.push('/history')}>
+          <Button onClick={() => router.push('/dashboard/history')}>
             Kembali ke Scanner
           </Button>
         </Card>
@@ -154,14 +154,14 @@ const handleFinalSubmit = async (photo: string | null) => {
             <Button
               variant="primary"
               fullWidth
-              onClick={() => router.push('/scan')}
+              onClick={() => router.push('/dashboard/scan')}
             >
               Lapor Toilet Lain
             </Button>
             <Button
               variant="secondary"
               fullWidth
-              onClick={() => router.push('/history')}
+              onClick={() => router.push('/dashboard/history')}
             >
               Lihat Riwayat
             </Button>
