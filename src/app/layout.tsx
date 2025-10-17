@@ -1,14 +1,29 @@
 // src/app/layout.tsx - UPDATE WITH PROVIDER
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next'
 import './globals.css';
 import { AuthProvider } from '@/presentation/components/layout/AuthProvider';
 
+// src/app/dashboard/layout.tsx (atau page.tsx)
+
+
 export const metadata: Metadata = {
-  title: 'Smart Toilet Monitoring - Proservice Indonesia',
-  description: 'Real-time toilet cleanliness monitoring and reporting system',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
-  themeColor: '#667eea',
-};
+  title: 'Dashboard',
+  description: 'Toilet Monitoring Dashboard',
+  // HAPUS viewport dan themeColor dari sini
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
+export const themeColor = {
+  light: '#ffffff',
+  dark: '#000000',
+  themeColor: '#000000',
+}
 
 export default function RootLayout({
   children,
