@@ -1,10 +1,8 @@
-// ===================================
-// FIX 8: src/core/types/interfaces.ts
-// FIX imports - add enum imports
-// REPLACE line 1-4
-// ===================================
-
+// src/core/types/interfaces.ts
 import { UserRole, InspectionStatus, CleanlinessValue, AromaValue, AvailabilityValue } from './enums';
+
+// Re-export enums for convenience
+export { UserRole, InspectionStatus, CleanlinessValue, AromaValue, AvailabilityValue };
 
 export interface User {
   id: string;
@@ -41,13 +39,16 @@ export interface Assessments {
   hand_dryer: AssessmentItem;
 }
 
+// ✅ Geo data interface - accuracy is OPTIONAL
+export interface GeoData {
+  latitude: number;
+  longitude: number;
+  accuracy?: number; // Optional karena tidak selalu tersedia
+}
+
 export interface PhotoMetadata {
   timestamp: string;
-  gps?: {
-    latitude: number;
-    longitude: number;
-    accuracy: number;
-  };
+  gps?: GeoData;
   deviceInfo?: {
     userAgent: string;
     platform: string;
@@ -68,6 +69,7 @@ export interface Inspection {
   createdAt: Date;
 }
 
+// ✅ CreateInspectionDTO - accuracy is OPTIONAL
 export interface CreateInspectionDTO {
   userId: string;
   locationId: string;
@@ -75,9 +77,5 @@ export interface CreateInspectionDTO {
   assessments: Assessments;
   overallComment?: string;
   photoData?: string;
-  geoData?: {
-    latitude: number;
-    longitude: number;
-    accuracy: number;
-  };
+  geoData?: GeoData; // Using the GeoData interface
 }

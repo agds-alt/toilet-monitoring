@@ -26,7 +26,7 @@ interface InspectionData {
   assessments: Assessments;
   overallComment?: string;
   photoData?: string;
-  geoData?: { latitude: number; longitude: number };
+  geoData?: GeoData;
 }
 
 export default function InspectPage({ params }: InspectPageProps) {
