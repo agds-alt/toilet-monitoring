@@ -1,5 +1,12 @@
+/* ============================================
+   COMPLETE FILE: AssessmentForm.module.css
+   FIXED VERSION - Button always visible di mobile
+   ============================================ */
+
 .container {
   width: 100%;
+  /* Extra padding bottom untuk space button fixed */
+  padding-bottom: 140px;
 }
 
 .locationCard {
@@ -21,6 +28,9 @@
 
 .detailForm {
   margin-bottom: var(--space-6);
+  
+  /* PENTING: Padding bottom supaya last item ga ketutup button */
+  padding-bottom: 120px;
 }
 
 .commentLabel {
@@ -51,59 +61,175 @@
     var(--shadow-sm);
 }
 
+/* ============================================
+   ACTIONS BUTTON AREA - FIXED VERSION
+   ============================================ */
+
 .actions {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: var(--space-3);
-  position: sticky;
-  bottom: var(--space-4);
-  background: var(--color-gray-50);
+  
+  /* FIXED POSITION - Selalu terlihat di mobile */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  
+  /* Styling */
+  background: white;
   padding: var(--space-4);
-  margin: 0 calc(-1 * var(--space-4));
-  border-top: 1px solid var(--color-gray-200);
+  border-top: 3px solid var(--color-primary-light);
+  
+  /* SHADOW KUAT supaya jelas */
   box-shadow: 
-    0 -4px 8px rgba(0, 0, 0, 0.04),
-    0 -2px 4px rgba(0, 0, 0, 0.02);
+    0 -8px 16px rgba(0, 0, 0, 0.1),
+    0 -4px 8px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(0, 0, 0, 0.02);
+  
+  /* Z-INDEX TINGGI - Di atas semua */
+  z-index: 1000;
+  
+  /* SAFE AREA - Untuk iPhone dengan notch/home indicator */
+  padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
 }
-@media (max-width: 640px) {
-  .grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
-  }
 
-  .actionCard {
-    padding: var(--space-6) var(--space-4);
-  }
-
-  .icon {
-    font-size: 2.5rem;
-  }
-
-  .actionTitle {
-    font-size: 1rem;
-  }
+/* Indicator line di atas button */
+.actions::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    var(--color-primary) 0%, 
+    var(--color-primary-light) 50%, 
+    var(--color-primary) 100%
+  );
+  animation: shimmer 2s infinite;
 }
+
+@keyframes shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Button styling improvements */
+.actions button {
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  
+  font-weight: 700;
+  min-height: 48px;
+  font-size: 1rem;
+}
+
+.actions button:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
+
+/* MOBILE (HP) */
 @media (max-width: 640px) {
-  .locationCard {
-    padding: var(--space-4);
+  .container {
+    padding-bottom: 120px;
+  }
+
+  .detailForm {
+    padding-bottom: 100px;
+  }
+
+  .actions {
+    padding: var(--space-3);
+    padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 20px));
+    gap: var(--space-2);
+    grid-template-columns: 1fr 1fr; /* Equal width di mobile */
+  }
+
+  .actions button {
+    font-size: 0.875rem;
+    min-height: 44px;
+    padding: var(--space-2) var(--space-3);
   }
 
   .locationName {
     font-size: 1.25rem;
   }
+}
 
+/* TABLET */
+@media (min-width: 641px) and (max-width: 1024px) {
   .actions {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    grid-template-columns: 1fr;
-    gap: var(--space-2);
-    padding: var(--space-3);
-    margin: 0;
+    max-width: 600px;
+    margin: 0 auto;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   }
 
-  .overallComment {
-    font-size: 16px; /* Prevent iOS zoom */
+  .container {
+    padding-bottom: 140px;
+  }
+}
+
+/* DESKTOP */
+@media (min-width: 1025px) {
+  .actions {
+    /* Back to sticky on desktop */
+    position: sticky;
+    bottom: var(--space-4);
+    max-width: 500px;
+    margin: 0 auto;
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+    padding-bottom: var(--space-4); /* No safe area needed */
+  }
+
+  .actions::before {
+    display: none; /* Hide indicator on desktop */
+  }
+
+  .container {
+    padding-bottom: 0; /* No extra padding needed on desktop */
+  }
+
+  .detailForm {
+    padding-bottom: 0;
+  }
+}
+
+/* ============================================
+   ADDITIONAL FIXES
+   ============================================ */
+
+/* Prevent content jump when keyboard opens */
+@media (max-width: 640px) {
+  .overallComment:focus {
+    /* Scroll into view when focused */
+    scroll-margin-bottom: 140px;
+  }
+}
+
+/* Loading state (optional) */
+.actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.actions button:disabled:active {
+  transform: none;
+}
+
+/* Better touch feedback */
+@media (hover: none) and (pointer: coarse) {
+  /* Touch devices only */
+  .actions button {
+    -webkit-tap-highlight-color: rgba(102, 126, 234, 0.3);
   }
 }
