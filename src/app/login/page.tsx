@@ -1,15 +1,19 @@
-// src/app/(auth)/login/page.tsx
+// ============================================
+// FIXED: src/app/(auth)/login/page.tsx - FAST VERSION!
+// ============================================
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { SupabaseAuthService } from '@/infrastructure/auth/supabase-auth';
+import { useAuth } from '@/presentation/hooks/useAuth';
 import { UserRole } from '@/core/types/enums';
 import styles from './login.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
   const authService = new SupabaseAuthService();
+  const { user, loading: authLoading } = useAuth();
 
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
@@ -20,35 +24,77 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  // Auto-redirect if logged in
+  useEffect(() => {
+    if (!authLoading && user) {
+      const redirectTo = sessionStorage.getItem('redirectAfterLogin') || '/';
+      sessionStorage.removeItem('redirectAfterLogin');
+      router.replace(redirectTo);
+    }
+  }, [user, authLoading, router]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (loading) return;
+    
     setLoading(true);
     setError('');
 
     try {
       await authService.signIn(email, password);
-      router.push('/');
+      
+      // ← REMOVED DELAY! Navigation via useEffect now
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login gagal');
-    } finally {
+      setError(err instanceof Error ? err.message : 'Login gagal. Periksa email dan password Anda.');
       setLoading(false);
     }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (loading) return;
+    
     setLoading(true);
     setError('');
 
     try {
       await authService.signUp(email, password, fullName, role);
-      router.push('/');
+      
+      // ← REMOVED DELAY! Navigation via useEffect now
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registrasi gagal');
-    } finally {
+      setError(err instanceof Error ? err.message : 'Registrasi gagal. Email mungkin sudah terdaftar.');
       setLoading(false);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.backgroundOverlay}>
+          <div className={styles.gradientOrb1}></div>
+          <div className={styles.gradientOrb2}></div>
+          <div className={styles.gradientOrb3}></div>
+        </div>
+        <div className={styles.cardWrapper}>
+          <div className={styles.card}>
+            <div style={{ textAlign: 'center', padding: '3rem' }}>
+              <div className={styles.loadingSpinner}></div>
+              <p style={{ marginTop: '1rem', color: '#667eea', fontWeight: 600 }}>
+                Checking auth...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return null;
+  }
+
 
   return (
     <div className={styles.container}>
@@ -102,14 +148,22 @@ export default function LoginPage() {
             <button
               type="button"
               className={`${styles.tab} ${mode === 'login' ? styles.tabActive : ''}`}
-              onClick={() => setMode('login')}
+              onClick={() => {
+                setMode('login');
+                setError(''); // ← ADD THIS: Clear error on tab switch
+              }}
+              disabled={loading} // ← ADD THIS: Disable during loading
             >
               Masuk
             </button>
             <button
               type="button"
               className={`${styles.tab} ${mode === 'signup' ? styles.tabActive : ''}`}
-              onClick={() => setMode('signup')}
+              onClick={() => {
+                setMode('signup');
+                setError(''); // ← ADD THIS: Clear error on tab switch
+              }}
+              disabled={loading} // ← ADD THIS: Disable during loading
             >
               Daftar
             </button>
@@ -147,6 +201,7 @@ export default function LoginPage() {
                     placeholder="John Doe"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
+                    disabled={loading} // ← ADD THIS
                     required
                   />
                 </div>
@@ -169,6 +224,8 @@ export default function LoginPage() {
                   placeholder="nama@perusahaan.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={loading} // ← ADD THIS
+                  autoComplete="email" // ← ADD THIS
                   required
                 />
               </div>
@@ -189,6 +246,8 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading} // ← ADD THIS
+                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'} // ← ADD THIS
                   required
                   minLength={6}
                 />
@@ -196,6 +255,7 @@ export default function LoginPage() {
                   type="button"
                   className={styles.passwordToggle}
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={loading} // ← ADD THIS
                 >
                   {showPassword ? (
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
@@ -227,6 +287,7 @@ export default function LoginPage() {
                     className={styles.select}
                     value={role}
                     onChange={(e) => setRole(e.target.value as UserRole)}
+                    disabled={loading} // ← ADD THIS
                     required
                   >
                     <option value={UserRole.STAFF}>Staff / Karyawan</option>
@@ -242,10 +303,15 @@ export default function LoginPage() {
             {mode === 'login' && (
               <div className={styles.formOptions}>
                 <label className={styles.checkbox}>
-                  <input type="checkbox" />
+                  <input type="checkbox" disabled={loading} />
                   <span className={styles.checkboxLabel}>Ingat saya</span>
                 </label>
-                <button type="button" className={styles.linkButton}>
+                <button 
+                  type="button" 
+                  className={styles.linkButton}
+                  disabled={loading}
+                  onClick={() => alert('Fitur reset password akan segera hadir!')}
+                >
                   Lupa password?
                 </button>
               </div>
@@ -286,7 +352,11 @@ export default function LoginPage() {
               <button
                 type="button"
                 className={styles.footerLink}
-                onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+                onClick={() => {
+                  setMode(mode === 'login' ? 'signup' : 'login');
+                  setError('');
+                }}
+                disabled={loading}
               >
                 {mode === 'login' ? 'Daftar sekarang' : 'Masuk di sini'}
               </button>

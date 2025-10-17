@@ -1,12 +1,35 @@
-// ============================================
-// 6. DASHBOARD HOME - src/app/dashboard/page.tsx
-// ============================================
-
+// src/app/dashboard/page.tsx
 'use client';
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/presentation/hooks/useAuth';
 import { Card } from '@/presentation/components/ui/Card/Card';
+import styles from './dashboard.module.css';
+
+interface MenuCardProps {
+  icon: string;
+  title: string;
+  description: string;
+  onClick: () => void;
+  variant?: 'primary' | 'success' | 'info';
+}
+
+const MenuCard = ({ icon, title, description, onClick, variant = 'primary' }: MenuCardProps) => (
+  <Card
+    variant="elevated"
+    padding="lg"
+    onClick={onClick}
+    className={styles.menuCard}
+  >
+    <div className={`${styles.menuIcon} ${styles[`menuIcon--${variant}`]}`}>
+      {icon}
+    </div>
+    <div className={styles.menuContent}>
+      <h3 className={styles.menuTitle}>{title}</h3>
+      <p className={styles.menuDesc}>{description}</p>
+    </div>
+  </Card>
+);
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -15,56 +38,41 @@ export default function DashboardPage() {
   if (!user) return null;
 
   return (
-    <div className="container" style={{ paddingTop: '2rem' }}>
-      <Card variant="elevated" padding="lg" style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>
+    <div className={styles.container}>
+      {/* Welcome Section */}
+      <div className={styles.welcome}>
+        <h1 className={styles.welcomeTitle}>
           👋 Halo, {user.fullName}!
         </h1>
-        <p style={{ color: 'var(--color-gray-600)' }}>{user.role}</p>
-      </Card>
-      
-<div style={{ display: 'grid', gap: '1rem' }}>  
+        <p className={styles.welcomeSubtitle}>{user.role}</p>
+      </div>
 
-
-        <Card
-          variant="elevated"
-          padding="lg"
+      {/* Menu Grid */}
+      <div className={styles.menuGrid}>
+        <MenuCard
+          icon="🧹"
+          title="Mulai Inspeksi"
+          description="Scan QR code atau pilih lokasi toilet"
           onClick={() => router.push('/dashboard/scan')}
-          style={{ cursor: 'pointer' }}
-        >
-          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🧹</div>
-          <h3 style={{ marginBottom: '0.5rem' }}>Mulai Inspeksi</h3>
-          <p style={{ color: 'var(--color-gray-600)', fontSize: '0.875rem' }}>
-            Scan QR code atau pilih lokasi toilet
-          </p>
-        </Card>
+          variant="primary"
+        />
 
-        <Card
-          variant="elevated"
-          padding="lg"
+        <MenuCard
+          icon="📋"
+          title="Riwayat Inspeksi"
+          description="Lihat laporan yang sudah dibuat"
           onClick={() => router.push('/dashboard/history')}
-          style={{ cursor: 'pointer' }}
-        >
-          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>📋</div>
-          <h3 style={{ marginBottom: '0.5rem' }}>Riwayat Inspeksi</h3>
-          <p style={{ color: 'var(--color-gray-600)', fontSize: '0.875rem' }}>
-            Lihat laporan yang sudah dibuat
-          </p>
-        </Card>
+          variant="success"
+        />
 
         {user.canViewReports() && (
-          <Card
-            variant="elevated"
-            padding="lg"
+          <MenuCard
+            icon="📊"
+            title="Laporan"
+            description="Lihat statistik dan analisis"
             onClick={() => router.push('/dashboard/reports')}
-            style={{ cursor: 'pointer' }}
-          >
-            <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>📊</div>
-            <h3 style={{ marginBottom: '0.5rem' }}>Laporan</h3>
-            <p style={{ color: 'var(--color-gray-600)', fontSize: '0.875rem' }}>
-              Lihat statistik dan analisis
-            </p>
-          </Card>
+            variant="info"
+          />
         )}
       </div>
     </div>

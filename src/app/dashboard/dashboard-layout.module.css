@@ -1,11 +1,17 @@
+/* src/app/dashboard/dashboard-layout.module.css */
+/* ============================================
+   LAYOUT ONLY - Header, Nav, Container
+   ============================================ */
 
+/* Main Container */
 .container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--color-gray-50);
+  background: var(--color-gray-50, #f9fafb);
 }
 
+/* Loading State */
 .loading {
   display: flex;
   flex-direction: column;
@@ -14,26 +20,29 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  gap: var(--space-4);
+  gap: 1rem;
 }
 
 .spinner {
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid white;
-  border-radius: 50%;
   width: 40px;
   height: 40px;
-  animation: spin 1s linear infinite;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
 
+/* Header - White with 3D Shadow */
 .header {
   background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.06);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -43,46 +52,65 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-4);
-  max-width: 1400px;
+  padding: 1rem;
+  max-width: 640px;
   margin: 0 auto;
 }
 
 .headerLeft {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .logo {
   width: 48px;
   height: 48px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: var(--radius-lg);
+  border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  box-shadow: var(--shadow-md);
+  flex-shrink: 0;
+  box-shadow: 
+    0 4px 6px rgba(102, 126, 234, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.headerInfo {
+  flex: 1;
+  min-width: 0;
 }
 
 .appName {
   font-size: 1.125rem;
   font-weight: 700;
-  color: var(--color-gray-900);
-  margin-bottom: var(--space-1);
+  color: var(--color-gray-900, #111827);
+  margin: 0;
+  line-height: 1.2;
 }
 
 .userName {
   font-size: 0.75rem;
-  color: var(--color-gray-600);
+  color: var(--color-gray-600, #6b7280);
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* Main Content Area */
 .main {
   flex: 1;
+  overflow-y: auto;
   padding-bottom: 80px; /* Space for bottom nav */
 }
 
+/* Bottom Navigation - White with 3D Shadow */
 .bottomNav {
   position: fixed;
   bottom: 0;
@@ -91,10 +119,11 @@
   background: white;
   display: flex;
   justify-content: space-around;
-  padding: var(--space-3) var(--space-2);
+  padding: 0.5rem 0;
   box-shadow: 
-    0 -2px 8px rgba(0, 0, 0, 0.08),
-    0 -1px 0 rgba(0, 0, 0, 0.04);
+    0 -1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 -4px 12px rgba(0, 0, 0, 0.08),
+    0 -2px 6px rgba(0, 0, 0, 0.06);
   z-index: 100;
 }
 
@@ -102,79 +131,77 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-2) var(--space-3);
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
   background: none;
   border: none;
   cursor: pointer;
-  transition: all var(--transition-base);
-  border-radius: var(--radius-md);
-  color: var(--color-gray-600);
-  min-width: 70px;
+  transition: all 0.2s ease;
+  border-radius: 0.5rem;
+  color: var(--color-gray-600, #6b7280);
+  min-width: 60px;
 }
 
 .navItem:hover {
-  background: var(--color-gray-50);
-  color: var(--color-primary);
+  background: var(--color-gray-50, #f9fafb);
 }
 
 .navItem.active {
-  color: var(--color-primary);
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-}
-
-.navItem.active .navIcon {
-  transform: scale(1.2);
+  color: var(--color-primary, #667eea);
+  background: rgba(102, 126, 234, 0.1);
 }
 
 .navIcon {
   font-size: 1.5rem;
-  transition: transform var(--transition-base);
+  transition: transform 0.2s ease;
+}
+
+.navItem.active .navIcon {
+  transform: scale(1.1);
 }
 
 .navLabel {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 600;
 }
 
-@media (max-width: 768px) {
+/* Tablet & Desktop */
+@media (min-width: 768px) {
   .headerContent {
-    padding: var(--space-3);
+    padding: 1.25rem 1.5rem;
   }
 
   .logo {
-    width: 40px;
-    height: 40px;
-    font-size: 1.25rem;
+    width: 56px;
+    height: 56px;
+    font-size: 1.75rem;
   }
 
   .appName {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .bottomNav {
-    padding: var(--space-2);
-  }
-
-  .navItem {
-    padding: var(--space-2);
-    min-width: 60px;
-  }
-
-  .navIcon {
     font-size: 1.25rem;
   }
 
+  .userName {
+    font-size: 0.875rem;
+  }
+
+  .navItem {
+    min-width: 70px;
+    padding: 0.625rem 1rem;
+  }
+
   .navLabel {
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
   }
 }
 
-/* Safe area for devices with notch */
+/* Safe area for notch devices */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .bottomNav {
-    padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom));
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  }
+  
+  .main {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
   }
 }

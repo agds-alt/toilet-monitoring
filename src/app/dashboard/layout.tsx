@@ -1,15 +1,10 @@
-// ===================================
-// FIX #3: src/app/(dashboard)/layout.tsx
-// Already good, just minor improvements
-// ===================================
-
+// src/app/dashboard/layout.tsx
 'use client';
 
 import { useAuth } from '@/presentation/hooks/useAuth';
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Button } from '@/presentation/components/ui/Button/Button';
-
 import styles from './dashboard-layout.module.css';
 
 export default function DashboardLayout({
@@ -20,45 +15,51 @@ export default function DashboardLayout({
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    console.log('🛡️ Dashboard Guard - User:', user ? '✅' : '❌', 'Loading:', loading);
-    
-    if (!loading && !user) {
-      console.log('🔒 Access denied - Redirecting to login');
-      router.push('/login');
+    // Redirect to login if no user (after loading completes)
+    if (!loading && !user && !hasRedirected.current) {
+      hasRedirected.current = true;
+      router.replace('/login');
+    }
+
+    // Reset flag when user changes
+    if (user) {
+      hasRedirected.current = false;
     }
   }, [user, loading, router]);
 
   const handleSignOut = async () => {
     await signOut();
-    router.push('/login');
+    router.replace('/login');
   };
 
-  // Show loading while checking auth
+  const isActive = (path: string) => pathname === path;
+
+  // Show loading spinner while checking auth
   if (loading) {
     return (
       <div className={styles.loading}>
         <div className={styles.spinner}></div>
-        <p>Checking authentication...</p>
+        <p>Memeriksa autentikasi...</p>
       </div>
     );
   }
 
   // Block access if no user
   if (!user) {
-    return null; // Will redirect via useEffect
+    return null;
   }
-
-  const isActive = (path: string) => pathname === path;
 
   return (
     <div className={styles.container}>
+      {/* Header */}
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.headerLeft}>
             <div className={styles.logo}>🧹</div>
-            <div>
+            <div className={styles.headerInfo}>
               <h1 className={styles.appName}>Smart Toilet Check</h1>
               <p className={styles.userName}>{user.fullName} • {user.role}</p>
             </div>
@@ -69,8 +70,10 @@ export default function DashboardLayout({
         </div>
       </header>
 
+      {/* Main Content */}
       <main className={styles.main}>{children}</main>
 
+      {/* Bottom Navigation */}
       <nav className={styles.bottomNav}>
         <button
           className={`${styles.navItem} ${isActive('/dashboard') ? styles.active : ''}`}
@@ -109,6 +112,3 @@ export default function DashboardLayout({
     </div>
   );
 }
-// ============================================
-// END COMPONENT
-// ============================================

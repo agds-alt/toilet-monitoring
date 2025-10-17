@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/presentation/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function LoginLayout({
   children,
@@ -11,18 +11,18 @@ export default function LoginLayout({
 }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    console.log('🔓 Login Page - User:', user ? '✅' : '❌', 'Loading:', loading);
-    
-    // If already logged in, redirect to dashboard
-    if (!loading && user) {
+    // CRITICAL: Only redirect once!
+    if (!loading && user && !hasRedirected.current) {
       console.log('✅ Already logged in - Redirecting to dashboard');
-      router.push('/dashboard');
+      hasRedirected.current = true;
+      router.replace('/dashboard'); // Use replace instead of push!
     }
   }, [user, loading, router]);
 
-  // Show loading
+  // Show loading spinner
   if (loading) {
     return (
       <div style={{
@@ -43,17 +43,18 @@ export default function LoginLayout({
             animation: 'spin 1s linear infinite',
             margin: '0 auto 1rem'
           }} />
-          <p>Loading...</p>
+          <p>Memuat...</p>
         </div>
       </div>
     );
   }
 
-  // If user exists, don't render login (will redirect)
+  // If user exists, don't render login page
   if (user) {
     return null;
   }
 
+  // Render login page
   return (
     <div style={{
       minHeight: '100vh',
@@ -63,6 +64,3 @@ export default function LoginLayout({
     </div>
   );
 }
-// ============================================
-// END COMPONENT
-// ============================================

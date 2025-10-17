@@ -67,5 +67,16 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
+module.exports = {
+  compress: true, // Enable Gzip
+  
+  // Optional: SWC minify (faster)
+  swcMinify: true,
+  
+  // Optional: Remove console.log in production
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+};
 // Export with bundle analyzer
 module.exports = withBundleAnalyzer(nextConfig);
