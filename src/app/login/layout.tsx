@@ -1,8 +1,11 @@
+// src/app/login/layout.tsx
+// FIXED - Simplified redirect logic
+
 'use client';
 
 import { useAuth } from '@/presentation/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 export default function LoginLayout({
   children,
@@ -11,14 +14,12 @@ export default function LoginLayout({
 }) {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    // CRITICAL: Only redirect once!
-    if (!loading && user && !hasRedirected.current) {
+    // Only redirect if user exists and loading is complete
+    if (!loading && user) {
       console.log('✅ Already logged in - Redirecting to dashboard');
-      hasRedirected.current = true;
-      router.replace('/dashboard'); // Use replace instead of push!
+      router.replace('/dashboard');
     }
   }, [user, loading, router]);
 
@@ -49,7 +50,7 @@ export default function LoginLayout({
     );
   }
 
-  // If user exists, don't render login page
+  // Don't render login page if user exists
   if (user) {
     return null;
   }

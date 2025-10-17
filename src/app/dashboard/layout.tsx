@@ -1,9 +1,11 @@
 // src/app/dashboard/layout.tsx
+// FIXED - Simplified auth check
+
 'use client';
 
 import { useAuth } from '@/presentation/hooks/useAuth';
 import { useRouter, usePathname } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Button } from '@/presentation/components/ui/Button/Button';
 import styles from './dashboard-layout.module.css';
 
@@ -15,18 +17,12 @@ export default function DashboardLayout({
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const hasRedirected = useRef(false);
 
   useEffect(() => {
     // Redirect to login if no user (after loading completes)
-    if (!loading && !user && !hasRedirected.current) {
-      hasRedirected.current = true;
+    if (!loading && !user) {
+      console.log('❌ No user, redirecting to login');
       router.replace('/login');
-    }
-
-    // Reset flag when user changes
-    if (user) {
-      hasRedirected.current = false;
     }
   }, [user, loading, router]);
 
@@ -99,15 +95,13 @@ export default function DashboardLayout({
           <span className={styles.navLabel}>History</span>
         </button>
 
-        {user.canViewReports() && (
-          <button
-            className={`${styles.navItem} ${isActive('/dashboard/reports') ? styles.active : ''}`}
-            onClick={() => router.push('/dashboard/reports')}
-          >
-            <span className={styles.navIcon}>📊</span>
-            <span className={styles.navLabel}>Reports</span>
-          </button>
-        )}
+        <button
+          className={`${styles.navItem} ${isActive('/dashboard/reports') ? styles.active : ''}`}
+          onClick={() => router.push('/dashboard/reports')}
+        >
+          <span className={styles.navIcon}>📊</span>
+          <span className={styles.navLabel}>Reports</span>
+        </button>
       </nav>
     </div>
   );
