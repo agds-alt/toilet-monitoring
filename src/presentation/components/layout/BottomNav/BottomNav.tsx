@@ -5,7 +5,7 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { useAuth } from '@/presentation/contexts/AuthProvider';
+import { useAuth } from '@/presentation/contexts/AuthContext';
 import styles from './BottomNav.module.css';
 
 export const BottomNav = () => {

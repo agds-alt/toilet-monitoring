@@ -1,26 +1,37 @@
 // src/app/layout.tsx
-// Root layout with AuthProvider
+// FINAL CORRECT VERSION with Clean Arch
 
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { AuthProvider } from "@/presentation/contexts/AuthProvider";
-
-const inter = Inter({ subsets: ["latin"] });
+import type { Metadata, Viewport } from 'next';
+import './globals.css';
+import { AuthProvider } from '@/presentation/contexts/AuthContext'; // ← CORRECT!
 
 export const metadata: Metadata = {
-  title: "Smart Toilet Monitoring",
-  description: "System for monitoring toilet cleanliness and maintenance",
+  title: 'Smart Toilet Monitoring',
+  description: 'Sistem monitoring kebersihan toilet',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="id">
-      <body className={inter.className}>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        {/* Preconnect to improve loading speed */}
+        <link rel="preconnect" href="https://api.cloudinary.com" />
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
+      </head>
+      <body suppressHydrationWarning>
         <AuthProvider>
           {children}
         </AuthProvider>

@@ -6,7 +6,7 @@
 'use client';
 
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { useAuth } from '@/presentation/contexts/AuthProvider';
+import { useAuth } from '@/presentation/contexts/AuthContext';
 import { Card } from '@/presentation/components/ui/Card/Card';
 import { GetInspectionHistoryUseCase } from '@/core/use-cases/GetInspectionHistory';
 import { SupabaseInspectionRepository } from '@/infrastructure/database/repositories/SupabaseInspectionRepository';

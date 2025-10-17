@@ -4,7 +4,7 @@
 // src/presentation/components/layout/Header/Header.tsx
 'use client';
 
-import { useAuth } from '@/presentation/contexts/AuthProvider';
+import { useAuth } from '@/presentation/contexts/AuthContext';
 import { Button } from '../../ui/Button/Button';
 import { useRouter } from 'next/navigation';
 import styles from './Header.module.css';

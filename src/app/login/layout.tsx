@@ -3,7 +3,7 @@
 
 'use client';
 
-import { useAuth } from '@/presentation/contexts/AuthProvider';
+import { useAuth } from '@/presentation/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 

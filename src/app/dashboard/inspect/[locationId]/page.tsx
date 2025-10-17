@@ -9,7 +9,7 @@ import { AssessmentForm } from '@/presentation/components/features/AssessmentFor
 import { PhotoCapture } from '@/presentation/components/features/PhotoCapture';
 import { ReviewSubmit } from '@/presentation/components/features/ReviewSubmit';
 import { useInspection } from '@/presentation/hooks/useInspection';
-import { useAuth } from '@/presentation/contexts/AuthProvider';
+import { useAuth } from '@/presentation/contexts/AuthContext';
 import { InspectionStatus } from '@/core/types/enums';
 import { Assessments } from '@/core/types/interfaces';
 import { Button } from '@/presentation/components/ui/Button/Button';
