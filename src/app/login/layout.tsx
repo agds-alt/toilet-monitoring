@@ -1,0 +1,68 @@
+'use client';
+
+import { useAuth } from '@/presentation/hooks/useAuth';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+
+export default function LoginLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log('🔓 Login Page - User:', user ? '✅' : '❌', 'Loading:', loading);
+    
+    // If already logged in, redirect to dashboard
+    if (!loading && user) {
+      console.log('✅ Already logged in - Redirecting to dashboard');
+      router.push('/dashboard');
+    }
+  }, [user, loading, router]);
+
+  // Show loading
+  if (loading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            border: '4px solid rgba(255, 255, 255, 0.3)',
+            borderTop: '4px solid white',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }} />
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If user exists, don't render login (will redirect)
+  if (user) {
+    return null;
+  }
+
+  return (
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+    }}>
+      {children}
+    </div>
+  );
+}
+// ============================================
+// END COMPONENT
+// ============================================

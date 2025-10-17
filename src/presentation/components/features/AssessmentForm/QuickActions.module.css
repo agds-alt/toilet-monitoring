@@ -1,0 +1,61 @@
+.container {
+  margin: var(--space-6) 0;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  margin-bottom: var(--space-4);
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.actionCard {
+  text-align: center;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all var(--transition-base);
+}
+
+.actionCard:hover {
+  border-color: var(--color-primary-light);
+}
+
+.icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-3);
+}
+
+.actionTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-bottom: var(--space-2);
+}
+
+.actionDesc {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+}
+@media (max-width: 640px) {
+  .options {
+    width: 100%;
+  }
+
+  .options button {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.75rem;
+    padding: var(--space-2) var(--space-2);
+  }
+
+  .commentInput {
+    font-size: 16px; /* Prevent iOS zoom */
+  }
+}

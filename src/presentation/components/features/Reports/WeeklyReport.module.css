@@ -1,0 +1,342 @@
+.container {
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-6);
+  background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%);
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.header:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #4338ca 100%);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.expandBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-size: 0.875rem;
+}
+
+.expandBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.weekTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+.weekRange {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.entriesCount,
+.avgScore {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: rgba(255, 255, 255, 0.15);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  backdrop-filter: blur(10px);
+}
+
+.countIcon,
+.scoreIcon {
+  font-size: 1.125rem;
+}
+
+.countLabel,
+.scoreLabel {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.scoreValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.detail {
+  background: white;
+  padding: var(--space-4);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: white;
+}
+
+.table thead {
+  background: var(--color-gray-50);
+}
+
+.table th {
+  padding: var(--space-3);
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  border-bottom: 2px solid var(--color-gray-200);
+}
+
+.locationColumn {
+  text-align: left !important;
+  min-width: 180px;
+  position: sticky;
+  left: 0;
+  background: var(--color-gray-50);
+  z-index: 10;
+}
+
+.dateColumn {
+  min-width: 80px;
+}
+
+.dateHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.dayNumber {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+}
+
+.dayName {
+  font-size: 0.625rem;
+  color: var(--color-gray-600);
+  font-weight: 500;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid var(--color-gray-100);
+  transition: background var(--transition-fast);
+}
+
+.table tbody tr:hover {
+  background: var(--color-gray-50);
+}
+
+.locationCell {
+  padding: var(--space-3);
+  position: sticky;
+  left: 0;
+  background: white;
+  z-index: 5;
+}
+
+.table tbody tr:hover .locationCell {
+  background: var(--color-gray-50);
+}
+
+.locationName {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-900);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.locationName::before {
+  content: '•';
+  color: var(--color-primary);
+  font-size: 1.25rem;
+}
+
+.scoreCell {
+  padding: var(--space-2);
+  text-align: center;
+}
+
+.scoreBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.score {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  box-shadow: var(--shadow-3d);
+  transition: all var(--transition-base);
+}
+
+.score:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.photoIndicator {
+  font-size: 0.75rem;
+}
+
+.emptyScore {
+  color: var(--color-gray-300);
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: var(--space-3);
+    text-align: left;
+  }
+
+  .headerLeft,
+  .headerRight {
+    width: 100%;
+  }
+
+  .headerRight {
+    justify-content: flex-start;
+  }
+
+  .locationColumn {
+    min-width: 140px;
+  }
+
+  .dateColumn {
+    min-width: 60px;
+  }
+
+  .score {
+    width: 40px;
+    height: 40px;
+    font-size: 0.875rem;
+  }
+}
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+
+  .headerLeft {
+    width: 100%;
+  }
+
+  .weekTitle {
+    font-size: 1rem;
+  }
+
+  .weekRange {
+    font-size: 0.6875rem;
+  }
+
+  .headerRight {
+    width: 100%;
+    justify-content: flex-start;
+    gap: var(--space-3);
+  }
+
+  .entriesCount,
+  .avgScore {
+    font-size: 0.8125rem;
+    padding: var(--space-2);
+  }
+
+  .detail {
+    padding: var(--space-2);
+  }
+
+  .tableWrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    min-width: 600px; /* Force horizontal scroll */
+  }
+
+  .locationColumn {
+    min-width: 140px;
+    font-size: 0.75rem;
+  }
+
+  .dateColumn {
+    min-width: 60px;
+  }
+
+  .dayNumber {
+    font-size: 1rem;
+  }
+
+  .dayName {
+    font-size: 0.625rem;
+  }
+
+  .locationName {
+    font-size: 0.8125rem;
+  }
+
+  .score {
+    width: 40px;
+    height: 40px;
+    font-size: 0.875rem;
+  }
+
+  .photoIndicator {
+    font-size: 0.625rem;
+  }
+
+  .countBadge {
+    font-size: 0.5625rem;
+    padding: 1px 4px;
+  }
+}

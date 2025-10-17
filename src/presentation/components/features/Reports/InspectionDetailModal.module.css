@@ -1,0 +1,483 @@
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--space-4);
+  overflow-y: auto;
+}
+
+.modal {
+  background: white;
+  border-radius: var(--radius-2xl);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.2),
+    0 10px 20px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.headerLeft {
+  flex: 1;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-bottom: var(--space-1);
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+}
+
+.closeButton {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--color-gray-100);
+  color: var(--color-gray-600);
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+  margin-left: var(--space-4);
+}
+
+.closeButton:hover {
+  background: var(--color-gray-200);
+  color: var(--color-gray-900);
+  transform: rotate(90deg);
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.scoreCard {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 2px solid #bae6fd;
+}
+
+.scoreDisplay {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.scoreBadge {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-3d);
+  flex-shrink: 0;
+}
+
+.scoreIcon {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-1);
+}
+
+.scoreValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+}
+
+.scoreInfo {
+  flex: 1;
+}
+
+.scoreGrade {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-bottom: var(--space-1);
+}
+
+.scoreStatus {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+}
+
+.userCard {
+  background: var(--color-gray-50);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.userAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.userDetails {
+  flex: 1;
+}
+
+.userName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin-bottom: var(--space-1);
+}
+
+.userRole {
+  font-size: 0.75rem;
+  color: var(--color-gray-600);
+}
+
+.timestamp {
+  text-align: right;
+}
+
+.timestampDate {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-700);
+  margin-bottom: var(--space-1);
+}
+
+.timestampTime {
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+}
+
+.photoCard {
+  background: var(--color-gray-900);
+}
+
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.photoCard .sectionTitle {
+  color: white;
+}
+
+.photoWrapper {
+  position: relative;
+}
+
+.photo {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  display: block;
+}
+
+.photoMeta {
+  position: absolute;
+  bottom: var(--space-3);
+  left: var(--space-3);
+  right: var(--space-3);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  backdrop-filter: blur(4px);
+}
+
+.assessmentList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.assessmentItem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: var(--space-3);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  gap: var(--space-2);
+}
+
+.assessmentLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 150px;
+}
+
+.assessmentIcon {
+  font-size: 1.25rem;
+}
+
+.assessmentLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-700);
+}
+
+.assessmentRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.assessmentValue {
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.assessmentComment {
+  width: 100%;
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: white;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  color: var(--color-gray-600);
+  border-left: 3px solid var(--color-warning);
+}
+
+.comment {
+  font-size: 0.875rem;
+  color: var(--color-gray-700);
+  line-height: 1.6;
+  padding: var(--space-3);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
+}
+
+.locationInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.locationRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) 0;
+}
+
+.locationLabel {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+}
+
+.locationValue {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-900);
+  font-family: monospace;
+}
+
+.mapLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all var(--transition-base);
+}
+
+.mapLink:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.footer {
+  padding: var(--space-6);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+@media (max-width: 640px) {
+  .modal {
+    max-height: 95vh;
+    margin: var(--space-2);
+  }
+
+  .header {
+    padding: var(--space-4);
+  }
+
+  .content {
+    padding: var(--space-4);
+  }
+
+  .footer {
+    padding: var(--space-4);
+  }
+
+  .scoreDisplay {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .userInfo {
+    flex-wrap: wrap;
+  }
+
+  .timestamp {
+    width: 100%;
+    text-align: left;
+    margin-top: var(--space-2);
+  }
+
+  .assessmentItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .assessmentLeft,
+  .assessmentRight {
+    width: 100%;
+  }
+}
+.inspectionCounter {
+  display: inline-block;
+  margin-left: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-primary);
+  color: white;
+  font-size: 0.75rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+}
+
+.scoreFooter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+}
+
+.countBadge {
+  display: inline-block;
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  font-size: 0.625rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+}
+
+.navigationFooter {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.navigationFooter button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .navigationFooter {
+    grid-template-columns: 1fr;
+  }
+  
+  .navigationFooter button:nth-child(2) {
+    order: 3;
+  }
+}
+    .navigationFooter button:nth-child(1) {
+        order: 1;
+    }
+    
+    .navigationFooter button:nth-child(3) {
+        order: 2;
+        margin-bottom: var(--space-3);
+    }
+    
+@media (max-width: 768px) {
+  .filters {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .filterGroup {
+    width: 100%;
+  }
+
+  .select {
+    width: 100%;
+    font-size: 16px; /* Prevent iOS zoom */
+  }
+
+  .exportBtn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,137 @@
+// src/presentation/components/features/AssessmentForm/AssessmentForm.tsx
+'use client';
+
+import React, { useState } from 'react';
+import { Card } from '../../ui/Card/Card';
+import { Button } from '../../ui/Button/Button';
+import { QuickActions } from './QuickActions';
+import { AssessmentItem } from './AssessmentItem';
+import { ASSESSMENT_CONFIGS, getDefaultAssessments, validateAssessments } from '@/lib/constants/assessments';
+import { Assessments, AssessmentItem as IAssessmentItem } from '@/core/types/interfaces';
+import { InspectionStatus } from '@/core/types/enums';
+import styles from './AssessmentForm.module.css';
+
+interface AssessmentFormProps {
+  locationName: string;
+  onSubmit: (data: {
+    status: InspectionStatus;
+    assessments: Assessments;
+    overallComment?: string;
+  }) => void;
+}
+
+export const AssessmentForm: React.FC<AssessmentFormProps> = ({
+  locationName,
+  onSubmit
+}) => {
+  const [mode, setMode] = useState<'select' | 'detail'>('select');
+  const [assessments, setAssessments] = useState<Assessments>(getDefaultAssessments());
+  const [overallComment, setOverallComment] = useState('');
+
+  const handleAllGood = () => {
+    onSubmit({
+      status: InspectionStatus.ALL_GOOD,
+      assessments: getDefaultAssessments(),
+      overallComment: 'Semua dalam kondisi baik'
+    });
+  };
+
+  const handleHasIssues = () => {
+    setMode('detail');
+  };
+
+  const handleAssessmentChange = (
+    key: keyof Assessments,
+    value: IAssessmentItem
+  ) => {
+    setAssessments(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  const handleSubmit = () => {
+    const validation = validateAssessments(assessments);
+    
+    if (!validation.valid) {
+      alert(validation.errors.join('\n'));
+      return;
+    }
+
+    onSubmit({
+      status: InspectionStatus.HAS_ISSUES,
+      assessments,
+      overallComment: overallComment || undefined
+    });
+  };
+
+  const handleBack = () => {
+    setMode('select');
+    setAssessments(getDefaultAssessments());
+    setOverallComment('');
+  };
+
+  return (
+    <div className={styles.container}>
+      <Card variant="elevated" padding="md" className={styles.locationCard}>
+        <h2 className={styles.locationName}>{locationName}</h2>
+        <p className={styles.locationDesc}>
+          {mode === 'select' 
+            ? 'Silakan pilih kondisi toilet' 
+            : 'Isi detail penilaian'
+          }
+        </p>
+      </Card>
+
+      {mode === 'select' ? (
+        <QuickActions 
+          onAllGood={handleAllGood}
+          onHasIssues={handleHasIssues}
+        />
+      ) : (
+        <>
+          <div className={styles.detailForm}>
+            {ASSESSMENT_CONFIGS.map((config) => (
+              <AssessmentItem
+                key={config.id}
+                config={config}
+                value={assessments[config.id]}
+                onChange={(value) => handleAssessmentChange(config.id, value)}
+              />
+            ))}
+
+            <Card variant="default" padding="md">
+              <label className={styles.commentLabel}>
+                Catatan Tambahan (opsional)
+              </label>
+              <textarea
+                className={styles.overallComment}
+                placeholder="Tambahkan catatan jika diperlukan..."
+                value={overallComment}
+                onChange={(e) => setOverallComment(e.target.value)}
+                rows={4}
+              />
+            </Card>
+          </div>
+
+          <div className={styles.actions}>
+            <Button
+              variant="secondary"
+              onClick={handleBack}
+              fullWidth
+            >
+              Kembali
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleSubmit}
+              fullWidth
+            >
+              Lanjut ke Foto
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};

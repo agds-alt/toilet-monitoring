@@ -1,0 +1,75 @@
+.container {
+  width: 100%;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-bottom: var(--space-2);
+  text-align: center;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.photoArea {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--color-gray-100);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-md);
+}
+
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-gray-400);
+}
+
+.placeholderIcon {
+  font-size: 4rem;
+  margin-bottom: var(--space-3);
+}
+
+.cameraView,
+.preview {
+  width: 100%;
+  height: 100%;
+}
+
+.video,
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+@media (max-width: 640px) {
+  .title {
+    font-size: 1.125rem;
+  }
+
+  .photoArea {
+    aspect-ratio: 3 / 4;
+  }
+
+  .actions button {
+    font-size: 0.875rem;
+    padding: var(--space-3);
+  }
+}

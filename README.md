@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+// ===================================
+// README
+// ===================================
 
-## Getting Started
+// README.md
+# 🚽 Smart Toilet Monitoring System
 
-First, run the development server:
+Sistem monitoring real-time untuk kebersihan toilet dengan fitur scoring, QR code scanning, dan reporting.
+
+## 🚀 Features
+
+- ✅ QR Code Scanning untuk identifikasi lokasi
+- 📝 Form penilaian detail (11 komponen)
+- 📸 Photo capture dengan geolocation
+- 📊 Dashboard dengan scoring 1-100
+- 📅 Calendar view per minggu
+- 📈 Real-time monitoring
+- 🔐 Role-based access control
+- 📱 Mobile responsive
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Database**: Supabase (PostgreSQL)
+- **Storage**: Cloudinary
+- **Architecture**: Clean Architecture
+- **Styling**: CSS Modules with Design Tokens
+
+## 📦 Installation
 
 ```bash
+# Clone repository
+git clone [your-repo-url]
+cd toilet-monitoring
+
+# Install dependencies
+npm install
+
+# Setup environment variables
+cp .env.example .env.local
+# Edit .env.local with your credentials
+
+# Run database migrations (see SETUP_GUIDE.md)
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📖 Documentation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- See `docs/SETUP_GUIDE.md` for detailed setup instructions
+- See `docs/ARCHITECTURE.md` for architecture documentation
+- See `docs/API.md` for API documentation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧪 Testing
 
-## Learn More
+```bash
+npm run test        # Run unit tests
+npm run test:e2e    # Run E2E tests
+npm run lint        # Run linter
+npm run type-check  # Type checking
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 📝 License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Proprietary - Proservice Indonesia
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 👥 Team
 
-## Deploy on Vercel
+- Development Team
+- QA Team
+- Design Team
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built with ❤️ by Proservice Indonesia

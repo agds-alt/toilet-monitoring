@@ -1,4 +1,16 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Your custom CSS from tokens.css */
+@import '../presentation/styles/tokens.css';
+@import 'tailwindcss';
+
+/* Rest of your styles... */
+
+
+
+/* lalu code CSS lainnya... */
 
 :root {
   --background: #ffffff;
@@ -24,3 +36,151 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-gray-900);
+  background: var(--color-gray-50);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: inherit;
+}
+
+input,
+textarea {
+  font-family: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Utility classes */
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: var(--space-6);
+  }
+}
+/* ADD TO globals.css */
+
+/* Container responsive */
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: var(--space-6);
+  }
+}
+
+/* Ensure content doesn't overflow */
+* {
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+/* Touch targets minimum 44px */
+button,
+a,
+input,
+select {
+  min-height: 44px;
+}
+
+/* Prevent horizontal scroll */
+html,
+body {
+  overflow-x: hidden;
+}
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Touch targets minimum 44px for accessibility */
+button,
+a {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Prevent text overflow */
+* {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Container responsive */
+.container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: var(--space-6);
+    max-width: 800px;
+  }
+}
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+/* Prevent iOS zoom on inputs */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+/* ============================================
+   START COMPONENT STYLES
+   ============================================ */
+/* Add your component-specific styles below */  
+/* Example: PhotoCapture.module.css */
+.title {  
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  margin-bottom: var(--space-4);
+  text-align: center;
+}
+@media (max-width: 640px) {
+  .title {
+    font-size: 1.125rem;
+  }
+}
+/* ============================================
+   END COMPONENT STYLES
+   ============================================ */    
+/* Add your component-specific styles below */  
+/* Example: PhotoCapture.module.css */
+

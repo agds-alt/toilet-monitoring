@@ -1,0 +1,35 @@
+// ===================================
+// LAYOUT FILES
+// ===================================
+
+// src/app/layout.tsx
+import React from 'react';
+import './globals.css';
+import type { Metadata } from 'next';
+  
+
+// ===================================
+// METADATA
+// ===================================
+
+export const metadata: Metadata = {
+  title: 'Smart Toilet Monitoring - Proservice Indonesia',
+  description: 'Real-time toilet cleanliness monitoring and reporting system',
+  viewport: 'width=device-width, initial-scale=1',
+  themeColor: '#667eea',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="id">
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
+      <body suppressHydrationWarning>{children}</body>
+    </html>
+  );
+}

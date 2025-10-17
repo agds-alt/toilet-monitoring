@@ -1,0 +1,96 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { supabase } from '@/infrastructure/database/supabase';
+import { UserEntity } from '@/core/entities/User';
+import { SupabaseUserRepository } from '@/infrastructure/database/repositories/SupabaseUserRepository';
+
+export const useAuth = () => {
+  const [user, setUser] = useState<UserEntity | null>(null);
+  const [loading, setLoading] = useState(true);
+  const userRepository = new SupabaseUserRepository();
+
+  useEffect(() => {
+    console.log('🔐 useAuth: Initializing...');
+    
+    // Check current session
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log('Session status:', session ? '✅ Active' : '❌ None');
+        
+        if (session?.user) {
+          await loadUserProfile(session.user.id);
+        } else {
+          setUser(null);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Session check error:', error);
+        setUser(null);
+        setLoading(false);
+      }
+    };
+
+    checkSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('🔐 Auth event:', event);
+        
+        if (event === 'SIGNED_IN' && session?.user) {
+          await loadUserProfile(session.user.id);
+        } else if (event === 'SIGNED_OUT') {
+          setUser(null);
+          setLoading(false);
+        } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+          // Optionally reload profile on token refresh
+          await loadUserProfile(session.user.id);
+        }
+      }
+    );
+
+    // Cleanup subscription on unmount
+    return () => {
+      console.log('🔐 useAuth: Cleaning up...');
+      subscription.unsubscribe();
+    };
+  }, []); // Run only once on mount
+
+  const loadUserProfile = async (userId: string) => {
+    try {
+      console.log('👤 Loading profile for:', userId);
+      const profile = await userRepository.findById(userId);
+      
+      if (profile) {
+        console.log('✅ Profile loaded:', profile.fullName);
+        setUser(profile);
+      } else {
+        console.warn('⚠️ Profile not found for user:', userId);
+        setUser(null);
+      }
+    } catch (error) {
+      console.error('❌ Failed to load profile:', error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signOut = async () => {
+    console.log('🚪 Signing out...');
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      console.log('✅ Signed out successfully');
+    } catch (error) {
+      console.error('❌ Sign out error:', error);
+    }
+  };
+
+  return { user, loading, signOut };
+};
+// ============================================
+// END HOOK
+// ============================================
