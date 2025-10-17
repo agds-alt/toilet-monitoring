@@ -1,21 +1,17 @@
-/* ============================================
-   COMPLETE FILE: AssessmentForm.module.css
-   FIXED VERSION - Button always visible di mobile
-   ============================================ */
+/* src/presentation/components/features/AssessmentForm/AssessmentForm.module.css */
 
 .container {
   width: 100%;
-  /* Extra padding bottom untuk space button fixed */
-  padding-bottom: 140px;
+  padding-bottom: 100px;
 }
 
 .locationCard {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
   border-left: 4px solid var(--color-primary);
 }
 
 .locationName {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-gray-900);
   margin-bottom: var(--space-2);
@@ -28,9 +24,7 @@
 
 .detailForm {
   margin-bottom: var(--space-6);
-  
-  /* PENTING: Padding bottom supaya last item ga ketutup button */
-  padding-bottom: 120px;
+  padding-bottom: 80px;
 }
 
 .commentLabel {
@@ -38,7 +32,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--color-gray-700);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
 }
 
 .overallComment {
@@ -49,187 +43,70 @@
   font-size: 0.875rem;
   font-family: inherit;
   resize: vertical;
+  min-height: 80px;
   transition: border-color var(--transition-base);
-  box-shadow: var(--shadow-sm);
 }
 
 .overallComment:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 
-    0 0 0 3px rgba(102, 126, 234, 0.1),
-    var(--shadow-sm);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-/* ============================================
-   ACTIONS BUTTON AREA - FIXED VERSION
-   ============================================ */
-
+/* ✅ FIXED ACTIONS - Always visible */
 .actions {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: var(--space-3);
-  
-  /* FIXED POSITION - Selalu terlihat di mobile */
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   
-  /* Styling */
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  
   background: white;
   padding: var(--space-4);
-  border-top: 3px solid var(--color-primary-light);
-  
-  /* SHADOW KUAT supaya jelas */
-  box-shadow: 
-    0 -8px 16px rgba(0, 0, 0, 0.1),
-    0 -4px 8px rgba(0, 0, 0, 0.06),
-    0 0 0 1px rgba(0, 0, 0, 0.02);
-  
-  /* Z-INDEX TINGGI - Di atas semua */
+  border-top: 2px solid var(--color-gray-100);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
   z-index: 1000;
   
-  /* SAFE AREA - Untuk iPhone dengan notch/home indicator */
   padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
 }
 
-/* Indicator line di atas button */
-.actions::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, 
-    var(--color-primary) 0%, 
-    var(--color-primary-light) 50%, 
-    var(--color-primary) 100%
-  );
-  animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
-/* Button styling improvements */
 .actions button {
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.1),
-    0 4px 16px rgba(0, 0, 0, 0.08) !important;
-  
-  font-weight: 700;
+  font-weight: 600;
   min-height: 48px;
-  font-size: 1rem;
 }
 
-.actions button:active {
-  transform: scale(0.95);
-  transition: transform 0.1s ease;
-}
-
-/* ============================================
-   RESPONSIVE BREAKPOINTS
-   ============================================ */
-
-/* MOBILE (HP) */
+/* ✅ MOBILE RESPONSIVE */
 @media (max-width: 640px) {
   .container {
-    padding-bottom: 120px;
+    padding-bottom: 90px;
+  }
+
+  .locationName {
+    font-size: 1.125rem;
   }
 
   .detailForm {
-    padding-bottom: 100px;
+    padding-bottom: 70px;
   }
 
   .actions {
     padding: var(--space-3);
-    padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 20px));
     gap: var(--space-2);
-    grid-template-columns: 1fr 1fr; /* Equal width di mobile */
+    grid-template-columns: 80px 1fr;
   }
 
   .actions button {
     font-size: 0.875rem;
     min-height: 44px;
-    padding: var(--space-2) var(--space-3);
-  }
-
-  .locationName {
-    font-size: 1.25rem;
   }
 }
 
-/* TABLET */
-@media (min-width: 641px) and (max-width: 1024px) {
+@media (max-width: 480px) {
   .actions {
-    max-width: 600px;
-    margin: 0 auto;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  }
-
-  .container {
-    padding-bottom: 140px;
-  }
-}
-
-/* DESKTOP */
-@media (min-width: 1025px) {
-  .actions {
-    /* Back to sticky on desktop */
-    position: sticky;
-    bottom: var(--space-4);
-    max-width: 500px;
-    margin: 0 auto;
-    border-radius: var(--radius-xl);
-    padding: var(--space-4);
-    padding-bottom: var(--space-4); /* No safe area needed */
-  }
-
-  .actions::before {
-    display: none; /* Hide indicator on desktop */
-  }
-
-  .container {
-    padding-bottom: 0; /* No extra padding needed on desktop */
-  }
-
-  .detailForm {
-    padding-bottom: 0;
-  }
-}
-
-/* ============================================
-   ADDITIONAL FIXES
-   ============================================ */
-
-/* Prevent content jump when keyboard opens */
-@media (max-width: 640px) {
-  .overallComment:focus {
-    /* Scroll into view when focused */
-    scroll-margin-bottom: 140px;
-  }
-}
-
-/* Loading state (optional) */
-.actions button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.actions button:disabled:active {
-  transform: none;
-}
-
-/* Better touch feedback */
-@media (hover: none) and (pointer: coarse) {
-  /* Touch devices only */
-  .actions button {
-    -webkit-tap-highlight-color: rgba(102, 126, 234, 0.3);
+    grid-template-columns: 70px 1fr;
+    padding: var(--space-2);
   }
 }

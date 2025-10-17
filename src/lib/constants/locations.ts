@@ -3,56 +3,56 @@ import { Location } from '@/core/types/interfaces';
 
 export const LOCATIONS: Location[] = [
   {
-    id: '1',
+    id: '550e8400-e29b-41d4-a716-446655440001', // ✅ UUID format
     name: 'Toilet Lobby',
     code: 'LOBBY',
     floor: 0,
     section: 'front'
   },
   {
-    id: '2',
+    id: '550e8400-e29b-41d4-a716-446655440002',
     name: 'Toilet Lt 1 Depan',
     code: 'LT1-DEPAN',
     floor: 1,
     section: 'front'
   },
   {
-    id: '3',
+    id: '550e8400-e29b-41d4-a716-446655440003',
     name: 'Toilet Lt 1 Belakang',
     code: 'LT1-BELAKANG',
     floor: 1,
     section: 'back'
   },
   {
-    id: '4',
+    id: '550e8400-e29b-41d4-a716-446655440004',
     name: 'Toilet Lt 2 Depan',
     code: 'LT2-DEPAN',
     floor: 2,
     section: 'front'
   },
   {
-    id: '5',
+    id: '550e8400-e29b-41d4-a716-446655440005',
     name: 'Toilet Lt 2 Belakang',
     code: 'LT2-BELAKANG',
     floor: 2,
     section: 'back'
   },
   {
-    id: '6',
+    id: '550e8400-e29b-41d4-a716-446655440006',
     name: 'Toilet Lt 3 Depan',
     code: 'LT3-DEPAN',
     floor: 3,
     section: 'front'
   },
   {
-    id: '7',
+    id: '550e8400-e29b-41d4-a716-446655440007',
     name: 'Toilet Lt 3 Belakang',
     code: 'LT3-BELAKANG',
     floor: 3,
     section: 'back'
   },
   {
-    id: '8',
+    id: '550e8400-e29b-41d4-a716-446655440008',
     name: 'Toilet Security',
     code: 'SECURITY',
     floor: 0,

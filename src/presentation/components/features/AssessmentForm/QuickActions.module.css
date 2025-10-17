@@ -1,300 +1,175 @@
+/* src/presentation/components/features/AssessmentForm/QuickActions.module.css */
 
 .container {
-  margin: var(--space-6) 0;
-  padding: var(--space-6);
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  border-radius: var(--radius-2xl);
-  box-shadow: 
-    0 1px 0 rgba(255, 255, 255, 0.8) inset,
-    0 4px 8px rgba(0, 0, 0, 0.04),
-    0 8px 16px rgba(0, 0, 0, 0.03);
+  margin-bottom: var(--space-4);
 }
 
 .title {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: 1.125rem;
+  font-weight: 700;
   color: var(--color-gray-900);
-  margin-bottom: var(--space-2);
   text-align: center;
-  letter-spacing: -0.02em;
+  margin-bottom: var(--space-1);
 }
 
 .subtitle {
   font-size: 0.875rem;
   color: var(--color-gray-600);
   text-align: center;
-  margin-bottom: var(--space-6);
-  font-weight: 500;
+  margin-bottom: var(--space-4);
 }
 
+/* ✅ COMPACT GRID - 2 columns on mobile */
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-5);
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
 }
 
-/* ACTION BUTTON BASE */
+/* ✅ SMALLER ACTION BUTTONS */
 .actionButton {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--space-8) var(--space-6);
-  min-height: 220px;
-  border: 4px solid transparent;
-  border-radius: var(--radius-2xl);
+  gap: var(--space-2);
+  
+  padding: var(--space-4);
+  min-height: 140px;
+  
+  border: 3px solid transparent;
+  border-radius: var(--radius-lg);
   background: white;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
   
-  /* 3D Shadow Effect - Default White */
-  box-shadow: 
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 4px 8px rgba(0, 0, 0, 0.08),
-    0 8px 16px rgba(0, 0, 0, 0.06),
-    0 0 0 1px rgba(0, 0, 0, 0.04);
-}
-
-.actionButton::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.actionButton:hover::before {
-  opacity: 1;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .actionButton:hover {
-  transform: translateY(-8px) scale(1.02);
-  border-color: var(--color-primary);
-  box-shadow: 
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 12px 24px rgba(0, 0, 0, 0.12),
-    0 24px 48px rgba(0, 0, 0, 0.08),
-    0 0 0 4px rgba(102, 126, 234, 0.1);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
 }
 
 .actionButton:active {
-  transform: translateY(-2px) scale(0.98);
-  transition: all 0.15s ease;
+  transform: translateY(-1px) scale(0.98);
 }
 
-/* WARNING BUTTON (Ada Masalah) */
+/* ✅ ALL GOOD - Green theme */
+.actionButton:first-child {
+  border-color: var(--color-success);
+}
+
+.actionButton:first-child:hover {
+  background: linear-gradient(135deg, 
+    rgba(34, 197, 94, 0.05) 0%, 
+    rgba(34, 197, 94, 0.1) 100%
+  );
+  border-color: var(--color-success);
+}
+
+/* ✅ HAS ISSUES - Orange theme */
 .warningButton {
-  background: white;
-}
-
-.warningButton::before {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.05) 100%);
+  border-color: #f59e0b;
 }
 
 .warningButton:hover {
-  border-color: var(--color-warning);
-  box-shadow: 
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 12px 24px rgba(245, 158, 11, 0.15),
-    0 24px 48px rgba(245, 158, 11, 0.1),
-    0 0 0 4px rgba(245, 158, 11, 0.1);
+  background: linear-gradient(135deg, 
+    rgba(245, 158, 11, 0.05) 0%, 
+    rgba(245, 158, 11, 0.1) 100%
+  );
+  border-color: #f59e0b;
 }
 
-/* ICON */
 .actionIcon {
-  font-size: 4rem;
-  margin-bottom: var(--space-4);
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  position: relative;
-  z-index: 1;
+  font-size: 2.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: transform 0.2s ease;
 }
 
 .actionButton:hover .actionIcon {
-  transform: scale(1.2) rotate(-5deg);
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
+  transform: scale(1.15);
 }
 
-.actionButton:active .actionIcon {
-  transform: scale(1.1);
-}
-
-/* TITLE */
 .actionTitle {
-  font-size: 1.25rem;
-  font-weight: 900;
+  font-size: 1rem;
+  font-weight: 700;
   color: var(--color-gray-900);
-  margin-bottom: var(--space-3);
-  letter-spacing: -0.01em;
+  margin: 0;
   text-align: center;
-  position: relative;
-  z-index: 1;
-  transition: all 0.3s ease;
 }
 
-.actionButton:hover .actionTitle {
-  color: var(--color-primary);
-  transform: scale(1.05);
-}
-
-.warningButton:hover .actionTitle {
-  color: var(--color-warning-dark);
-}
-
-/* DESCRIPTION */
 .actionDesc {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--color-gray-600);
   text-align: center;
-  line-height: 1.5;
-  margin-bottom: var(--space-4);
-  position: relative;
-  z-index: 1;
-  max-width: 200px;
+  margin: 0;
+  line-height: 1.4;
 }
 
-/* BADGE */
 .actionBadge {
-  position: relative;
-  z-index: 1;
-  padding: var(--space-2) var(--space-4);
-  background: linear-gradient(135deg, var(--color-gray-100) 0%, var(--color-gray-50) 100%);
+  margin-top: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-gray-100);
   border-radius: var(--radius-full);
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-gray-700);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: 2px solid var(--color-gray-200);
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 2px 4px rgba(0, 0, 0, 0.05),
-    0 0 0 1px rgba(0, 0, 0, 0.02) inset;
 }
 
-.actionButton:hover .actionBadge {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  color: white;
-  border-color: var(--color-primary);
-  transform: scale(1.05);
-  box-shadow: 
-    0 4px 8px rgba(102, 126, 234, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-}
-
-.warningButton:hover .actionBadge {
-  background: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%);
-  border-color: var(--color-warning);
-  box-shadow: 
-    0 4px 8px rgba(245, 158, 11, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-}
-
-/* PULSE ANIMATION ON LOAD */
-@keyframes pulseIn {
-  0% {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.02);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.actionButton {
-  animation: pulseIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.actionButton:nth-child(2) {
-  animation-delay: 0.1s;
-}
-
-/* MOBILE RESPONSIVE */
+/* ✅ MOBILE OPTIMIZATION */
 @media (max-width: 640px) {
-  .container {
-    padding: var(--space-4);
-  }
-
   .grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
+    gap: var(--space-2);
   }
 
   .actionButton {
-    min-height: 180px;
-    padding: var(--space-6) var(--space-4);
+    padding: var(--space-3);
+    min-height: 130px;
+    gap: var(--space-1);
   }
 
   .actionIcon {
-    font-size: 3rem;
+    font-size: 2.25rem;
   }
 
   .actionTitle {
-    font-size: 1.125rem;
+    font-size: 0.9375rem;
   }
 
   .actionDesc {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
+  }
+
+  .actionBadge {
+    font-size: 0.6875rem;
+    padding: 4px 8px;
   }
 }
 
-/* TABLET */
-@media (min-width: 641px) and (max-width: 1024px) {
+@media (max-width: 480px) {
+  .title {
+    font-size: 1rem;
+  }
+
+  .subtitle {
+    font-size: 0.8125rem;
+  }
+
   .actionButton {
-    min-height: 200px;
+    min-height: 120px;
+    padding: var(--space-2);
   }
 
   .actionIcon {
-    font-size: 3.5rem;
+    font-size: 2rem;
   }
-}
 
-/* ADD RIPPLE EFFECT ON CLICK */
-.actionButton::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(102, 126, 234, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
+  .actionTitle {
+    font-size: 0.875rem;
+  }
 
-.warningButton::after {
-  background: rgba(245, 158, 11, 0.3);
-}
-
-.actionButton:active::after {
-  width: 300px;
-  height: 300px;
-  transition: width 0s, height 0s;
-}
-
-/* LOADING STATE (optional) */
-.actionButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.actionButton:disabled:hover {
-  transform: none;
-  border-color: transparent;
-  box-shadow: 
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 4px 8px rgba(0, 0, 0, 0.08),
-    0 8px 16px rgba(0, 0, 0, 0.06);
+  .actionDesc {
+    font-size: 0.6875rem;
+  }
 }

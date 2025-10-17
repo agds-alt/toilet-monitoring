@@ -1,4 +1,3 @@
-// src/app/dashboard/inspect/[locationId]/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -30,7 +29,7 @@ interface InspectionData {
   assessments: Assessments;
   overallComment?: string;
   photoData?: string;
-  geoData?: GeoData; // ✅ Sekarang GeoData sudah di-import
+  geoData?: GeoData;
 }
 
 export default function InspectPage({ params }: InspectPageProps) {
@@ -44,27 +43,55 @@ export default function InspectPage({ params }: InspectPageProps) {
 
   const locationId = params.locationId;
 
-  // Load location details
+  // Load location details - UPDATED WITH REAL UUIDs
   useEffect(() => {
-    // In real app, fetch from API/database
-    // For now, use mock data
-    const mockLocations: Record<string, { id: string; name: string }> = {
-      '1': { id: '1', name: 'Toilet Lt 1 Depan' },
-      '2': { id: '2', name: 'Toilet Lt 1 Belakang' },
-      '3': { id: '3', name: 'Toilet Lt 2 Depan' },
-      '4': { id: '4', name: 'Toilet Lt 2 Belakang' },
-      '5': { id: '5', name: 'Toilet VIP' },
+    // Real UUID data from our database migration
+    const realLocations: Record<string, { id: string; name: string }> = {
+      '550e8400-e29b-41d4-a716-446655440001': { 
+        id: '550e8400-e29b-41d4-a716-446655440001', 
+        name: 'Toilet Lobby' 
+      },
+      '550e8400-e29b-41d4-a716-446655440002': { 
+        id: '550e8400-e29b-41d4-a716-446655440002', 
+        name: 'Toilet Lt 1 Depan' 
+      },
+      '550e8400-e29b-41d4-a716-446655440003': { 
+        id: '550e8400-e29b-41d4-a716-446655440003', 
+        name: 'Toilet Lt 1 Belakang' 
+      },
+      '550e8400-e29b-41d4-a716-446655440004': { 
+        id: '550e8400-e29b-41d4-a716-446655440004', 
+        name: 'Toilet Lt 2 Depan' 
+      },
+      '550e8400-e29b-41d4-a716-446655440005': { 
+        id: '550e8400-e29b-41d4-a716-446655440005', 
+        name: 'Toilet Lt 2 Belakang' 
+      },
+      '550e8400-e29b-41d4-a716-446655440006': { 
+        id: '550e8400-e29b-41d4-a716-446655440006', 
+        name: 'Toilet Lt 3 Depan' 
+      },
+      '550e8400-e29b-41d4-a716-446655440007': { 
+        id: '550e8400-e29b-41d4-a716-446655440007', 
+        name: 'Toilet Lt 3 Belakang' 
+      },
+      '550e8400-e29b-41d4-a716-446655440008': { 
+        id: '550e8400-e29b-41d4-a716-446655440008', 
+        name: 'Toilet Security' 
+      },
     };
 
-    const loc = mockLocations[locationId];
+    const loc = realLocations[locationId];
     if (loc) {
       setLocation(loc);
     } else {
+      console.error('❌ Location not found:', locationId);
       alert('Lokasi tidak ditemukan');
       router.push('/dashboard/scan');
     }
   }, [locationId, router]);
 
+  // ... rest of the code remains the same
   const handleAssessmentComplete = (data: {
     status: InspectionStatus;
     assessments: Assessments;
@@ -83,7 +110,7 @@ export default function InspectPage({ params }: InspectPageProps) {
 
   const handlePhotoComplete = (data: {
     photoData: string;
-    geoData?: GeoData; // ✅ Type sudah konsisten
+    geoData?: GeoData;
   }) => {
     console.log('📸 Photo captured');
     
@@ -106,17 +133,18 @@ export default function InspectPage({ params }: InspectPageProps) {
     console.log('📝 SUBMITTING INSPECTION');
     console.log('📝 User:', user.email);
     console.log('📝 Location:', location.name);
+    console.log('📝 Location ID (UUID):', location.id); // ✅ Now shows UUID
     console.log('📝 ============================================');
 
     try {
       await createInspection({
         userId: user.id,
-        locationId: location.id,
+        locationId: location.id, // ✅ Now using UUID
         status: inspectionData.status,
         assessments: inspectionData.assessments,
         overallComment: inspectionData.overallComment,
         photoData: inspectionData.photoData,
-        geoData: inspectionData.geoData, // ✅ Sudah include accuracy (optional)
+        geoData: inspectionData.geoData,
       });
 
       // Success!
@@ -124,7 +152,6 @@ export default function InspectPage({ params }: InspectPageProps) {
       router.push('/dashboard');
     } catch (err) {
       console.error('❌ Submission error:', err);
-      // Error already shown by useInspection hook
     }
   };
 

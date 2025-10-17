@@ -1,194 +1,222 @@
 // src/presentation/components/features/PhotoCapture/PhotoCapture.tsx
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import NextImage from 'next/image';
-import { Button } from '../../ui/Button/Button';
 import { Card } from '../../ui/Card/Card';
-import { GeoData } from '@/core/types/interfaces';
+import { Button } from '../../ui/Button/Button';
 import styles from './PhotoCapture.module.css';
 
+interface GeoData {
+  latitude: number;
+  longitude: number;
+  accuracy?: number;
+}
+
 interface PhotoCaptureProps {
-  onCapture: (data: { 
-    photoData: string; 
-    geoData?: GeoData;
-  }) => void;
+  locationName: string;
+  onSubmit: (data: { photoData: string; geoData?: GeoData }) => void;
   onSkip: () => void;
 }
 
+// ✅ FAST IMAGE COMPRESSION
+const compressImage = async (file: File, maxWidth: number = 1200, quality: number = 0.85): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      const img = new Image();
+      
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        // Resize
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Canvas context failed'));
+          return;
+        }
+
+        // ✅ WHITE BACKGROUND - Prevent black screen
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, width, height);
+        
+        // Draw image
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Convert to JPEG with quality
+        const compressed = canvas.toDataURL('image/jpeg', quality);
+        resolve(compressed);
+      };
+
+      img.onerror = () => reject(new Error('Image load failed'));
+      img.src = e.target?.result as string;
+    };
+
+    reader.onerror = () => reject(new Error('File read failed'));
+    reader.readAsDataURL(file);
+  });
+};
+
 export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
-  onCapture,
+  locationName,
+  onSubmit,
   onSkip
 }) => {
-  const [isCameraActive, setIsCameraActive] = useState(false);
-  const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null);
-  const [isCompressing, setIsCompressing] = useState(false);
-  const [geoData, setGeoData] = useState<GeoData | undefined>();
-  const [locationStatus, setLocationStatus] = useState<string>('Mendapatkan lokasi...');
-  
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
-  // Get geolocation on mount
-  useEffect(() => {
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
+  const [geoData, setGeoData] = useState<GeoData | undefined>(undefined);
+  const [isCompressing, setIsCompressing] = useState(false);
+  const [locationStatus, setLocationStatus] = useState('📍 Mengambil lokasi...');
+
+  // ✅ GET GEOLOCATION
+  React.useEffect(() => {
     if (navigator.geolocation) {
-      setLocationStatus('📍 Mendapatkan lokasi...');
-      
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const data: GeoData = {
+          setGeoData({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             accuracy: position.coords.accuracy
-          };
-          
-          setGeoData(data);
-          setLocationStatus(`✅ Lokasi didapat (±${Math.round(data.accuracy || 0)}m)`);
-          console.log('📍 Location acquired:', data);
+          });
+          setLocationStatus('📍 Lokasi berhasil didapat');
         },
         (error) => {
-          console.error('❌ Geolocation error:', error);
-          setLocationStatus('⚠️ Lokasi tidak tersedia');
-          // Continue without geolocation
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
+          console.warn('Geolocation error:', error);
+          setLocationStatus('📍 Lokasi tidak tersedia (opsional)');
         }
       );
     } else {
-      setLocationStatus('⚠️ GPS tidak didukung');
+      setLocationStatus('📍 GPS tidak didukung');
     }
   }, []);
 
-  // Cleanup camera stream
-  useEffect(() => {
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, [stream]);
-
+  // ✅ START CAMERA - Enhanced for mobile
   const startCamera = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
+      // ✅ Request camera with optimal settings for mobile
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: 'environment',
+          facingMode: 'environment', // Use back camera on mobile
           width: { ideal: 1920 },
           height: { ideal: 1080 }
-        }
+        },
+        audio: false
       });
 
-      setStream(mediaStream);
       if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
+        videoRef.current.srcObject = stream;
+        
+        // ✅ Wait for video to be ready
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play();
+        };
+
+        streamRef.current = stream;
+        setIsCameraActive(true);
       }
-      setIsCameraActive(true);
-    } catch (error) {
-      console.error('Camera error:', error);
-      alert('Tidak dapat mengakses kamera. Silakan gunakan upload foto.');
+    } catch (error: any) {
+      console.error('❌ Camera error:', error);
+      
+      // ✅ Better error messages
+      if (error.name === 'NotAllowedError') {
+        alert('❌ Akses kamera ditolak. Izinkan akses kamera di pengaturan browser.');
+      } else if (error.name === 'NotFoundError') {
+        alert('❌ Kamera tidak ditemukan di perangkat ini.');
+      } else {
+        alert('❌ Gagal membuka kamera: ' + error.message);
+      }
+      
+      // Fallback to file upload
+      fileInputRef.current?.click();
     }
   };
 
+  // ✅ STOP CAMERA
   const stopCamera = () => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      setStream(null);
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
     }
     setIsCameraActive(false);
   };
 
+  // ✅ CAPTURE PHOTO
   const capturePhoto = () => {
     if (!videoRef.current || !canvasRef.current) return;
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+
+    if (!ctx) return;
+
+    // Set canvas size
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.drawImage(video, 0, 0);
-      const photoData = canvas.toDataURL('image/jpeg', 0.8);
-      setCapturedPhoto(photoData);
-      stopCamera();
-    }
+    // ✅ WHITE BACKGROUND
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw video frame
+    ctx.drawImage(video, 0, 0);
+
+    // Convert to base64
+    const photoData = canvas.toDataURL('image/jpeg', 0.9);
+    setCapturedPhoto(photoData);
+
+    // Stop camera
+    stopCamera();
   };
 
+  // ✅ FILE UPLOAD WITH FAST COMPRESSION
   const handleFileUpload = async (file: File) => {
-    if (!file.type.startsWith('image/')) {
-      alert('File harus berupa gambar');
-      return;
-    }
-
     setIsCompressing(true);
 
     try {
-      const compressedData = await compressImage(file);
-      setCapturedPhoto(compressedData);
+      const compressed = await compressImage(file, 1200, 0.85);
+      setCapturedPhoto(compressed);
     } catch (error) {
-      console.error('Compression error:', error);
-      alert('Gagal memproses foto');
+      console.error('❌ Compression error:', error);
+      alert('❌ Gagal memproses gambar');
     } finally {
       setIsCompressing(false);
     }
   };
 
-  const compressImage = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (e) => {
-        const img = new Image();
-        img.src = e.target?.result as string;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 1920;
-          const MAX_HEIGHT = 1080;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx?.drawImage(img, 0, 0, width, height);
-
-          resolve(canvas.toDataURL('image/jpeg', 0.8));
-        };
-        img.onerror = reject;
-      };
-      reader.onerror = reject;
-    });
-  };
-
+  // ✅ SUBMIT
   const handleSubmit = () => {
     if (!capturedPhoto) {
-      alert('Silakan ambil foto terlebih dahulu');
+      alert('❌ Belum ada foto');
       return;
     }
 
-    onCapture({
+    onSubmit({
       photoData: capturedPhoto,
       geoData: geoData
     });
   };
 
+  // ✅ RETAKE
   const retakePhoto = () => {
     setCapturedPhoto(null);
     startCamera();
@@ -203,6 +231,7 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
       </Card>
 
       <div className={styles.content}>
+        {/* ✅ INITIAL OPTIONS */}
         {!isCameraActive && !capturedPhoto && (
           <div className={styles.options}>
             <Button
@@ -225,13 +254,14 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
               className={styles.optionButton}
               disabled={isCompressing}
             >
-              {isCompressing ? '⏳ Memproses...' : '📁 Upload Foto'}
+              {isCompressing ? '⏳ Memproses...' : '📁 Pilih dari Galeri'}
             </Button>
 
             <input
               ref={fileInputRef}
               type="file"
               accept="image/*"
+              capture="environment"
               onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
               style={{ display: 'none' }}
             />
@@ -249,12 +279,14 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
           </div>
         )}
 
+        {/* ✅ CAMERA VIEW */}
         {isCameraActive && (
           <div className={styles.cameraView}>
             <video
               ref={videoRef}
               autoPlay
               playsInline
+              muted
               className={styles.video}
             />
             <canvas ref={canvasRef} style={{ display: 'none' }} />
@@ -278,6 +310,7 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
           </div>
         )}
 
+        {/* ✅ PREVIEW */}
         {capturedPhoto && (
           <div className={styles.preview}>
             <NextImage
