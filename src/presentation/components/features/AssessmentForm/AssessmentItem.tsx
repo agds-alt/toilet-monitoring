@@ -3,7 +3,6 @@
 
 import React, { useState } from 'react';
 import { Card } from '../../ui/Card/Card';
-import { Button } from '../../ui/Button/Button';
 import { AssessmentConfig, AssessmentOption } from '@/lib/constants/assessments';
 import { AssessmentItem as IAssessmentItem } from '@/core/types/interfaces';
 import styles from './AssessmentItem.module.css';
@@ -38,6 +37,26 @@ export const AssessmentItem: React.FC<AssessmentItemProps> = ({
     });
   };
 
+  const getButtonClass = (option: AssessmentOption) => {
+    const isSelected = value.value === option.value;
+    
+    if (!isSelected) {
+      return styles.optionButton; // Default white
+    }
+
+    // Selected states with colors
+    switch (option.color) {
+      case 'success':
+        return `${styles.optionButton} ${styles.selectedSuccess}`;
+      case 'danger':
+        return `${styles.optionButton} ${styles.selectedDanger}`;
+      case 'warning':
+        return `${styles.optionButton} ${styles.selectedWarning}`;
+      default:
+        return `${styles.optionButton} ${styles.selected}`;
+    }
+  };
+
   return (
     <Card variant="default" padding="md" className={styles.container}>
       <div className={styles.header}>
@@ -49,32 +68,38 @@ export const AssessmentItem: React.FC<AssessmentItemProps> = ({
       </div>
 
       <div className={styles.options}>
-        {config.options.map((option) => (
-          <Button
-            key={option.value}
-            variant={
-              option.color === 'success' ? 'success' :
-              option.color === 'danger' ? 'danger' :
-              option.color === 'warning' ? 'warning' : 'secondary'
-            }
-            size="sm"
-            isActive={value.value === option.value}
-            onClick={() => handleOptionClick(option)}
-            icon={option.icon}
-          >
-            {option.label}
-          </Button>
-        ))}
+        {config.options.map((option) => {
+          const isSelected = value.value === option.value;
+          
+          return (
+            <button
+              key={option.value}
+              type="button"
+              className={getButtonClass(option)}
+              onClick={() => handleOptionClick(option)}
+            >
+              <span className={styles.optionIcon}>{option.icon}</span>
+              <span className={styles.optionLabel}>{option.label}</span>
+              {isSelected && (
+                <span className={styles.checkmark}>✓</span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {showComment && (
         <div className={styles.commentSection}>
+          <label className={styles.commentLabel}>
+            Jelaskan masalahnya:
+          </label>
           <textarea
             className={styles.commentInput}
-            placeholder="Jelaskan masalahnya..."
+            placeholder="Contoh: Ada genangan air di lantai, bau tidak sedap, dll..."
             value={value.comment || ''}
             onChange={(e) => handleCommentChange(e.target.value)}
             rows={3}
+            autoFocus
           />
         </div>
       )}

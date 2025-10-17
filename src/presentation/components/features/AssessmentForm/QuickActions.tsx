@@ -2,7 +2,6 @@
 'use client';
 
 import React from 'react';
-import { Card } from '../../ui/Card/Card';
 import styles from './QuickActions.module.css';
 
 interface QuickActionsProps {
@@ -17,29 +16,32 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>Pilih Kondisi Toilet</h3>
+      <p className={styles.subtitle}>Tap salah satu pilihan di bawah</p>
       
       <div className={styles.grid}>
-        <Card 
-          variant="elevated"
-          padding="lg"
+        {/* ALL GOOD BUTTON */}
+        <button 
+          type="button"
           onClick={onAllGood}
-          className={styles.actionCard}
+          className={styles.actionButton}
         >
-          <div className={styles.icon}>✅</div>
+          <div className={styles.actionIcon}>✅</div>
           <h4 className={styles.actionTitle}>SEMUA BAIK</h4>
-          <p className={styles.actionDesc}>Langsung submit</p>
-        </Card>
+          <p className={styles.actionDesc}>Semua komponen bersih & berfungsi</p>
+          <div className={styles.actionBadge}>Langsung Submit</div>
+        </button>
 
-        <Card 
-          variant="elevated"
-          padding="lg"
+        {/* HAS ISSUES BUTTON */}
+        <button 
+          type="button"
           onClick={onHasIssues}
-          className={styles.actionCard}
+          className={`${styles.actionButton} ${styles.warningButton}`}
         >
-          <div className={styles.icon}>⚠️</div>
+          <div className={styles.actionIcon}>⚠️</div>
           <h4 className={styles.actionTitle}>ADA MASALAH</h4>
-          <p className={styles.actionDesc}>Pilih item bermasalah</p>
-        </Card>
+          <p className={styles.actionDesc}>Ada komponen yang perlu diperbaiki</p>
+          <div className={styles.actionBadge}>Pilih Item</div>
+        </button>
       </div>
     </div>
   );
