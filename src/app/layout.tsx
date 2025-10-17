@@ -1,45 +1,26 @@
-// src/app/layout.tsx - UPDATE WITH PROVIDER
-import type { Metadata, Viewport } from 'next'
-import './globals.css';
-import { AuthProvider } from '@/presentation/components/layout/AuthProvider';
+// src/app/layout.tsx
+// Root layout with AuthProvider
 
-// src/app/dashboard/layout.tsx (atau page.tsx)
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { AuthProvider } from "@/presentation/contexts/AuthProvider";
 
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Dashboard',
-  description: 'Toilet Monitoring Dashboard',
-  // HAPUS viewport dan themeColor dari sini
-}
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-}
-
-export const themeColor = {
-  light: '#ffffff',
-  dark: '#000000',
-  themeColor: '#000000',
-}
+  title: "Smart Toilet Monitoring",
+  description: "System for monitoring toilet cleanliness and maintenance",
+};
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="id">
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-        {/* Preconnect to improve loading speed */}
-        <link rel="preconnect" href="https://api.cloudinary.com" />
-        <link rel="preconnect" href="https://res.cloudinary.com" />
-        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
-      </head>
-      <body suppressHydrationWarning>
+      <body className={inter.className}>
         <AuthProvider>
           {children}
         </AuthProvider>

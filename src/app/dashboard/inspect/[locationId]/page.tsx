@@ -7,7 +7,7 @@ import { AssessmentForm } from '@/presentation/components/features/AssessmentFor
 import { PhotoCapture } from '@/presentation/components/features/PhotoCapture/PhotoCapture';
 import { Button } from '@/presentation/components/ui/Button/Button';
 import { Card } from '@/presentation/components/ui/Card/Card';
-import { useAuth } from '@/presentation/hooks/useAuth';
+import { useAuth } from '@/presentation/contexts/AuthProvider';
 import { useInspection } from '@/presentation/hooks/useInspection';
 import { useGeolocation } from '@/presentation/hooks/useGeolocation';
 import { getLocationById } from '@/lib/constants/locations';

@@ -1,9 +1,9 @@
 // src/app/dashboard/layout.tsx
-// FIXED - Simplified auth check
+// FIXED - Use AuthProvider context
 
 'use client';
 
-import { useAuth } from '@/presentation/hooks/useAuth';
+import { useAuth } from '@/presentation/contexts/AuthProvider';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { Button } from '@/presentation/components/ui/Button/Button';

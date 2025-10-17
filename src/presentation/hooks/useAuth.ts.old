@@ -8,6 +8,8 @@ import { supabase } from '@/infrastructure/database/supabase';
 import { UserEntity } from '@/core/entities/User';
 import { SupabaseUserRepository } from '@/infrastructure/database/repositories/SupabaseUserRepository';
 
+const IS_DEBUG = process.env.NEXT_PUBLIC_SUPABASE_AUTH_DEBUG === 'true';
+
 export const useAuth = () => {
   const [user, setUser] = useState<UserEntity | null>(null);
   const [loading, setLoading] = useState(true);
@@ -16,6 +18,7 @@ export const useAuth = () => {
   // Prevent multiple simultaneous profile loads
   const isLoadingProfile = useRef(false);
   const userRepository = useRef(new SupabaseUserRepository());
+  const mountTime = useRef(Date.now());
 
   const loadUserProfile = useCallback(async (userId: string) => {
     // Prevent concurrent loads

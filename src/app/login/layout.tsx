@@ -1,9 +1,9 @@
 // src/app/login/layout.tsx
-// FIXED - Simplified redirect logic
+// FIXED - Use AuthProvider context
 
 'use client';
 
-import { useAuth } from '@/presentation/hooks/useAuth';
+import { useAuth } from '@/presentation/contexts/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 

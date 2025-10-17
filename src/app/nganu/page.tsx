@@ -5,7 +5,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/presentation/hooks/useAuth';
+import { useAuth } from '@/presentation/contexts/AuthProvider';
 import { Card } from '@/presentation/components/ui/Card/Card';
 
 export default function DashboardPage() {

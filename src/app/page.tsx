@@ -1,13 +1,11 @@
-// ===================================
-// FIX #1: src/app/page.tsx
-// Remove dead code, keep only redirect logic
-// ===================================
+// src/app/page.tsx
+// Home page with proper auth redirect
 
 'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/presentation/hooks/useAuth';
+import { useAuth } from '@/presentation/contexts/AuthProvider';
 
 export default function HomePage() {
   const router = useRouter();
@@ -19,15 +17,14 @@ export default function HomePage() {
     if (!loading) {
       if (user) {
         console.log('➡️ Redirecting to /dashboard');
-        router.push('/dashboard');
+        router.replace('/dashboard');
       } else {
         console.log('➡️ Redirecting to /login');
-        router.push('/login');
+        router.replace('/login');
       }
     }
   }, [user, loading, router]);
 
-  // Show loading spinner while checking auth
   return (
     <div style={{
       display: 'flex',
