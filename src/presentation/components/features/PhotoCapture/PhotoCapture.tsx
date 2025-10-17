@@ -14,7 +14,8 @@ interface GeoData {
 }
 
 interface PhotoCaptureProps {
-  locationName: string;
+  locationName={location.name}    // ✅ tambah ini
+  onSubmit={handlePhotoComplete}   // ✅ ganti onCapture jadi onSubmit
   onSubmit: (data: { photoData: string; geoData?: GeoData }) => void;
   onSkip: () => void;
 }

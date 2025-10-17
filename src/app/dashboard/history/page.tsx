@@ -4,7 +4,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import NextImage from 'next/image';
-import { useAuth } from '@/presentation/hooks/useAuth';
+import { useAuth } from '@/presentation/contexts/AuthContext';
 import { useInspectionHistory } from '@/presentation/hooks/useInspectionHistory';
 import { Button } from '@/presentation/components/ui/Button/Button';
 import { Card } from '@/presentation/components/ui/Card/Card';
