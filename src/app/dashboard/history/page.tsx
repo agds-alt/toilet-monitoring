@@ -1,7 +1,9 @@
-// src/app/(dashboard)/history/page.tsx
+// src/app/dashboard/history/page.tsx
+// COMPLETE VERSION - Fixed useEffect warning
+
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/presentation/contexts/AuthProvider';
 import { Card } from '@/presentation/components/ui/Card/Card';
 import { GetInspectionHistoryUseCase } from '@/core/use-cases/GetInspectionHistory';
@@ -9,6 +11,7 @@ import { SupabaseInspectionRepository } from '@/infrastructure/database/reposito
 import { InspectionEntity } from '@/core/entities/Inspection';
 import { getLocationById } from '@/lib/constants/locations';
 import styles from './history.module.css';
+import Image from 'next/image';
 
 export default function HistoryPage() {
   const { user } = useAuth();
@@ -20,13 +23,7 @@ export default function HistoryPage() {
     hasIssues: 0
   });
 
-  useEffect(() => {
-    if (user) {
-      loadHistory();
-    }
-  }, [user]);
-
-  const loadHistory = async () => {
+  const loadHistory = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -47,7 +44,11 @@ export default function HistoryPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadHistory();
+  }, [loadHistory]);
 
   const getScoreColor = (inspection: InspectionEntity) => {
     if (inspection.status === 'all_good') return 'var(--color-success)';
@@ -119,11 +120,16 @@ export default function HistoryPage() {
               )}
 
               {inspection.photoUrl && (
-                <img
-                  src={inspection.photoUrl}
-                  alt="Inspection"
-                  className={styles.photo}
-                />
+                <div className={styles.photoWrapper}>
+                  <Image
+                    src={inspection.photoUrl}
+                    alt="Inspection photo"
+                    width={400}
+                    height={300}
+                    className={styles.photo}
+                    unoptimized
+                  />
+                </div>
               )}
             </Card>
           );
@@ -141,7 +147,3 @@ export default function HistoryPage() {
     </div>
   );
 }
-
-// ============================================
-// END COMPONENT
-// ============================================

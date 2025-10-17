@@ -2,6 +2,7 @@
 'use client';
 
 import React, { useRef, useState, useCallback } from 'react';
+import Image from 'next/image';
 import { Card } from '../../ui/Card/Card';
 import { Button } from '../../ui/Button/Button';
 import styles from './PhotoCapture.module.css';
@@ -28,7 +29,7 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
   // Compress image before upload (max 800kb)
   const compressImage = useCallback(async (dataUrl: string): Promise<string> => {
     return new Promise((resolve) => {
-      const img = new Image();
+      const img = new window.Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
         let width = img.width;
@@ -232,11 +233,16 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
 
           {capturedPhoto && !isCompressing && (
             <div className={styles.preview}>
-              <img 
-                src={capturedPhoto} 
-                alt="Captured" 
-                className={styles.previewImage}
-              />
+              <div className={styles.previewImageWrapper}>
+                <Image
+                  src={capturedPhoto}
+                  alt="Captured photo preview"
+                  fill
+                  className={styles.previewImage}
+                  unoptimized
+                  priority
+                />
+              </div>
               <div className={styles.photoInfo}>
                 <small>
                   Ukuran: {Math.round(capturedPhoto.length / 1024)} KB
@@ -344,8 +350,3 @@ export const PhotoCapture: React.FC<PhotoCaptureProps> = ({
     </div>
   );
 };
-
-// ============================================
-// END COMPONENT EXPORTS
-// ============================================
-

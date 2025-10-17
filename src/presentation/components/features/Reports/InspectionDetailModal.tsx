@@ -1,44 +1,54 @@
-// ============================================
-// 1. INSPECTION DETAIL MODAL COMPONENT
 // src/presentation/components/features/Reports/InspectionDetailModal.tsx
-// ============================================
-
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Card } from '../../ui/Card/Card';
 import { Button } from '../../ui/Button/Button';
 import { InspectionEntity } from '@/core/entities/Inspection';
-import { getScoreGrade, calculateInspectionScore } from '@/lib/utils/scoring';
-import { getAssessmentConfig, ASSESSMENT_CONFIGS } from '@/lib/constants/assessments';
 import { getLocationById } from '@/lib/constants/locations';
+import { calculateInspectionScore, getScoreGrade } from '@/lib/utils/scoring';
+import { ASSESSMENT_CONFIGS } from '@/lib/constants/assessments';
 import styles from './InspectionDetailModal.module.css';
 
 interface InspectionDetailModalProps {
   inspection: InspectionEntity;
-  userName?: string;
-  userRole?: string;
   onClose: () => void;
-  // Multi-inspection support
-  totalInspections?: number;
-  currentIndex?: number;
   onNext?: () => void;
   onPrev?: () => void;
+  currentIndex?: number;
+  totalInspections?: number;
 }
 
 export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
   inspection,
-  userName = 'Unknown User',
-  userRole = 'Staff',
   onClose,
-  totalInspections = 1,
-  currentIndex = 0,
   onNext,
-  onPrev
-}) => { 
+  onPrev,
+  currentIndex = 0,
+  totalInspections = 1
+}) => {
   const location = getLocationById(inspection.locationId);
   const score = calculateInspectionScore(inspection.assessments);
   const grade = getScoreGrade(score);
+
+  const getValueDisplay = (value: string) => {
+    const valueMap: Record<string, { text: string; icon: string; color: string }> = {
+      'good': { text: 'Baik', icon: '✅', color: 'var(--color-success)' },
+      'bad': { text: 'Buruk', icon: '❌', color: 'var(--color-danger)' },
+      'missing': { text: 'Tidak Ada', icon: '⚠️', color: 'var(--color-warning)' },
+      'working': { text: 'Berfungsi', icon: '✅', color: 'var(--color-success)' },
+      'broken': { text: 'Rusak', icon: '❌', color: 'var(--color-danger)' },
+      'low_stock': { text: 'Stok Menipis', icon: '⚠️', color: 'var(--color-warning)' },
+      'out_of_stock': { text: 'Habis', icon: '❌', color: 'var(--color-danger)' },
+      'none': { text: 'Tidak Ada', icon: '✅', color: 'var(--color-success)' },
+      'mild': { text: 'Sedikit', icon: '⚠️', color: 'var(--color-warning)' },
+      'strong': { text: 'Menyengat', icon: '❌', color: 'var(--color-danger)' },
+      'other': { text: 'Lainnya', icon: '⚠️', color: 'var(--color-warning)' }
+    };
+
+    return valueMap[value] || { text: value, icon: '❓', color: 'var(--color-gray-500)' };
+  };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -46,21 +56,7 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
     }
   };
 
-  const getValueDisplay = (value: string) => {
-    const valueMap: Record<string, { text: string; icon: string; color: string }> = {
-      'bersih': { text: 'Bersih', icon: '✅', color: 'var(--color-success)' },
-      'kotor': { text: 'Kotor', icon: '❌', color: 'var(--color-danger)' },
-      'wangi': { text: 'Wangi', icon: '✨', color: 'var(--color-success)' },
-      'bau': { text: 'Bau', icon: '🤢', color: 'var(--color-danger)' },
-      'terisi': { text: 'Terisi', icon: '✅', color: 'var(--color-success)' },
-      'kosong': { text: 'Kosong', icon: '❌', color: 'var(--color-danger)' },
-      'other': { text: 'Lainnya', icon: '⚠️', color: 'var(--color-warning)' }
-    };
-
-    return valueMap[value] || { text: value, icon: '❓', color: 'var(--color-gray-500)' };
-  };
-
-   return (
+  return (
     <div className={styles.backdrop} onClick={handleBackdropClick}>
       <div className={styles.modal}>
         {/* Header with Navigation */}
@@ -80,6 +76,7 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
             ✕
           </button>
         </div>
+
         {/* Navigation Buttons */}
         {totalInspections > 1 && (
           <div className={styles.navButtons}>
@@ -87,7 +84,7 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
               variant="secondary" 
               size="sm" 
               onClick={onPrev}
-              disabled={currentIndex === 0}
+              disabled={!onPrev || currentIndex === 0}
             >
               ← Sebelumnya
             </Button>
@@ -95,7 +92,7 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
               variant="secondary" 
               size="sm" 
               onClick={onNext}
-              disabled={currentIndex === totalInspections - 1}
+              disabled={!onNext || currentIndex === totalInspections - 1}
             >
               Berikutnya →
             </Button>
@@ -103,7 +100,6 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
         )}
 
         {/* Content */}
-
         <div className={styles.content}>
           {/* Score Card */}
           <Card variant="elevated" padding="md" className={styles.scoreCard}>
@@ -118,55 +114,42 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
               <div className={styles.scoreInfo}>
                 <div className={styles.scoreGrade}>{grade.label}</div>
                 <div className={styles.scoreStatus}>
-                  {inspection.status === 'all_good' ? '✅ Semua Baik' : '⚠️ Ada Masalah'}
+                  {inspection.status === 'all_good' ? '✅ Semua Baik' : `⚠️ Ada ${inspection.getIssueCount()} Masalah`}
                 </div>
               </div>
             </div>
-          </Card>
-
-          {/* User Info */}
-          <Card variant="default" padding="md" className={styles.userCard}>
-            <div className={styles.userInfo}>
-              <div className={styles.userAvatar}>👤</div>
-              <div className={styles.userDetails}>
-                <div className={styles.userName}>{userName}</div>
-                <div className={styles.userRole}>{userRole}</div>
-              </div>
-              <div className={styles.timestamp}>
-                <div className={styles.timestampDate}>
-                  {new Date(inspection.createdAt).toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                  })}
-                </div>
-                <div className={styles.timestampTime}>
-                  {new Date(inspection.createdAt).toLocaleTimeString('id-ID', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                  })}
-                </div>
-              </div>
+            <div className={styles.timestamp}>
+              📅 {new Date(inspection.createdAt).toLocaleString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
             </div>
           </Card>
 
           {/* Photo */}
           {inspection.photoUrl && (
-            <Card variant="default" padding="md" className={styles.photoCard}>
-              <h3 className={styles.sectionTitle}>📸 Foto Dokumentasi</h3>
-              <div className={styles.photoWrapper}>
-                <img 
-                  src={inspection.photoUrl} 
-                  alt="Inspection Photo" 
-                  className={styles.photo}
+            <Card variant="default" padding="md">
+              <h3 className={styles.sectionTitle}>📸 Foto</h3>
+              <div className={styles.modalPhotoWrapper}>
+                <Image
+                  src={inspection.photoUrl}
+                  alt="Inspection photo"
+                  fill
+                  className={styles.modalPhoto}
+                  unoptimized
+                  priority
                 />
-                {inspection.photoMetadata?.gps && (
-                  <div className={styles.photoMeta}>
-                    📍 GPS: {inspection.photoMetadata.gps.latitude.toFixed(6)}, 
-                    {inspection.photoMetadata.gps.longitude.toFixed(6)}
-                  </div>
-                )}
               </div>
+              {inspection.photoMetadata?.gps && (
+                <div className={styles.photoMeta}>
+                  📍 GPS: {inspection.photoMetadata.gps.latitude.toFixed(6)}, 
+                  {inspection.photoMetadata.gps.longitude.toFixed(6)}
+                </div>
+              )}
             </Card>
           )}
 
@@ -208,60 +191,9 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
           {/* Overall Comment */}
           {inspection.overallComment && (
             <Card variant="default" padding="md">
-              <h3 className={styles.sectionTitle}>💭 Catatan Tambahan</h3>
+              <h3 className={styles.sectionTitle}>💭 Catatan</h3>
               <p className={styles.comment}>{inspection.overallComment}</p>
             </Card>
-          )}
-
-          {/* Location Info */}
-          {inspection.latitude && inspection.longitude && (
-            <Card variant="default" padding="md">
-              <h3 className={styles.sectionTitle}>📍 Informasi Lokasi</h3>
-              <div className={styles.locationInfo}>
-                <div className={styles.locationRow}>
-                  <span className={styles.locationLabel}>Koordinat:</span>
-                  <span className={styles.locationValue}>
-                    {inspection.latitude.toFixed(6)}, {inspection.longitude.toFixed(6)}
-                  </span>
-                </div>
-                <a
-                  href={`https://www.google.com/maps?q=${inspection.latitude},${inspection.longitude}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.mapLink}
-                >
-                  🗺️ Lihat di Google Maps
-                </a>
-              </div>
-            </Card>
-          )}
-        </div>
-
-      <div className={styles.footer}>
-          {totalInspections > 1 ? (
-            <div className={styles.navigationFooter}>
-              <Button 
-                variant="secondary" 
-                onClick={onPrev}
-                disabled={currentIndex === 0}
-              >
-                ← Sebelumnya
-              </Button>
-              <Button variant="primary" onClick={onClose}>
-                Tutup
-              </Button>
-              <Button 
-                variant="secondary" 
-                onClick={onNext}
-                disabled={currentIndex === totalInspections - 1}
-              >
-                Berikutnya →
-              </Button>
-            </div>
-          ) : (
-            <Button variant="primary" fullWidth onClick={onClose}>
-              Tutup
-            </Button>
           )}
         </div>
       </div>
