@@ -7,7 +7,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Button } from '@/presentation/components/ui/Button/Button';
+import Button from '@/presentation/components/ui/Button/Button';
 import { Card } from '@/presentation/components/ui/Card/Card';
 
 export default function Error({

@@ -4,7 +4,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Card } from '../../ui/Card/Card';
-import { Button } from '../../ui/Button/Button';
+import Button from '../../ui/Button/Button';
 import { Assessments } from '@/core/types/interfaces';
 import { InspectionStatus } from '@/core/types/enums';
 import { ASSESSMENT_CONFIGS } from '@/lib/constants/assessments';

@@ -4,7 +4,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Card } from '../../ui/Card/Card';
-import { Button } from '../../ui/Button/Button';
+import Button from '../../ui/Button/Button';
 import { InspectionEntity } from '@/core/entities/Inspection';
 import { getLocationById } from '@/lib/constants/locations';
 import { calculateInspectionScore, getScoreGrade } from '@/lib/utils/scoring';

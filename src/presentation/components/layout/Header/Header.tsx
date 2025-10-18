@@ -5,7 +5,7 @@
 'use client';
 
 import { useAuth } from '@/presentation/contexts/AuthContext';
-import { Button } from '../../ui/Button/Button';
+import Button from '../../ui/Button/Button';
 import { useRouter } from 'next/navigation';
 import styles from './Header.module.css';
 

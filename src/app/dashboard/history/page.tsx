@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import NextImage from 'next/image';
 import { useAuth } from '@/presentation/contexts/AuthContext';
 import { useInspectionHistory } from '@/presentation/hooks/useInspectionHistory';
-import { Button } from '@/presentation/components/ui/Button/Button';
+import Button from '@/presentation/components/ui/Button/Button';
 import { Card } from '@/presentation/components/ui/Card/Card';
 import { InspectionStatus } from '@/core/types/enums';
 import styles from './history.module.css';
@@ -24,7 +24,7 @@ export default function HistoryPage() {
 
   useEffect(() => {
     if (user) {
-      fetchHistory(user.id);
+      fetchHistory({ userId: user.id });
     }
   }, [user, fetchHistory]);
 
@@ -64,7 +64,7 @@ export default function HistoryPage() {
       <div className={styles.header}>
         <Button 
           variant="secondary" 
-          size="sm"
+          size="small"
           onClick={() => router.push('/dashboard')}
         >
           ← Dashboard

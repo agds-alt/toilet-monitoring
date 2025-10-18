@@ -1,3 +1,14 @@
+#!/bin/bash
+
+echo "🔥 Fixing Last 3 TypeScript Errors..."
+echo ""
+
+# ============================================
+# FIX 1: useInspectionHistory.ts
+# ============================================
+echo "1️⃣ Fixing useInspectionHistory.ts..."
+
+cat > src/presentation/hooks/useInspectionHistory.ts << 'EOF'
 import { useState, useCallback } from 'react';
 import { GetInspectionHistoryUseCase } from '@/core/use-cases/GetInspectionHistory';
 import { SupabaseInspectionRepository } from '@/infrastructure/database/repositories/SupabaseInspectionRepository';
@@ -88,3 +99,40 @@ export const useInspectionHistory = () => {
     fetchHistory
   };
 };
+EOF
+
+echo "✅ Fixed useInspectionHistory.ts"
+echo ""
+
+# ============================================
+# FIX 2: history/page.tsx
+# ============================================
+echo "2️⃣ Fixing history/page.tsx..."
+
+# Only fix the fetchHistory call on line 27
+sed -i 's/fetchHistory(user\.id);/fetchHistory({ userId: user.id });/g' src/app/dashboard/history/page.tsx
+
+echo "✅ Fixed history/page.tsx"
+echo ""
+
+# ============================================
+# VERIFY
+# ============================================
+echo "🧪 Running type-check..."
+echo ""
+
+npm run type-check
+
+if [ $? -eq 0 ]; then
+  echo ""
+  echo "🎉🎉🎉 ALL ERRORS FIXED! 🎉🎉🎉"
+  echo ""
+  echo "Next steps:"
+  echo "  npm run build"
+  echo "  npm run dev"
+  echo ""
+  echo "Your app is ready! 🚀"
+else
+  echo ""
+  echo "⚠️  Check output above for any remaining issues"
+fi

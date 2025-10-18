@@ -6,7 +6,7 @@
 'use client';
 
 import { Card } from '@/presentation/components/ui/Card/Card';
-import { Button } from '@/presentation/components/ui/Button/Button';
+import Button from '@/presentation/components/ui/Button/Button';
 import Link from 'next/link';
 
 export default function NotFound() {

@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { Card } from '../../ui/Card/Card';
-import { Button } from '../../ui/Button/Button';
+import Button from '../../ui/Button/Button';
 import { Location } from '@/core/types/interfaces';
 import { LOCATIONS, searchLocations } from '@/lib/constants/locations';
 import styles from './LocationSelector.module.css';

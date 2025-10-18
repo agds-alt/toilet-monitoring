@@ -1,7 +1,4 @@
-// ============================================
-// FIX 3: src/presentation/components/features/AssessmentForm/AssessmentForm.tsx
-// Change to default export and fix props
-// ============================================
+// src/presentation/components/features/AssessmentForm/AssessmentForm.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -23,7 +20,7 @@ interface AssessmentFormProps {
   }) => void;
 }
 
-const AssessmentForm: React.FC<AssessmentFormProps> = ({
+export const AssessmentForm: React.FC<AssessmentFormProps> = ({
   locationName,
   onSubmit
 }) => {
@@ -76,39 +73,60 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({
 
   return (
     <div className={styles.container}>
-      <Card variant="elevated" padding="md">
-        <h2>{locationName}</h2>
-        <p>{mode === 'select' ? 'Pilih kondisi toilet' : 'Isi detail penilaian'}</p>
+      <Card variant="elevated" padding="md" className={styles.locationCard}>
+        <h2 className={styles.locationName}>{locationName}</h2>
+        <p className={styles.locationDesc}>
+          {mode === 'select' 
+            ? 'Silakan pilih kondisi toilet' 
+            : 'Isi detail penilaian'
+          }
+        </p>
       </Card>
 
       {mode === 'select' ? (
-        <QuickActions
+        <QuickActions 
           onAllGood={handleAllGood}
           onHasIssues={handleHasIssues}
         />
       ) : (
         <>
-          {ASSESSMENT_CONFIGS.map(config => (
-            <AssessmentItem
-              key={config.id}
-              config={config}
-              value={assessments[config.id as keyof Assessments]}
-              onChange={(value) => handleAssessmentChange(config.id as keyof Assessments, value)}
-            />
-          ))}
+          <div className={styles.detailForm}>
+            {ASSESSMENT_CONFIGS.map((config) => (
+              <AssessmentItem
+                key={config.id}
+                config={config}
+                value={assessments[config.id]}
+                onChange={(value) => handleAssessmentChange(config.id, value)}
+              />
+            ))}
 
-          <textarea
-            value={overallComment}
-            onChange={(e) => setOverallComment(e.target.value)}
-            placeholder="Catatan tambahan (opsional)"
-            className={styles.textarea}
-          />
+            <Card variant="default" padding="md">
+              <label className={styles.commentLabel}>
+                Catatan Tambahan (opsional)
+              </label>
+              <textarea
+                className={styles.overallComment}
+                placeholder="Tambahkan catatan jika diperlukan..."
+                value={overallComment}
+                onChange={(e) => setOverallComment(e.target.value)}
+                rows={4}
+              />
+            </Card>
+          </div>
 
           <div className={styles.actions}>
-            <Button onClick={handleBack} variant="secondary">
+            <Button
+              variant="secondary"
+              onClick={handleBack}
+              fullWidth
+            >
               Kembali
             </Button>
-            <Button onClick={handleSubmit} variant="primary">
+            <Button
+              variant="primary"
+              onClick={handleSubmit}
+              fullWidth
+            >
               Lanjut ke Foto
             </Button>
           </div>
@@ -117,7 +135,3 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({
     </div>
   );
 };
-
-
-   
-   export default AssessmentForm;

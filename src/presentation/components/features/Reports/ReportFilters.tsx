@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { Card } from '../../ui/Card/Card';
-import { Button } from '../../ui/Button/Button';
+import Button from '../../ui/Button/Button';
 import { getMonthsIn2025, getWeeksInMonth } from '@/lib/utils/calendar';
 import styles from './ReportFilters.module.css';
 

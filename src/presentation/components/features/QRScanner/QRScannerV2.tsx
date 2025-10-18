@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import jsQR from 'jsqr';
 import { Card } from '../../ui/Card/Card';
-import { Button } from '../../ui/Button/Button';
+import Button from '../../ui/Button/Button';
 import styles from './QRScanner.module.css';
 
 interface QRScannerV2Props {
