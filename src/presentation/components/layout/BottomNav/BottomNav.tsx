@@ -1,92 +1,59 @@
-// ============================================
-// FIXED: src/presentation/components/layout/BottomNav/BottomNav.tsx
-// Updated paths for /dashboard route structure
-// ============================================
+// presentation/components/layout/BottomNav/BottomNav.tsx - DEBUG VERSION
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
-import { useAuth } from '@/presentation/contexts/AuthContext';
-import styles from './BottomNav.module.css';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-export const BottomNav = () => {
+const navItems = [
+  { href: '/dashboard', label: 'Home', icon: '📊' },
+  { href: '/dashboard/scan', label: 'Scan', icon: '📷' },
+  { href: '/dashboard/inspect', label: 'Inspect', icon: '🔍' },
+  { href: '/dashboard/history', label: 'History', icon: '📋' },
+  { href: '/dashboard/reports', label: 'Reports', icon: '📈' },
+  { href: '/dashboard/locations', label: 'Lokasi', icon: '📍' },
+];
+
+export function BottomNav() {
   const pathname = usePathname();
-  const router = useRouter();
-  const { user } = useAuth();
 
-  const vibrate = () => {
-    if (navigator.vibrate) {
-      navigator.vibrate(10);
-    }
-  };
-
-  const handleNavigation = (path: string) => {
-    vibrate();
-    router.push(path);
-  };
-
-  const navItems = [
-    {
-      id: 'home',
-      label: 'Home',
-      icon: '🏠',
-      path: '/dashboard', // ← FIXED: tambah /dashboard
-      show: true
-    },
-    {
-      id: 'scan',
-      label: 'Scan',
-      icon: '🔍',
-      path: '/dashboard/scan', // ← FIXED: tambah /dashboard
-      show: true
-    },
-    {
-      id: 'history',
-      label: 'Riwayat',
-      icon: '📋',
-      path: '/dashboard/history', // ← FIXED: tambah /dashboard
-      show: true
-    },
-    {
-      id: 'reports',
-      label: 'Laporan',
-      icon: '📊',
-      path: '/dashboard/reports', // ← FIXED: tambah /dashboard
-      show: user?.canViewReports() || false
-    },
-    {
-      id: 'profile',
-      label: 'Profil',
-      icon: '👤',
-      path: '/dashboard/profile', // ← FIXED: tambah /dashboard
-      show: true
-    }
-  ];
-
-  const visibleItems = navItems.filter(item => item.show);
+  console.log('🔍 BottomNav pathname:', pathname);
 
   return (
-    <nav className={styles.bottomNav}>
-      <div className={styles.navContainer}>
-        {visibleItems.map((item) => {
-          // ← FIXED: Update active state detection
-          const isActive = pathname === item.path;
-          
-          return (
-            <button
-              key={item.id}
-              onClick={() => handleNavigation(item.path)}
-              className={`${styles.navItem} ${isActive ? styles.active : ''}`}
-              aria-label={item.label}
-            >
-              <div className={styles.iconWrapper}>
-                <span className={styles.icon}>{item.icon}</span>
-                {isActive && <div className={styles.activeIndicator}></div>}
-              </div>
-              <span className={styles.label}>{item.label}</span>
-            </button>
-          );
-        })}
-      </div>
+    <nav style={{
+      display: 'flex',
+      justifyContent: 'space-around',
+      padding: '0.5rem 0',
+      background: 'white'
+    }}>
+      {navItems.map((item) => {
+        const isActive = pathname === item.href || 
+                        (item.href !== '/dashboard' && pathname.startsWith(item.href));
+        
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              padding: '0.5rem',
+              textDecoration: 'none',
+              color: isActive ? 'black' : '#666',
+              background: isActive ? '#f3f4f6' : 'transparent',
+              borderRadius: '8px',
+              minWidth: '60px'
+            }}
+          >
+            <span style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>
+              {item.icon}
+            </span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 500 }}>
+              {item.label}
+            </span>
+          </Link>
+        );
+      })}
     </nav>
   );
-};
+}

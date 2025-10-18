@@ -1,345 +1,256 @@
-// src/app/login/page.tsx
-// FIXED - Removed duplicate redirects
-
+// app/login/page.tsx
 'use client';
 
 import { useState } from 'react';
-import { SupabaseAuthService } from '@/infrastructure/auth/supabase-auth';
-import { UserRole } from '@/core/types/enums';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/infrastructure/database/supabase';
 import styles from './login.module.css';
 
+type AuthMode = 'login' | 'signup';
+
 export default function LoginPage() {
-  // const router = useRouter(); // TODO: Add routing logic
-  const authService = new SupabaseAuthService();
+  const router = useRouter();
+  const [mode, setMode] = useState<AuthMode>('login');
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: 'agdscid@gmail.com', // Pre-filled demo email
+    password: '',
+    confirmPassword: '',
+    fullName: ''
+  });
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const [mode, setMode] = useState<'login' | 'signup'>('login');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [role, setRole] = useState<UserRole>(UserRole.STAFF);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (loading) return;
-    
-    setLoading(true);
-    setError('');
+    setIsLoading(true);
+    setMessage(null);
+
+    // Validation
+    if (mode === 'signup' && formData.password !== formData.confirmPassword) {
+      setMessage({ type: 'error', text: 'Passwords do not match' });
+      setIsLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setMessage({ type: 'error', text: 'Password must be at least 6 characters' });
+      setIsLoading(false);
+      return;
+    }
 
     try {
-      await authService.signIn(email, password);
-      
-      // Let useAuth hook handle navigation
-      console.log('✅ Login successful, waiting for redirect...');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login gagal. Periksa email dan password Anda.');
-      setLoading(false);
+      if (mode === 'login') {
+        // Login logic
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
+
+        if (error) throw error;
+
+        setMessage({ type: 'success', text: 'Login successful!' });
+        
+        // Redirect after short delay
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 1000);
+
+      } else {
+        // Signup logic
+        const { data, error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            data: {
+              full_name: formData.fullName,
+            }
+          }
+        });
+
+        if (error) throw error;
+
+        if (data.user) {
+          setMessage({ 
+            type: 'success', 
+            text: 'Signup successful! Please check your email for verification.' 
+          });
+          
+          // Auto-switch to login after signup
+          setTimeout(() => {
+            setMode('login');
+            setFormData(prev => ({ ...prev, password: '', confirmPassword: '', fullName: '' }));
+          }, 2000);
+        }
+      }
+    } catch (error: any) {
+      console.error('Auth error:', error);
+      setMessage({ 
+        type: 'error', 
+        text: error.message || `Failed to ${mode}` 
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (loading) return;
-    
-    setLoading(true);
-    setError('');
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
 
-    try {
-      await authService.signUp(email, password, fullName, role);
-      
-      // Let useAuth hook handle navigation
-      console.log('✅ Signup successful, waiting for redirect...');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registrasi gagal. Email mungkin sudah terdaftar.');
-      setLoading(false);
-    }
+  const switchMode = () => {
+    setMode(mode === 'login' ? 'signup' : 'login');
+    setMessage(null);
+    setFormData(prev => ({ 
+      ...prev, 
+      password: '', 
+      confirmPassword: '',
+      fullName: '' 
+    }));
+  };
+
+  const useDemoCredentials = () => {
+    setFormData(prev => ({
+      ...prev,
+      email: 'agdscid@gmail.com',
+      password: 'demopass123'
+    }));
+    setMode('login');
   };
 
   return (
     <div className={styles.container}>
-      {/* Animated Background */}
-      <div className={styles.backgroundOverlay}>
-        <div className={styles.gradientOrb1}></div>
-        <div className={styles.gradientOrb2}></div>
-        <div className={styles.gradientOrb3}></div>
-      </div>
-
-      {/* Login Card */}
-      <div className={styles.cardWrapper}>
-        <div className={styles.card}>
-          {/* Logo & Header */}
-          <div className={styles.header}>
-            <div className={styles.logoWrapper}>
-              <div className={styles.logo}>
-                <svg 
-                  width="40" 
-                  height="40" 
-                  viewBox="0 0 40 40" 
-                  fill="none"
-                  className={styles.logoIcon}
-                >
-                  <rect width="40" height="40" rx="12" fill="url(#gradient)"/>
-                  <path 
-                    d="M20 12L28 20L20 28L12 20L20 12Z" 
-                    fill="white" 
-                    fillOpacity="0.9"
-                  />
-                  <defs>
-                    <linearGradient id="gradient" x1="0" y1="0" x2="40" y2="40">
-                      <stop offset="0%" stopColor="#667eea"/>
-                      <stop offset="100%" stopColor="#764ba2"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </div>
-            </div>
-            <h1 className={styles.title}>Smart Toilet Monitoring</h1>
-            <p className={styles.subtitle}>
-              {mode === 'login' ? 'Selamat datang kembali' : 'Buat akun baru Anda'}
-            </p>
+      <div className={styles.card}>
+        
+        {/* Header dengan Toggle */}
+        <div className={styles.header}>
+          <div className={styles.logo}>
+            🚀
           </div>
+          <h1 className={styles.title}>
+            {mode === 'login' ? 'Welcome Back' : 'Create Account'}
+          </h1>
+          <p className={styles.subtitle}>
+            {mode === 'login' 
+              ? 'Sign in to your account' 
+              : 'Sign up to get started'
+            }
+          </p>
+        </div>
 
-          {/* Tab Switcher */}
-          <div className={styles.tabSwitcher}>
-            <button
-              type="button"
-              className={`${styles.tab} ${mode === 'login' ? styles.tabActive : ''}`}
-              onClick={() => {
-                setMode('login');
-                setError('');
-              }}
-              disabled={loading}
-            >
-              Masuk
-            </button>
-            <button
-              type="button"
-              className={`${styles.tab} ${mode === 'signup' ? styles.tabActive : ''}`}
-              onClick={() => {
-                setMode('signup');
-                setError('');
-              }}
-              disabled={loading}
-            >
-              Daftar
-            </button>
-            <div 
-              className={styles.tabIndicator}
-              style={{ transform: mode === 'signup' ? 'translateX(100%)' : 'translateX(0)' }}
-            ></div>
+        {/* Demo Credentials Quick Access */}
+        <button 
+          onClick={useDemoCredentials}
+          className={styles.demoButton}
+          type="button"
+        >
+          🎯 Use Demo Credentials
+        </button>
+
+        {/* Message Alert */}
+        {message && (
+          <div className={`${styles.message} ${styles[message.type]}`}>
+            {message.text}
           </div>
+        )}
 
-          {/* Error Message */}
-          {error && (
-            <div className={styles.errorAlert}>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
-              </svg>
-              <span>{error}</span>
+        {/* Form */}
+        <form onSubmit={handleSubmit} className={styles.form}>
+          {mode === 'signup' && (
+            <div className={styles.inputGroup}>
+              <input
+                name="fullName"
+                type="text"
+                value={formData.fullName}
+                onChange={handleChange}
+                required={mode === 'signup'}
+                className={styles.input}
+                placeholder="Full name"
+                autoComplete="name"
+              />
             </div>
           )}
 
-          {/* Form */}
-          <form onSubmit={mode === 'login' ? handleLogin : handleSignup} className={styles.form}>
-            {/* Full Name - Only for signup */}
-            {mode === 'signup' && (
-              <div className={styles.formGroup}>
-                <label htmlFor="fullName" className={styles.label}>Nama Lengkap</label>
-                <div className={styles.inputWrapper}>
-                  <svg className={styles.inputIcon} width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
-                  </svg>
-                  <input
-                    id="fullName"
-                    type="text"
-                    className={styles.input}
-                    placeholder="John Doe"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    disabled={loading}
-                    required
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Email */}
-            <div className={styles.formGroup}>
-              <label htmlFor="email" className={styles.label}>Email</label>
-              <div className={styles.inputWrapper}>
-                <svg className={styles.inputIcon} width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-                </svg>
-                <input
-                  id="email"
-                  type="email"
-                  className={styles.input}
-                  placeholder="nama@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-                  required
-                  autoComplete="email"
-                />
-              </div>
-            </div>
-
-            {/* Password */}
-            <div className={styles.formGroup}>
-              <label htmlFor="password" className={styles.label}>Password</label>
-              <div className={styles.inputWrapper}>
-                <svg className={styles.inputIcon} width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
-                </svg>
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  className={styles.input}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={loading}
-                  required
-                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                />
-                <button
-                  type="button"
-                  className={styles.passwordToggle}
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={loading}
-                  tabIndex={-1}
-                >
-                  {showPassword ? (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
-                    </svg>
-                  ) : (
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd"/>
-                      <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z"/>
-                    </svg>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Role - Only for signup */}
-            {mode === 'signup' && (
-              <div className={styles.formGroup}>
-                <label htmlFor="role" className={styles.label}>Peran</label>
-                <div className={styles.inputWrapper}>
-                  <svg className={styles.inputIcon} width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/>
-                  </svg>
-                  <select
-                    id="role"
-                    className={styles.select}
-                    value={role}
-                    onChange={(e) => setRole(e.target.value as UserRole)}
-                    disabled={loading}
-                    required
-                  >
-                    <option value={UserRole.STAFF}>Staff / Karyawan</option>
-                    <option value={UserRole.MEDICAL}>Perawat / Dokter</option>
-                    <option value={UserRole.CLEANER}>Cleaner / Team Leader / Supervisor</option>
-                    <option value={UserRole.VISITOR}>Pasien / Pengunjung</option>
-                  </select>
-                </div>
-              </div>
-            )}
-
-            {/* Remember Me & Forgot Password */}
-            {mode === 'login' && (
-              <div className={styles.formOptions}>
-                <label className={styles.checkbox}>
-                  <input type="checkbox" disabled={loading} />
-                  <span className={styles.checkboxLabel}>Ingat saya</span>
-                </label>
-                <button 
-                  type="button" 
-                  className={styles.linkButton}
-                  disabled={loading}
-                  onClick={() => alert('Fitur reset password akan segera hadir!')}
-                >
-                  Lupa password?
-                </button>
-              </div>
-            )}
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className={styles.submitButton}
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <svg className={styles.spinner} viewBox="0 0 24 24">
-                    <circle className={styles.spinnerCircle} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                  </svg>
-                  <span>Memproses...</span>
-                </>
-              ) : (
-                <>
-                  <span>{mode === 'login' ? 'Masuk' : 'Buat Akun'}</span>
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
-                  </svg>
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Footer */}
-          <div className={styles.footer}>
-            <div className={styles.divider}>
-              <span>atau</span>
-            </div>
-            <p className={styles.footerText}>
-              {mode === 'login' ? 'Belum punya akun?' : 'Sudah punya akun?'}
-              {' '}
-              <button
-                type="button"
-                className={styles.footerLink}
-                onClick={() => {
-                  setMode(mode === 'login' ? 'signup' : 'login');
-                  setError('');
-                }}
-                disabled={loading}
-              >
-                {mode === 'login' ? 'Daftar sekarang' : 'Masuk'}
-              </button>
-            </p>
+          <div className={styles.inputGroup}>
+            <input
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className={styles.input}
+              placeholder="Email address"
+              autoComplete="email"
+            />
           </div>
 
-          {/* Trust Indicators */}
-          <div className={styles.trustIndicators}>
-            <div className={styles.trustItem}>
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
-              </svg>
-              <span>Aman & Terenkripsi</span>
-            </div>
-            <div className={styles.trustItem}>
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
-              </svg>
-              <span>Data Privasi Terjaga</span>
-            </div>
-            <div className={styles.trustItem}>
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
-              </svg>
-              <span>Verifikasi 2-Faktor</span>
-            </div>
+          <div className={styles.inputGroup}>
+            <input
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className={styles.input}
+              placeholder="Password"
+              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+            />
           </div>
+
+          {mode === 'signup' && (
+            <div className={styles.inputGroup}>
+              <input
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required={mode === 'signup'}
+                className={styles.input}
+                placeholder="Confirm password"
+                autoComplete="new-password"
+              />
+            </div>
+          )}
+
+          <button 
+            type="submit" 
+            disabled={isLoading}
+            className={styles.submitButton}
+          >
+            {isLoading ? (
+              <span className={styles.loadingText}>
+                {mode === 'login' ? 'Signing in...' : 'Creating account...'}
+              </span>
+            ) : (
+              mode === 'login' ? 'Sign In' : 'Create Account'
+            )}
+          </button>
+        </form>
+
+        {/* Mode Toggle */}
+        <div className={styles.modeToggle}>
+          <p className={styles.toggleText}>
+            {mode === 'login' ? "Don't have an account?" : "Already have an account?"}
+          </p>
+          <button 
+            onClick={switchMode}
+            className={styles.toggleButton}
+            type="button"
+            disabled={isLoading}
+          >
+            {mode === 'login' ? 'Sign Up' : 'Sign In'}
+          </button>
+        </div>
+
+        {/* Demo Info */}
+        <div className={styles.demoSection}>
+          <p className={styles.demoText}>
+            <strong>Demo Account:</strong><br />
+            Email: agdscid@gmail.com<br />
+            Password: demopass123
+          </p>
         </div>
       </div>
     </div>

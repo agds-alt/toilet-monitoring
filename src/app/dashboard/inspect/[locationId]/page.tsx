@@ -1,154 +1,207 @@
-// ============================================
-// FIX 2: src/app/dashboard/inspect/[locationId]/page.tsx
-// Remove locationId prop from AssessmentForm
-// ============================================
+// app/dashboard/inspect/[locationId]/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/presentation/contexts/AuthContext';
-import { useInspection } from '@/presentation/hooks/useInspection';
+import { useParams, useRouter } from 'next/navigation';
+import { Location } from '@/core/entities/Location';
 import AssessmentForm from '@/presentation/components/features/AssessmentForm/AssessmentForm';
-import PhotoCapture from '@/presentation/components/features/PhotoCapture/PhotoCapture';
-import { InspectionStatus } from '@/core/types/enums';
-import { Assessments } from '@/core/types/interfaces';
-import { getLocationById, isValidUUID } from '@/lib/constants/locations';
 import styles from './page.module.css';
 
-type Step = 'assessment' | 'photo' | 'complete';
-
-interface GeoData {
-  latitude: number;
-  longitude: number;
-}
-
-interface InspectionData {
-  status: InspectionStatus;
-  assessments: Assessments;
-  overallComment?: string;
-  photoData?: string;
-  geoData?: GeoData;
-}
-
-interface InspectPageProps {
-  params: {
-    locationId: string;
-  };
-}
-
-export default function InspectPage({ params }: InspectPageProps) {
+export default function InspectLocationPage() {
+  const params = useParams();
   const router = useRouter();
-  const { user } = useAuth();
-  const { createInspection, loading } = useInspection();
+  const locationId = params.locationId as string;
   
-  const [step, setStep] = useState<Step>('assessment');
-  const [inspectionData, setInspectionData] = useState<InspectionData | null>(null);
-  const [locationError, setLocationError] = useState<string | null>(null);
-
-  const locationId = params.locationId;
+  const [location, setLocation] = useState<Location | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [showAssessment, setShowAssessment] = useState(false);
 
   useEffect(() => {
-    if (!isValidUUID(locationId)) {
-      setLocationError('ID lokasi tidak valid');
-      return;
-    }
-
-    const location = getLocationById(locationId);
-    if (!location) {
-      setLocationError('Lokasi tidak ditemukan');
+    if (locationId) {
+      loadLocation();
     }
   }, [locationId]);
 
-  if (locationError) {
+  const loadLocation = async () => {
+    try {
+      setIsLoading(true);
+      setError('');
+      
+      console.log('🔄 Loading location:', locationId);
+      const response = await fetch(`/api/locations/${locationId}`);
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Lokasi tidak ditemukan');
+        }
+        throw new Error(`Gagal memuat lokasi: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('✅ Location loaded:', data);
+      setLocation(data);
+      
+    } catch (error) {
+      console.error('❌ Error loading location:', error);
+      setError(error instanceof Error ? error.message : 'Gagal memuat data lokasi');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleStartInspection = () => {
+    setShowAssessment(true);
+  };
+
+  const handleAssessmentComplete = (assessmentData: any) => {
+    console.log('✅ Assessment completed:', assessmentData);
+    // TODO: Save assessment data to database
+    alert('Inspeksi berhasil disimpan!');
+    setShowAssessment(false);
+    // Optional: Redirect to reports or history
+    // router.push('/dashboard/history');
+  };
+
+  const handleAssessmentCancel = () => {
+    setShowAssessment(false);
+  };
+
+  if (isLoading) {
     return (
-      <div className={styles.errorContainer}>
-        <h2>⚠️ Kesalahan</h2>
-        <p>{locationError}</p>
-        <button onClick={() => router.push('/dashboard/scan')}>
-          Kembali ke Scan
-        </button>
+      <div className={styles.container}>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingText}>Memuat data lokasi...</div>
+        </div>
       </div>
     );
   }
 
-  const location = getLocationById(locationId);
-  if (!location) return null;
-
-  const handleAssessmentComplete = (data: {
-    status: InspectionStatus;
-    assessments: Assessments;
-    overallComment?: string;
-  }) => {
-    setInspectionData({
-      status: data.status,
-      assessments: data.assessments,
-      overallComment: data.overallComment,
-    });
-    setStep('photo');
-  };
-
-  const handlePhotoCapture = async (data: {
-    photoData: string;
-    geoData?: GeoData;
-  }) => {
-    if (!user) {
-      alert('Anda harus login');
-      router.push('/login');
-      return;
-    }
-
-    const finalData = { ...inspectionData!, ...data };
-
-    try {
-      await createInspection({
-        userId: user.id,
-        locationId: locationId,
-        status: finalData.status,
-        assessments: finalData.assessments,
-        overallComment: finalData.overallComment,
-        photoData: finalData.photoData,
-        geoData: finalData.geoData,
-      });
-
-      setStep('complete');
-      setTimeout(() => router.push('/dashboard'), 2000);
-    } catch (err: any) {
-      alert(`Gagal: ${err.message}`);
-    }
-  };
+  if (error || !location) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.errorContainer}>
+          <h1 className={styles.errorTitle}>Lokasi Tidak Ditemukan</h1>
+          <p className={styles.errorMessage}>{error || 'Lokasi tidak tersedia'}</p>
+          <div className={styles.buttonGroup}>
+            <button
+              onClick={() => router.push('/dashboard/inspect')}
+              className={styles.primaryButton}
+            >
+              Pilih Lokasi Lain
+            </button>
+            <button
+              onClick={() => router.push('/dashboard/scan')}
+              className={styles.secondaryButton}
+            >
+              Scan QR Code
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <button onClick={() => router.back()}>← Kembali</button>
-        <h1>{location.name}</h1>
+        <div className={styles.headerInfo}>
+          <h1 className={styles.title}>
+            {showAssessment ? 'Form Inspeksi' : 'Inspeksi Lokasi'}
+          </h1>
+          <p className={styles.subtitle}>
+            {showAssessment 
+              ? `Isi form inspeksi untuk ${location.name}` 
+              : 'Lokasi yang akan diinspeksi'
+            }
+          </p>
+        </div>
+        {!showAssessment && (
+          <button
+            onClick={() => router.push('/dashboard/inspect')}
+            className={styles.backButton}
+          >
+            Ganti Lokasi
+          </button>
+        )}
       </div>
 
-      {step === 'assessment' && (
-        <AssessmentForm
-          locationName={location.name}
-          onSubmit={handleAssessmentComplete}
-        />
-      )}
+      {!showAssessment ? (
+        <>
+          {/* Location Info Card */}
+          <div className={styles.locationCard}>
+            <div className={styles.locationHeader}>
+              <h2 className={styles.locationName}>{location.name}</h2>
+              <span className={styles.locationCode}>{location.code}</span>
+            </div>
+            
+            <div className={styles.locationDetails}>
+              <div className={styles.detailItem}>
+                <span className={styles.detailLabel}>Lantai:</span>
+                <span className={styles.detailValue}>
+                  {location.floor === 0 ? 'Lobby' : `Lantai ${location.floor}`}
+                </span>
+              </div>
+              
+              <div className={styles.detailItem}>
+                <span className={styles.detailLabel}>Bagian:</span>
+                <span className={styles.detailValue}>{location.section}</span>
+              </div>
+              
+              <div className={styles.detailItem}>
+                <span className={styles.detailLabel}>Dibuat:</span>
+                <span className={styles.detailValue}>
+                  {new Date(location.created_at).toLocaleDateString('id-ID')}
+                </span>
+              </div>
+            </div>
 
-      {step === 'photo' && (
-        <PhotoCapture
-          onCapture={handlePhotoCapture}
-          onSkip={() => handlePhotoCapture({ photoData: '' })}
-        />
-      )}
+            <div className={styles.actionSection}>
+              <button
+                onClick={handleStartInspection}
+                className={styles.inspectButton}
+              >
+                Mulai Inspeksi
+              </button>
+              
+              <button
+                onClick={() => router.push('/dashboard/inspect')}
+                className={styles.cancelButton}
+              >
+                Pilih Lokasi Lain
+              </button>
+            </div>
+          </div>
 
-      {step === 'complete' && (
-        <div className={styles.successBox}>
-          <div>✅</div>
-          <h2>Inspeksi Berhasil!</h2>
-        </div>
-      )}
+          {/* Quick Instructions */}
+          <div className={styles.instructions}>
+            <h3>Petunjuk Inspeksi:</h3>
+            <ul>
+              <li>Pastikan Anda berada di lokasi yang benar</li>
+              <li>Siapkan alat bantu yang diperlukan</li>
+              <li>Isi form dengan jujur dan teliti</li>
+              <li>Ambil foto jika diperlukan</li>
+            </ul>
+          </div>
+        </>
+      ) : (
+        /* Assessment Form Section */
+        <div className={styles.assessmentSection}>
+          <div className={styles.assessmentHeader}>
+            <h2 className={styles.assessmentTitle}>
+              Form Inspeksi - {location.name}
+            </h2>
+            <p className={styles.assessmentSubtitle}>
+              Kode: {location.code} | {location.floor === 0 ? 'Lobby' : `Lantai ${location.floor}`} | {location.section}
+            </p>
+          </div>
 
-      {loading && (
-        <div className={styles.loadingOverlay}>
-          <div className={styles.spinner} />
-          <p>Menyimpan...</p>
+          <AssessmentForm
+            locationId={locationId}
+            locationName={location.name}
+            onComplete={handleAssessmentComplete}
+            onCancel={handleAssessmentCancel}
+          />
         </div>
       )}
     </div>

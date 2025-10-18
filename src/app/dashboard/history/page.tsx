@@ -1,60 +1,90 @@
-// src/app/dashboard/history/page.tsx
+// app/dashboard/history/page.tsx
 'use client';
 
-import React, { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import NextImage from 'next/image';
-import { useAuth } from '@/presentation/contexts/AuthContext';
-import { useInspectionHistory } from '@/presentation/hooks/useInspectionHistory';
-import Button from '@/presentation/components/ui/Button/Button';
-import { Card } from '@/presentation/components/ui/Card/Card';
-import { InspectionStatus } from '@/core/types/enums';
-import styles from './history.module.css';
+import styles from './page.module.css';
+
+interface Inspection {
+  id: string;
+  location_id: string;
+  status: string;
+  overall_comment: string;
+  created_at: string;
+  assessments: {
+    locationName: string;
+    totalScore: number;
+    maxScore: number;
+    percentage: number;
+    items: Array<{
+      id: string;
+      question: string;
+      score: number;
+      comment: string;
+    }>;
+  };
+  locations?: {
+    name: string;
+    code: string;
+    floor: number;
+    section: string;
+  };
+}
 
 export default function HistoryPage() {
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
-  const { inspections, stats, loading, fetchHistory } = useInspectionHistory();
+  const [inspections, setInspections] = useState<Inspection[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+  const [selectedInspection, setSelectedInspection] = useState<Inspection | null>(null);
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/login');
-    }
-  }, [user, authLoading, router]);
+    loadInspections();
+  }, []);
 
-  useEffect(() => {
-    if (user) {
-      fetchHistory({ userId: user.id });
-    }
-  }, [user, fetchHistory]);
-
-  const getStatusColor = (status: InspectionStatus) => {
-    switch (status) {
-      case InspectionStatus.ALL_GOOD:
-        return 'var(--color-success)';
-      case InspectionStatus.HAS_ISSUES:
-        return '#f59e0b';
-      default:
-        return 'var(--color-gray-500)';
+  const loadInspections = async () => {
+    try {
+      const response = await fetch('/api/inspections');
+      if (response.ok) {
+        const data = await response.json();
+        setInspections(data);
+      }
+    } catch (error) {
+      console.error('Error loading inspections:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const getStatusText = (status: InspectionStatus) => {
+  const filteredInspections = inspections.filter(inspection => {
+    if (filter === 'all') return true;
+    return inspection.status === filter;
+  });
+
+  const getStatusText = (status: string) => {
     switch (status) {
-      case InspectionStatus.ALL_GOOD:
-        return '✅ Semua Baik';
-      case InspectionStatus.HAS_ISSUES:
-        return '⚠️ Ada Masalah';
-      default:
-        return '❓ Unknown';
+      case 'all_good': return { text: 'Baik', color: 'green' };
+      case 'need_maintenance': return { text: 'Perlu Perawatan', color: 'orange' };
+      case 'need_cleaning': return { text: 'Perlu Pembersihan', color: 'red' };
+      default: return { text: 'Completed', color: 'gray' };
     }
   };
 
-  if (authLoading || loading) {
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'all_good': return '✅';
+      case 'need_maintenance': return '⚠️';
+      case 'need_cleaning': return '🧹';
+      default: return '📋';
+    }
+  };
+
+  if (isLoading) {
     return (
-      <div className={styles.loading}>
-        <div className={styles.spinner}></div>
-        <p>Memuat riwayat...</p>
+      <div className={styles.container}>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingText}>Memuat riwayat inspeksi...</div>
+        </div>
       </div>
     );
   }
@@ -62,135 +92,188 @@ export default function HistoryPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Button 
-          variant="secondary" 
-          size="small"
-          onClick={() => router.push('/dashboard')}
+        <div className={styles.headerInfo}>
+          <h1 className={styles.title}>Riwayat Inspeksi</h1>
+          <p className={styles.subtitle}>
+            {inspections.length} inspeksi ditemukan
+          </p>
+        </div>
+        <button
+          onClick={() => router.push('/dashboard/inspect')}
+          className={styles.newInspectionButton}
         >
-          ← Dashboard
-        </Button>
-        <h1 className={styles.title}>📋 Riwayat Inspeksi</h1>
+          + Inspeksi Baru
+        </button>
       </div>
 
-      {/* ✅ STATS SUMMARY */}
-      <Card variant="elevated" padding="md">
-        <div className={styles.statsGrid}>
-          <div className={styles.statCard}>
-            <div className={styles.statNumber}>{stats.total}</div>
-            <div className={styles.statLabel}>Total</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statNumber} style={{ color: 'var(--color-success)' }}>
-              {stats.allGood}
-            </div>
-            <div className={styles.statLabel}>Baik</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.statNumber} style={{ color: '#f59e0b' }}>
-              {stats.hasIssues}
-            </div>
-            <div className={styles.statLabel}>Masalah</div>
-          </div>
-        </div>
-      </Card>
+      {/* Filters */}
+      <div className={styles.filters}>
+        <button
+          className={`${styles.filterButton} ${filter === 'all' ? styles.active : ''}`}
+          onClick={() => setFilter('all')}
+        >
+          Semua
+        </button>
+        <button
+          className={`${styles.filterButton} ${filter === 'all_good' ? styles.active : ''}`}
+          onClick={() => setFilter('all_good')}
+        >
+          ✅ Baik
+        </button>
+        <button
+          className={`${styles.filterButton} ${filter === 'need_maintenance' ? styles.active : ''}`}
+          onClick={() => setFilter('need_maintenance')}
+        >
+          ⚠️ Perawatan
+        </button>
+        <button
+          className={`${styles.filterButton} ${filter === 'need_cleaning' ? styles.active : ''}`}
+          onClick={() => setFilter('need_cleaning')}
+        >
+          🧹 Pembersihan
+        </button>
+      </div>
 
-      {/* ✅ INSPECTION LIST */}
-      <div className={styles.list}>
-        {inspections.length === 0 ? (
-          <Card variant="outlined" padding="lg" className={styles.empty}>
-            <div className={styles.emptyIcon}>📭</div>
-            <p>Belum ada riwayat inspeksi</p>
-          </Card>
-        ) : (
-          inspections.map((inspection) => (
-            <Card 
-              key={inspection.id} 
-              variant="outlined" 
-              padding="md"
-              className={styles.inspectionCard}
-            >
-              <div className={styles.inspectionHeader}>
-                <div>
-                  <h3 className={styles.locationName}>
-                    {inspection.location?.name || 'Unknown Location'}
-                  </h3>
-                  <p className={styles.timestamp}>
-                    {new Date(inspection.createdAt).toLocaleString('id-ID', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </p>
+      {/* Inspections List */}
+      <div className={styles.inspectionsList}>
+        {filteredInspections.length > 0 ? (
+          filteredInspections.map((inspection) => {
+            const statusInfo = getStatusText(inspection.status);
+            const locationName = inspection.locations?.name || inspection.assessments?.locationName || 'Unknown Location';
+            
+            return (
+              <div
+                key={inspection.id}
+                className={styles.inspectionCard}
+                onClick={() => setSelectedInspection(inspection)}
+              >
+                <div className={styles.cardHeader}>
+                  <div className={styles.locationInfo}>
+                    <h3 className={styles.locationName}>{locationName}</h3>
+                    <span className={styles.inspectionDate}>
+                      {new Date(inspection.created_at).toLocaleDateString('id-ID', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
+                  </div>
+                  <div className={styles.statusSection}>
+                    <span 
+                      className={styles.statusBadge}
+                      data-status={inspection.status}
+                    >
+                      {getStatusIcon(inspection.status)} {statusInfo.text}
+                    </span>
+                    <div className={styles.score}>
+                      {inspection.assessments?.totalScore || 0}/{inspection.assessments?.maxScore || 25} 
+                      ({inspection.assessments?.percentage || 0}%)
+                    </div>
+                  </div>
                 </div>
-                <div 
-                  className={styles.statusBadge}
-                  style={{ backgroundColor: getStatusColor(inspection.status) }}
-                >
-                  {getStatusText(inspection.status)}
+                
+                {inspection.overall_comment && (
+                  <div className={styles.comment}>
+                    {inspection.overall_comment}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>📋</div>
+            <p className={styles.emptyText}>
+              {filter === 'all' 
+                ? 'Belum ada riwayat inspeksi' 
+                : `Tidak ada inspeksi dengan status "${getStatusText(filter).text}"`
+              }
+            </p>
+            <button
+              onClick={() => router.push('/dashboard/inspect')}
+              className={styles.emptyButton}
+            >
+              Mulai Inspeksi Pertama
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Inspection Detail Modal */}
+      {selectedInspection && (
+        <div className={styles.modalOverlay} onClick={() => setSelectedInspection(null)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2>Detail Inspeksi</h2>
+              <button 
+                className={styles.closeButton}
+                onClick={() => setSelectedInspection(null)}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className={styles.modalContent}>
+              <div className={styles.detailSection}>
+                <h3>Lokasi</h3>
+                <p>{selectedInspection.locations?.name || selectedInspection.assessments?.locationName}</p>
+              </div>
+              
+              <div className={styles.detailSection}>
+                <h3>Tanggal & Waktu</h3>
+                <p>{new Date(selectedInspection.created_at).toLocaleString('id-ID')}</p>
+              </div>
+              
+              <div className={styles.detailSection}>
+                <h3>Hasil Penilaian</h3>
+                <div className={styles.scores}>
+                  <div className={styles.scoreItem}>
+                    <span>Skor Total:</span>
+                    <strong>{selectedInspection.assessments?.totalScore || 0}/{selectedInspection.assessments?.maxScore || 25}</strong>
+                  </div>
+                  <div className={styles.scoreItem}>
+                    <span>Persentase:</span>
+                    <strong>{selectedInspection.assessments?.percentage || 0}%</strong>
+                  </div>
+                  <div className={styles.scoreItem}>
+                    <span>Status:</span>
+                    <strong>{getStatusText(selectedInspection.status).text}</strong>
+                  </div>
                 </div>
               </div>
 
-              {inspection.overallComment && (
-                <div className={styles.comment}>
-                  💬 {inspection.overallComment}
-                </div>
-              )}
-
-              {/* ✅ GPS INFO */}
-              {inspection.latitude && inspection.longitude && (
-                <div className={styles.gpsInfo}>
-                  📍 GPS: {inspection.latitude.toFixed(6)}, {inspection.longitude.toFixed(6)}
-                </div>
-              )}
-
-              {/* ✅ PHOTO DISPLAY - FIXED */}
-              {inspection.photoUrl && (
-                <div className={styles.photoContainer}>
-                  <NextImage
-                    src={inspection.photoUrl}
-                    alt={`Foto ${inspection.location?.name}`}
-                    width={800}
-                    height={600}
-                    className={styles.photo}
-                    unoptimized
-                    onError={(e) => {
-                      console.error('❌ Image load error:', inspection.photoUrl);
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* ✅ ASSESSMENT DETAILS */}
-              {inspection.status === InspectionStatus.HAS_ISSUES && inspection.assessments && (
-                <div className={styles.assessmentDetails}>
-                  <p className={styles.assessmentTitle}>Detail Penilaian:</p>
-                  <div className={styles.assessmentGrid}>
-                    {Object.entries(inspection.assessments).map(([key, value]: [string, any]) => {
-                      if (value.status !== 'good' && value.status !== 'filled') {
-                        return (
-                          <div key={key} className={styles.assessmentItem}>
-                            <span className={styles.assessmentKey}>
-                              {key.replace(/_/g, ' ')}:
-                            </span>
-                            <span className={styles.assessmentValue}>
-                              {value.status}
-                              {value.comment && ` - ${value.comment}`}
-                            </span>
-                          </div>
-                        );
-                      }
-                      return null;
-                    })}
+              {selectedInspection.assessments?.items && (
+                <div className={styles.detailSection}>
+                  <h3>Detail Penilaian</h3>
+                  <div className={styles.assessmentItems}>
+                    {selectedInspection.assessments.items.map((item) => (
+                      <div key={item.id} className={styles.assessmentItem}>
+                        <div className={styles.itemQuestion}>
+                          <span>{item.question}</span>
+                          <span className={styles.itemScore}>{item.score}/5</span>
+                        </div>
+                        {item.comment && (
+                          <p className={styles.itemComment}>💬 {item.comment}</p>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
-            </Card>
-          ))
-        )}
-      </div>
+
+              {selectedInspection.overall_comment && (
+                <div className={styles.detailSection}>
+                  <h3>Komentar Keseluruhan</h3>
+                  <p className={styles.overallComment}>{selectedInspection.overall_comment}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

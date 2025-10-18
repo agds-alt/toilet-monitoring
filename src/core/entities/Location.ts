@@ -42,3 +42,19 @@ export class LocationEntity {
     return this.code;
   }
 }
+export interface LocationFormData {
+  name: string;
+  code: string;
+  floor: number;
+  section: string;
+}
+
+export interface Location {
+  id: string;
+  name: string;
+  code: string;
+  floor: number;
+  section: string;
+  updated_at: string;
+  created_at: string;
+}

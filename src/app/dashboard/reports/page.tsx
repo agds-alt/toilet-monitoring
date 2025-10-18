@@ -1,346 +1,355 @@
-// ===================================
-// REPORTS PAGE - CLEAN FIXED VERSION
-// src/app/(dashboard)/reports/page.tsx
-// ===================================
-
+// app/dashboard/reports/page.tsx
 'use client';
 
-import { useState, useEffect, lazy, Suspense } from 'react';
-import { useAuth } from '@/presentation/contexts/AuthContext';
-import { Card } from '@/presentation/components/ui/Card/Card';
-import { GetInspectionHistoryUseCase } from '@/core/use-cases/GetInspectionHistory';
-import { SupabaseInspectionRepository } from '@/infrastructure/database/repositories/SupabaseInspectionRepository';
-import { SupabaseUserRepository } from '@/infrastructure/database/repositories/SupabaseUserRepository';
-import { calculateInspectionScore } from '@/lib/utils/scoring';
-import { getWeeksInMonth } from '@/lib/utils/calendar';
-import { LOCATIONS } from '@/lib/constants/locations';
-import styles from './reports.module.css';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import styles from './page.module.css';
 
-// ===================================
-// LAZY IMPORTS - Outside component
-// ===================================
-const WeeklyReport = lazy(() => 
-  import('@/presentation/components/features/Reports/WeeklyReport')
-    .then(module => ({ default: module.WeeklyReport }))
-);
+interface Inspection {
+  id: string;
+  location_id: string;
+  status: string;
+  created_at: string;
+  assessments: {
+    totalScore: number;
+    maxScore: number;
+    percentage: number;
+    locationName: string;
+  };
+  locations?: {
+    name: string;
+    code: string;
+    floor: number;
+    section: string;
+  };
+}
 
-const ReportFilters = lazy(() => 
-  import('@/presentation/components/features/Reports/ReportFilters')
-    .then(module => ({ default: module.ReportFilters }))
-);
+interface ReportStats {
+  totalInspections: number;
+  averageScore: number;
+  statusCounts: {
+    all_good: number;
+    need_maintenance: number;
+    need_cleaning: number;
+  };
+  locationStats: {
+    [key: string]: {
+      name: string;
+      count: number;
+      averageScore: number;
+    };
+  };
+}
 
-// ===================================
-// HELPER COMPONENTS - Outside component
-// ===================================
-const ReportSkeleton = () => (
-  <Card variant="elevated" padding="lg">
-    <div style={{ 
-      background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
-      backgroundSize: '200% 100%',
-      animation: 'loading 1.5s infinite',
-      height: '200px',
-      borderRadius: '8px'
-    }} />
-  </Card>
-);
-
-const LoadingSpinner = () => (
-  <div style={{ textAlign: 'center', padding: '4rem' }}>
-    <div style={{
-      border: '4px solid var(--color-gray-200)',
-      borderTop: '4px solid var(--color-primary)',
-      borderRadius: '50%',
-      width: '50px',
-      height: '50px',
-      animation: 'spin 1s linear infinite',
-      margin: '0 auto 1rem'
-    }} />
-    <p>Memuat laporan...</p>
-  </div>
-);
-
-// ===================================
-// UTILITY FUNCTIONS - Outside component
-// ===================================
-const toLocalDateString = (date: Date): string => {
-  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  return localDate.toISOString().split('T')[0];
-};
-
-// ===================================
-// MAIN COMPONENT - Single export
-// ===================================
 export default function ReportsPage() {
-  const { user } = useAuth();
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-  const [selectedWeek, setSelectedWeek] = useState<number | 'all'>('all');
-  const [selectedUser, setSelectedUser] = useState<string>('all');
-  const [loading, setLoading] = useState(true);
-  const [reportData, setReportData] = useState<any>(null);
-  const [users, setUsers] = useState<any[]>([]);
+  const router = useRouter();
+  const [inspections, setInspections] = useState<Inspection[]>([]);
+  const [stats, setStats] = useState<ReportStats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState<'week' | 'month' | 'all'>('month');
 
-  // Load data on mount and when filters change
   useEffect(() => {
-    loadReportData();
-    loadUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMonth, selectedWeek, selectedUser]);
+    loadInspections();
+  }, []);
 
-  // Load users function
-  const loadUsers = async () => {
+  useEffect(() => {
+    if (inspections.length > 0) {
+      calculateStats();
+    }
+  }, [inspections, timeRange]);
+
+  const loadInspections = async () => {
     try {
-      setUsers([
-        { id: 'all', fullName: 'Semua User' },
-        { id: '1', fullName: 'abdulg' },
-        { id: '2', fullName: 'abdulgofur' },
-        { id: '3', fullName: 'abdulgofur1' },
-        { id: '4', fullName: 'Admin Proservice' },
-        { id: '5', fullName: 'Cleaner Proservice' },
-        { id: '6', fullName: 'Supervisor Proservice' }
-      ]);
+      const response = await fetch('/api/inspections');
+      if (response.ok) {
+        const data = await response.json();
+        setInspections(data);
+      }
     } catch (error) {
-      console.error('Failed to load users:', error);
+      console.error('Error loading inspections:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Load report data function
-  const loadReportData = async () => {
-    setLoading(true);
-    
-    try {
-      const repository = new SupabaseInspectionRepository();
-      const userRepository = new SupabaseUserRepository();
-      const useCase = new GetInspectionHistoryUseCase(repository);
+  const calculateStats = () => {
+    // Filter by time range
+    const now = new Date();
+    const filteredInspections = inspections.filter(inspection => {
+      const inspectionDate = new Date(inspection.created_at);
+      
+      switch (timeRange) {
+        case 'week':
+          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          return inspectionDate >= weekAgo;
+        case 'month':
+          const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          return inspectionDate >= monthAgo;
+        default:
+          return true;
+      }
+    });
 
-      const year = 2025;
-      const startDate = new Date(year, selectedMonth, 1);
-      const endDate = new Date(year, selectedMonth + 1, 0);
+    // Calculate statistics
+    const statusCounts = {
+      all_good: 0,
+      need_maintenance: 0,
+      need_cleaning: 0
+    };
 
-      const filters: any = { startDate, endDate };
-      if (selectedUser !== 'all') {
-        filters.userId = selectedUser;
+    const locationStats: { [key: string]: { name: string; count: number; totalScore: number } } = {};
+
+    let totalScore = 0;
+    let totalMaxScore = 0;
+
+    filteredInspections.forEach(inspection => {
+      // Count status
+      statusCounts[inspection.status as keyof typeof statusCounts]++;
+
+      // Calculate scores
+      if (inspection.assessments) {
+        totalScore += inspection.assessments.totalScore;
+        totalMaxScore += inspection.assessments.maxScore;
       }
 
-      const inspections = await useCase.execute(filters);
-
-      // Calculate scores and add user data
-      const inspectionsWithScores = await Promise.all(
-        inspections.map(async (inspection) => {
-          let userProfile;
-          try {
-            userProfile = await userRepository.findById(inspection.userId);
-          } catch (error) {
-            console.error('Failed to load user:', error);
-          }
-
-          return {
-            ...inspection,
-            score: calculateInspectionScore(inspection.assessments),
-            userName: userProfile?.fullName || 'Unknown User',
-            userRole: userProfile?.role || 'Staff'
-          };
-        })
-      );
-
-      // Group by week
-      const weeks = getWeeksInMonth(year, selectedMonth);
-      const weeklyData = weeks.map(week => {
-        const weekInspections = inspectionsWithScores.filter(ins => {
-          const insDate = new Date(ins.createdAt);
-          return insDate >= week.startDate && insDate <= week.endDate;
-        });
-
-        const avgScore = weekInspections.length > 0
-          ? Math.round(weekInspections.reduce((sum, ins) => sum + ins.score, 0) / weekInspections.length)
-          : 0;
-
-        // Group by location and LOCAL date
-        const locationData = LOCATIONS.map(location => {
-          const dates: any = {};
-          const weekDays = [];
-          
-          for (let d = new Date(week.startDate); d <= week.endDate; d.setDate(d.getDate() + 1)) {
-            weekDays.push(new Date(d));
-          }
-
-          weekDays.forEach(day => {
-            const localDateStr = toLocalDateString(day);
-            
-            const dayInspections = weekInspections.filter(ins => {
-              const insLocalDate = toLocalDateString(new Date(ins.createdAt));
-              return ins.locationId === location.id && insLocalDate === localDateStr;
-            });
-
-            dates[localDateStr] = dayInspections.length > 0 ? dayInspections : null;
-          });
-
-          return {
-            location,
-            dates
-          };
-        });
-
-        return {
-          ...week,
-          inspections: weekInspections,
-          avgScore,
-          locationData
+      // Location statistics
+      const locationId = inspection.location_id;
+      const locationName = inspection.locations?.name || inspection.assessments?.locationName || 'Unknown';
+      
+      if (!locationStats[locationId]) {
+        locationStats[locationId] = {
+          name: locationName,
+          count: 0,
+          totalScore: 0
         };
-      });
+      }
 
-      // Overall stats
-      const allScores = inspectionsWithScores.map(ins => ins.score);
-      const avgScore = allScores.length > 0 
-        ? Math.round(allScores.reduce((a, b) => a + b, 0) / allScores.length)
-        : 0;
+      locationStats[locationId].count++;
+      if (inspection.assessments) {
+        locationStats[locationId].totalScore += inspection.assessments.percentage;
+      }
+    });
 
-      const compliance = allScores.length > 0
-        ? Math.round((allScores.filter(s => s >= 75).length / allScores.length) * 100)
-        : 0;
+    // Convert location stats to include average
+    const locationStatsWithAvg = Object.fromEntries(
+      Object.entries(locationStats).map(([id, stat]) => [
+        id,
+        {
+          name: stat.name,
+          count: stat.count,
+          averageScore: Math.round(stat.totalScore / stat.count)
+        }
+      ])
+    );
 
-      setReportData({
-        totalLocations: LOCATIONS.length,
-        avgScore,
-        compliance,
-        weeklyData: selectedWeek === 'all' 
-          ? weeklyData 
-          : weeklyData.filter(w => w.weekNumber === selectedWeek)
-      });
+    const averageScore = totalMaxScore > 0 ? Math.round((totalScore / totalMaxScore) * 100) : 0;
 
-    } catch (error) {
-      console.error('Failed to load report data:', error);
-    } finally {
-      setLoading(false);
+    setStats({
+      totalInspections: filteredInspections.length,
+      averageScore,
+      statusCounts,
+      locationStats: locationStatsWithAvg
+    });
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'all_good': return '#10b981';
+      case 'need_maintenance': return '#f59e0b';
+      case 'need_cleaning': return '#ef4444';
+      default: return '#6b7280';
     }
   };
 
-  // Handle export
-  const handleExport = () => {
-    alert('Export feature coming soon!');
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'all_good': return 'Baik';
+      case 'need_maintenance': return 'Perawatan';
+      case 'need_cleaning': return 'Pembersihan';
+      default: return status;
+    }
   };
 
-  // Permission check
-  if (!user?.canViewReports()) {
+  if (isLoading) {
     return (
       <div className={styles.container}>
-        <Card variant="elevated" padding="lg">
-          <h2>Akses Ditolak</h2>
-          <p>Anda tidak memiliki akses untuk melihat laporan.</p>
-        </Card>
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingText}>Memuat laporan...</div>
+        </div>
       </div>
     );
   }
 
-  // Loading state
-  if (loading || !reportData) {
-    return (
-      <div className={styles.container}>
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
-  // Main render
   return (
     <div className={styles.container}>
-      {/* Header */}
       <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <div className={styles.logo}>🧹</div>
-          <div>
-            <h1 className={styles.title}>Proservice Indonesia</h1>
-            <p className={styles.subtitle}>Monitoring Kebersihan • DKI Jakarta</p>
-          </div>
+        <div className={styles.headerInfo}>
+          <h1 className={styles.title}>Laporan & Analisis</h1>
+          <p className={styles.subtitle}>
+            Dashboard performa dan statistik inspeksi
+          </p>
         </div>
-        <div className={styles.scoreBadge}>
-          <div className={styles.scoreIcon}>📊</div>
-          <div>
-            <div className={styles.scoreNumber}>{reportData.avgScore}</div>
-            <div className={styles.scoreLabel}>RATA-RATA</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className={styles.statsGrid}>
-        <Card variant="elevated" padding="md" className={styles.statCard}>
-          <div className={styles.statNumber}>{reportData.totalLocations}</div>
-          <div className={styles.statLabel}>Titik Lokasi</div>
-        </Card>
-        <Card variant="elevated" padding="md" className={styles.statCard}>
-          <div className={styles.statNumber} style={{ color: '#10b981' }}>
-            {reportData.compliance}%
-          </div>
-          <div className={styles.statLabel}>Compliance</div>
-        </Card>
-        <Card variant="elevated" padding="md" className={styles.statCard}>
-          <div className={styles.statNumber} style={{ color: '#3b82f6' }}>
-            24/7
-          </div>
-          <div className={styles.statLabel}>Monitoring</div>
-        </Card>
-      </div>
-
-      {/* Filters - Lazy loaded */}
-      <Suspense fallback={<ReportSkeleton />}>
-        <ReportFilters
-          selectedMonth={selectedMonth}
-          selectedWeek={selectedWeek}
-          selectedUser={selectedUser}
-          users={users}
-          onMonthChange={setSelectedMonth}
-          onWeekChange={setSelectedWeek}
-          onUserChange={setSelectedUser}
-          onExport={handleExport}
-        />
-      </Suspense>
-
-      {/* Weekly Reports - Lazy loaded */}
-      <div className={styles.weeklyReports}>
-        <Suspense fallback={<ReportSkeleton />}>
-          {reportData.weeklyData.map((week: any) => (
-            <WeeklyReport key={week.weekNumber} weekData={week} />
-          ))}
-        </Suspense>
-      </div>
-
-      {/* Score Legend */}
-      <div className={styles.legend}>
-        <h4>Keterangan Skor</h4>
-        <div className={styles.legendGrid}>
-          <div className={styles.legendItem} style={{ background: '#d1fae5' }}>
-            <span className={styles.legendIcon}>⭐</span>
-            <span>95-100</span>
-            <span>Excellent</span>
-          </div>
-          <div className={styles.legendItem} style={{ background: '#dbeafe' }}>
-            <span className={styles.legendIcon}>✅</span>
-            <span>85-94</span>
-            <span>Good</span>
-          </div>
-          <div className={styles.legendItem} style={{ background: '#fef3c7' }}>
-            <span className={styles.legendIcon}>⚠️</span>
-            <span>75-84</span>
-            <span>Fair</span>
-          </div>
-          <div className={styles.legendItem} style={{ background: '#fee2e2' }}>
-            <span className={styles.legendIcon}>❌</span>
-            <span>&lt;75</span>
-            <span>Poor</span>
-          </div>
-          <div className={styles.legendItem} style={{ background: '#f3f4f6' }}>
-            <span className={styles.legendIcon}>📷</span>
-            <span>Foto</span>
-            <span>Tersedia</span>
-          </div>
+        
+        <div className={styles.timeFilters}>
+          <button
+            className={`${styles.timeFilter} ${timeRange === 'week' ? styles.active : ''}`}
+            onClick={() => setTimeRange('week')}
+          >
+            1 Minggu
+          </button>
+          <button
+            className={`${styles.timeFilter} ${timeRange === 'month' ? styles.active : ''}`}
+            onClick={() => setTimeRange('month')}
+          >
+            1 Bulan
+          </button>
+          <button
+            className={`${styles.timeFilter} ${timeRange === 'all' ? styles.active : ''}`}
+            onClick={() => setTimeRange('all')}
+          >
+            Semua
+          </button>
         </div>
       </div>
 
-      {/* Real-time indicator */}
-      <div className={styles.realTimeIndicator}>
-        <span className={styles.realtimeDot}></span>
-        Real-time updates active
-      </div>
+      {stats && (
+        <>
+          {/* Overview Cards */}
+          <div className={styles.overviewGrid}>
+            <div className={styles.statCard}>
+              <div className={styles.statIcon}>📋</div>
+              <div className={styles.statInfo}>
+                <div className={styles.statValue}>{stats.totalInspections}</div>
+                <div className={styles.statLabel}>Total Inspeksi</div>
+              </div>
+            </div>
+
+            <div className={styles.statCard}>
+              <div className={styles.statIcon}>📊</div>
+              <div className={styles.statInfo}>
+                <div className={styles.statValue}>{stats.averageScore}%</div>
+                <div className={styles.statLabel}>Rata-rata Skor</div>
+              </div>
+            </div>
+
+            <div className={styles.statCard}>
+              <div className={styles.statIcon}>✅</div>
+              <div className={styles.statInfo}>
+                <div className={styles.statValue}>{stats.statusCounts.all_good}</div>
+                <div className={styles.statLabel}>Dalam Kondisi Baik</div>
+              </div>
+            </div>
+
+            <div className={styles.statCard}>
+              <div className={styles.statIcon}>⚠️</div>
+              <div className={styles.statInfo}>
+                <div className={styles.statValue}>
+                  {stats.statusCounts.need_maintenance + stats.statusCounts.need_cleaning}
+                </div>
+                <div className={styles.statLabel}>Perlu Perhatian</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Status Distribution */}
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Distribusi Status</h2>
+            <div className={styles.statusGrid}>
+              {Object.entries(stats.statusCounts).map(([status, count]) => (
+                <div key={status} className={styles.statusItem}>
+                  <div className={styles.statusHeader}>
+                    <span 
+                      className={styles.statusDot}
+                      style={{ backgroundColor: getStatusColor(status) }}
+                    />
+                    <span className={styles.statusName}>{getStatusText(status)}</span>
+                  </div>
+                  <div className={styles.statusCount}>{count}</div>
+                  <div className={styles.statusBar}>
+                    <div 
+                      className={styles.statusBarFill}
+                      style={{ 
+                        width: `${(count / stats.totalInspections) * 100}%`,
+                        backgroundColor: getStatusColor(status)
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Location Performance */}
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Performansi per Lokasi</h2>
+            <div className={styles.locationsGrid}>
+              {Object.entries(stats.locationStats)
+                .sort(([, a], [, b]) => b.averageScore - a.averageScore)
+                .map(([locationId, location]) => (
+                  <div key={locationId} className={styles.locationCard}>
+                    <div className={styles.locationHeader}>
+                      <h3 className={styles.locationName}>{location.name}</h3>
+                      <div className={styles.locationScore}>{location.averageScore}%</div>
+                    </div>
+                    <div className={styles.locationDetails}>
+                      <span>{location.count} inspeksi</span>
+                      <div className={styles.scoreBar}>
+                        <div 
+                          className={styles.scoreBarFill}
+                          style={{ width: `${location.averageScore}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+          {/* Recent Activity */}
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Aktivitas Terbaru</h2>
+            <div className={styles.activityList}>
+              {inspections.slice(0, 5).map((inspection) => (
+                <div key={inspection.id} className={styles.activityItem}>
+                  <div className={styles.activityIcon}>
+                    {inspection.status === 'all_good' ? '✅' : 
+                     inspection.status === 'need_maintenance' ? '⚠️' : '🧹'}
+                  </div>
+                  <div className={styles.activityInfo}>
+                    <div className={styles.activityTitle}>
+                      {inspection.locations?.name || inspection.assessments?.locationName}
+                    </div>
+                    <div className={styles.activitySubtitle}>
+                      {inspection.assessments?.totalScore || 0}/{inspection.assessments?.maxScore || 25} 
+                      • {new Date(inspection.created_at).toLocaleDateString('id-ID')}
+                    </div>
+                  </div>
+                  <div 
+                    className={styles.activityStatus}
+                    style={{ color: getStatusColor(inspection.status) }}
+                  >
+                    {getStatusText(inspection.status)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {(!stats || stats.totalInspections === 0) && (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>📊</div>
+          <p className={styles.emptyText}>Belum ada data inspeksi untuk dianalisis</p>
+          <button
+            onClick={() => router.push('/dashboard/inspect')}
+            className={styles.emptyButton}
+          >
+            Mulai Inspeksi Pertama
+          </button>
+        </div>
+      )}
     </div>
   );
 }

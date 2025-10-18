@@ -1,145 +1,91 @@
-// ============================================
-// FIX 4: src/presentation/components/features/PhotoCapture/PhotoCapture.tsx
-// Change to default export and fix props
-// ============================================
+// presentation/components/features/PhotoCapture/PhotoCapture.tsx
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import Button from '../../ui/Button/Button';
+import { useRef, useState } from 'react';
 import styles from './PhotoCapture.module.css';
 
 interface PhotoCaptureProps {
-  onCapture: (data: { 
-    photoData: string; 
-    geoData?: { latitude: number; longitude: number } 
-  }) => void;
-  onSkip: () => void;
+  onCapture: (photo: string) => void;
+  onCancel: () => void;
 }
 
-const PhotoCapture: React.FC<PhotoCaptureProps> = ({
-  onCapture,
-  onSkip
-}) => {
-  const [stream, setStream] = useState<MediaStream | null>(null);
-  const [photoData, setPhotoData] = useState<string | null>(null);
-  const [geoData, setGeoData] = useState<{ latitude: number; longitude: number } | undefined>();
-  const [error, setError] = useState<string>('');
+export default function PhotoCapture({ onCapture, onCancel }: PhotoCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    startCamera();
-    getLocation();
-
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-    };
-  }, []);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   const startCamera = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' }
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
       });
-      setStream(mediaStream);
+      
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        setStream(mediaStream);
+        setIsCapturing(true);
       }
-    } catch (err) {
-      setError('Tidak dapat mengakses kamera');
+    } catch (error) {
+      console.error('Camera error:', error);
+      alert('Tidak dapat mengakses kamera');
     }
   };
 
-  const getLocation = () => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setGeoData({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
-          });
-        }
-      );
+  const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      setStream(null);
     }
+    setIsCapturing(false);
   };
 
   const capturePhoto = () => {
     if (videoRef.current && canvasRef.current) {
-      const video = videoRef.current;
-      const canvas = canvasRef.current;
-      const context = canvas.getContext('2d');
-
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      
-      context?.drawImage(video, 0, 0);
-      const data = canvas.toDataURL('image/jpeg', 0.8);
-      setPhotoData(data);
-
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+      const context = canvasRef.current.getContext('2d');
+      if (context) {
+        canvasRef.current.width = videoRef.current.videoWidth;
+        canvasRef.current.height = videoRef.current.videoHeight;
+        context.drawImage(videoRef.current, 0, 0);
+        
+        const photoData = canvasRef.current.toDataURL('image/jpeg', 0.8);
+        onCapture(photoData);
+        stopCamera();
       }
     }
   };
 
-  const retakePhoto = () => {
-    setPhotoData(null);
-    startCamera();
-  };
-
-  const confirmPhoto = () => {
-    if (photoData) {
-      onCapture({ photoData, geoData });
-    }
-  };
-
-  if (error) {
-    return (
-      <div className={styles.container}>
-        <p>{error}</p>
-        <Button onClick={onSkip}>Lewati Foto</Button>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.container}>
-      <div className={styles.cameraContainer}>
-        {!photoData ? (
-          <>
-            <video ref={videoRef} autoPlay playsInline className={styles.video} />
-            <canvas ref={canvasRef} className={styles.canvas} />
-          </>
-        ) : (
-          <img src={photoData} alt="Captured" className={styles.preview} />
-        )}
-      </div>
-
-      <div className={styles.controls}>
-        {!photoData ? (
-          <>
-            <Button onClick={capturePhoto} variant="primary">
+      {!isCapturing ? (
+        <div className={styles.placeholder}>
+          <button onClick={startCamera} className={styles.startButton}>
+            📷 Buka Kamera
+          </button>
+          <button onClick={onCancel} className={styles.cancelButton}>
+            Batal
+          </button>
+        </div>
+      ) : (
+        <div className={styles.cameraView}>
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            className={styles.video}
+          />
+          <canvas ref={canvasRef} style={{ display: 'none' }} />
+          
+          <div className={styles.controls}>
+            <button onClick={capturePhoto} className={styles.captureButton}>
               📸 Ambil Foto
-            </Button>
-            <Button onClick={onSkip} variant="secondary">
-              Lewati
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button onClick={confirmPhoto} variant="primary">
-              ✓ Gunakan Foto
-            </Button>
-            <Button onClick={retakePhoto} variant="secondary">
-              🔄 Ambil Ulang
-            </Button>
-          </>
-        )}
-      </div>
+            </button>
+            <button onClick={stopCamera} className={styles.stopButton}>
+              ❌ Tutup
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default PhotoCapture;
+}

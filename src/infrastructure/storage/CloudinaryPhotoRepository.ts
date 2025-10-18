@@ -1,5 +1,5 @@
-// src/infrastructure/storage/CloudinaryPhotoRepository.ts
-import { IPhotoRepository, PhotoMetadata } from '@/core/repositories/IPhotoRepository';
+// Dari: src/infrastructure/storage/CloudinaryPhotoRepository.ts
+import { IPhotoRepository, PhotoMetadata } from '../../../../core/repositories/IPhotoRepository';
 
 export class CloudinaryPhotoRepository implements IPhotoRepository {
   private cloudName: string;
@@ -11,6 +11,34 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
   }
 
   async upload(photoData: string, metadata: PhotoMetadata): Promise<string> {
+    return this.uploadWithRetry(photoData, metadata);
+  }
+
+  private async uploadWithRetry(
+    photoData: string, 
+    metadata: PhotoMetadata,
+    maxRetries = 3
+  ): Promise<string> {
+    let lastError: Error;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`📤 Upload attempt ${attempt}/${maxRetries}...`);
+        return await this.uploadSingle(photoData, metadata);
+      } catch (error) {
+        lastError = error as Error;
+        
+        if (attempt < maxRetries) {
+          console.log(`⏳ Upload attempt ${attempt} failed, retrying in ${attempt}s...`);
+          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        }
+      }
+    }
+    
+    throw lastError!;
+  }
+
+  private async uploadSingle(photoData: string, metadata: PhotoMetadata): Promise<string> {
     try {
       // Create form data
       const formData = new FormData();
@@ -26,30 +54,27 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
       
       // Optimize: Use webp format for smaller size
       formData.append('format', 'webp');
-      formData.append('quality', 'auto:good'); // Auto optimize quality
+      formData.append('quality', 'auto:good');
       
-      // Add context metadata
+      // Combine all context metadata
+      let context = `timestamp=${metadata.timestamp}`;
       if (metadata.gps) {
-        formData.append(
-          'context', 
-          `lat=${metadata.gps.latitude}|lon=${metadata.gps.longitude}`
-        );
+        context += `|lat=${metadata.gps.latitude}|lon=${metadata.gps.longitude}`;
       }
+      formData.append('context', context);
       
       // Add tags for easy searching
       formData.append('tags', `toilet,${metadata.locationId},${metadata.userId}`);
-      
-      // Add timestamp to metadata
-      formData.append('context', `timestamp=${metadata.timestamp}`);
 
-      console.log('Uploading to Cloudinary...', {
+      console.log('📤 Uploading to Cloudinary...', {
         size: Math.round(blob.size / 1024) + 'KB',
-        format: 'webp'
+        format: 'webp',
+        attempt: 'single'
       });
 
       // Upload with timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
 
       const uploadResponse = await fetch(
         `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`,
@@ -64,13 +89,13 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
 
       if (!uploadResponse.ok) {
         const errorText = await uploadResponse.text();
-        console.error('Cloudinary error:', errorText);
-        throw new Error('Upload gagal: ' + uploadResponse.statusText);
+        console.error('❌ Cloudinary error:', errorText);
+        throw new Error(`Upload failed: ${uploadResponse.statusText}`);
       }
 
       const data = await uploadResponse.json();
       
-      console.log('Upload success:', {
+      console.log('✅ Upload success:', {
         url: data.secure_url,
         format: data.format,
         size: Math.round(data.bytes / 1024) + 'KB'
@@ -80,11 +105,11 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
     } catch (error) {
       if (error instanceof Error) {
         if (error.name === 'AbortError') {
-          throw new Error('Upload timeout - koneksi terlalu lambat. Coba lagi.');
+          throw new Error('Upload timeout - connection too slow. Please try again.');
         }
-        throw new Error(`Gagal upload foto: ${error.message}`);
+        throw new Error(`Photo upload failed: ${error.message}`);
       }
-      throw new Error('Gagal upload foto. Periksa koneksi internet.');
+      throw new Error('Photo upload failed. Check internet connection.');
     }
   }
 
@@ -103,11 +128,9 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
   }
 
   private async base64ToBlob(base64: string): Promise<Blob> {
-    // More efficient than fetch for large images
     const base64Data = base64.split(',')[1];
     const mimeType = base64.match(/data:([^;]+)/)?.[1] || 'image/jpeg';
     
-    // Decode base64 to binary
     const binaryString = atob(base64Data);
     const bytes = new Uint8Array(binaryString.length);
     
@@ -124,5 +147,3 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
     return filename.split('.')[0];
   }
 }
-// UPDATE handleFinalSubmit function:
-

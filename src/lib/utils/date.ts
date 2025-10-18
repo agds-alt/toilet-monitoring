@@ -1,69 +1,75 @@
-// ===================================
-// UTILITY FILES
-// ===================================
+// src/lib/utils/date.ts - ENHANCED VERSION
 
-// src/lib/utils/date.ts
-export const formatDate = (date: Date): string => {
-  return new Intl.DateTimeFormat('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(date);
-};
-
-export const formatDateTime = (date: Date): string => {
-  return new Intl.DateTimeFormat('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date);
-};
-
-export const formatTime = (date: Date): string => {
-  return new Intl.DateTimeFormat('id-ID', {
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date);
-};
-
-export const isToday = (date: Date): boolean => {
-  const today = new Date();
-  return (
-    date.getDate() === today.getDate() &&
-    date.getMonth() === today.getMonth() &&
-    date.getFullYear() === today.getFullYear()
-  );
-};
-
-export const isThisWeek = (date: Date): boolean => {
-  const today = new Date();
-  const weekStart = new Date(today);
-  weekStart.setDate(today.getDate() - today.getDay());
-  weekStart.setHours(0, 0, 0, 0);
-
-  const weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekStart.getDate() + 6);
-  weekEnd.setHours(23, 59, 59, 999);
-
-  return date >= weekStart && date <= weekEnd;
-};
-
+/**
+ * Convert Date to local date string (YYYY-MM-DD)
+ * WITHOUT timezone conversion
+ */
 export const toLocalDateString = (date: Date): string => {
-  // Convert date to local timezone YYYY-MM-DD
+  // Get local date components
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
+  
   return `${year}-${month}-${day}`;
 };
 
+/**
+ * Parse date string as LOCAL date (not UTC)
+ */
 export const parseLocalDate = (dateString: string): Date => {
-  // Parse YYYY-MM-DD as local date (not UTC)
+  // Parse as YYYY-MM-DD in local timezone
   const [year, month, day] = dateString.split('-').map(Number);
   return new Date(year, month - 1, day);
 };
 
+/**
+ * Compare two dates by local date only (ignore time)
+ */
 export const isSameLocalDate = (date1: Date, date2: Date): boolean => {
-  return toLocalDateString(date1) === toLocalDateString(date2);
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+};
+
+/**
+ * Get date range for a week (local dates)
+ */
+export const getWeekDateRange = (weekStart: Date, weekEnd: Date): string[] => {
+  const dates: string[] = [];
+  const current = new Date(weekStart);
+  
+  while (current <= weekEnd) {
+    dates.push(toLocalDateString(current));
+    current.setDate(current.getDate() + 1);
+  }
+  
+  return dates;
+};
+
+/**
+ * Format timestamp for display (Indonesian locale)
+ */
+export const formatIndonesianDateTime = (date: Date): string => {
+  return new Intl.DateTimeFormat('id-ID', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Asia/Jakarta' // ✅ Explicitly set Jakarta timezone
+  }).format(date);
+};
+
+/**
+ * Get week number in month (1-based)
+ */
+export const getWeekOfMonth = (date: Date): number => {
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  const dayOfMonth = date.getDate();
+  const dayOfWeek = firstDay.getDay();
+  
+  return Math.ceil((dayOfMonth + dayOfWeek) / 7);
 };

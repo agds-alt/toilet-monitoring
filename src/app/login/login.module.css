@@ -1,493 +1,163 @@
-
-
+/* app/login/login.module.css */
 .container {
-  position: relative;
   min-height: 100vh;
-  min-height: 100dvh; /* Dynamic viewport height for mobile */
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 1rem;
-  padding-top: max(2rem, env(safe-area-inset-top));
-  padding-bottom: max(2rem, env(safe-area-inset-bottom));
-  padding-left: max(1rem, env(safe-area-inset-left));
-  padding-right: max(1rem, env(safe-area-inset-right));
-  background: 
-    linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background: #ffffff;
+  padding: 1rem;
+  box-sizing: border-box;
 }
-
-/* Animated Background Orbs */
-.backgroundOverlay {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  opacity: 0.6;
-}
-
-.gradientOrb1,
-.gradientOrb2,
-.gradientOrb3 {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  animation: float 20s ease-in-out infinite;
-}
-
-.gradientOrb1 {
-  width: 500px;
-  height: 500px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  top: -10%;
-  left: -10%;
-  animation-delay: 0s;
-}
-
-.gradientOrb2 {
-  width: 400px;
-  height: 400px;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  bottom: -10%;
-  right: -10%;
-  animation-delay: 7s;
-}
-
-.gradientOrb3 {
-  width: 300px;
-  height: 300px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  top: 50%;
-  left: 50%;
-  animation-delay: 14s;
-}
-
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -30px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-}
-
-/* ============================================
-   CARD WRAPPER
-   ============================================ */
-
-.cardWrapper {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  max-width: 440px;
-  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ============================================
-   MAIN CARD
-   ============================================ */
 
 .card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  padding: 3rem 2.5rem;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
   box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.5),
-    0 2px 4px rgba(0, 0, 0, 0.02),
-    0 4px 8px rgba(0, 0, 0, 0.04),
-    0 8px 16px rgba(0, 0, 0, 0.06),
-    0 16px 32px rgba(0, 0, 0, 0.08),
-    0 32px 64px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    0 8px 30px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.02);
+  border: 1px solid #f8f8f8;
+  width: 100%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
-.card:hover {
-  box-shadow: 
-    0 0 0 1px rgba(255, 255, 255, 0.6),
-    0 2px 4px rgba(0, 0, 0, 0.03),
-    0 4px 8px rgba(0, 0, 0, 0.05),
-    0 8px 16px rgba(0, 0, 0, 0.07),
-    0 16px 32px rgba(0, 0, 0, 0.09),
-    0 32px 64px rgba(0, 0, 0, 0.12);
-}
-
-/* ============================================
-   HEADER & LOGO
-   ============================================ */
-
+/* Header */
 .header {
   text-align: center;
-  margin-bottom: 2rem;
-}
-
-.logoWrapper {
-  display: flex;
-  justify-content: center;
   margin-bottom: 1.5rem;
 }
 
 .logo {
-  position: relative;
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 
-    0 0 0 1px rgba(102, 126, 234, 0.1),
-    0 4px 8px rgba(102, 126, 234, 0.1),
-    0 8px 16px rgba(102, 126, 234, 0.15),
-    0 0 32px rgba(102, 126, 234, 0.1);
-  animation: logoFloat 3s ease-in-out infinite;
-}
-
-@keyframes logoFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.logoIcon {
-  filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.3));
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  display: inline-block;
 }
 
 .title {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.02em;
+  color: #000000;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.025em;
 }
 
 .subtitle {
-  font-size: 0.9375rem;
-  color: #64748b;
-  font-weight: 500;
+  color: #666666;
+  font-size: 0.875rem;
+  margin: 0;
 }
 
-/* ============================================
-   TAB SWITCHER
-   ============================================ */
-
-.tabSwitcher {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background: #f1f5f9;
-  border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 2rem;
-}
-
-.tab {
-  position: relative;
-  z-index: 1;
+/* Demo Button */
+.demoButton {
+  width: 100%;
+  background: #f8f8f8;
+  color: #000000;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
   padding: 0.75rem 1rem;
-  border: none;
-  background: transparent;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: #64748b;
-  cursor: pointer;
-  transition: color 0.3s ease;
-  border-radius: 8px;
-}
-
-.tabActive {
-  color: #1e293b;
-}
-
-.tabIndicator {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: calc(50% - 4px);
-  height: calc(100% - 8px);
-  background: white;
-  border-radius: 8px;
-  box-shadow: 
-    0 0 0 1px rgba(0, 0, 0, 0.02),
-    0 1px 2px rgba(0, 0, 0, 0.05),
-    0 2px 4px rgba(0, 0, 0, 0.05),
-    0 4px 8px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ============================================
-   ERROR ALERT
-   ============================================ */
-
-.errorAlert {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
-  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-  border: 1px solid #fca5a5;
-  border-radius: 12px;
-  color: #991b1b;
   font-size: 0.875rem;
   font-weight: 500;
+  cursor: pointer;
   margin-bottom: 1.5rem;
-  animation: shake 0.5s ease-in-out;
+  transition: all 0.15s ease;
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-8px); }
-  75% { transform: translateX(8px); }
+.demoButton:hover {
+  background: #f0f0f0;
+  border-color: #000000;
+  transform: translateY(-1px);
 }
 
-.errorAlert svg {
-  flex-shrink: 0;
+/* Message Alert */
+.message {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
-/* ============================================
-   FORM
-   ============================================ */
+.message.success {
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
 
+.message.error {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+/* Form */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
-.formGroup {
+.inputGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
-.label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #334155;
-  letter-spacing: -0.01em;
-}
-
-/* ============================================
-   INPUT WRAPPER & STYLING
-   ============================================ */
-
-.inputWrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.inputIcon {
-  position: absolute;
-  left: 1rem;
-  color: #94a3b8;
-  pointer-events: none;
-  transition: color 0.2s ease;
-}
-
-.input,
-.select {
+.input {
   width: 100%;
-  padding: 0.875rem 1rem 0.875rem 3rem;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 0.9375rem;
-  font-family: inherit;
-  background: white;
-  color: #1e293b;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 
-    0 0 0 0 rgba(102, 126, 234, 0),
-    0 1px 2px rgba(0, 0, 0, 0.05);
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  padding: 0.875rem 1rem;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: #ffffff;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
-/* Prevent zoom on focus for iOS */
-@supports (-webkit-touch-callout: none) {
-  .input,
-  .select {
-    font-size: max(16px, 0.9375rem);
-  }
-}
-
-.input::placeholder {
-  color: #cbd5e1;
-}
-
-.input:hover,
-.select:hover {
-  border-color: #cbd5e1;
-  box-shadow: 
-    0 0 0 0 rgba(102, 126, 234, 0),
-    0 2px 4px rgba(0, 0, 0, 0.06);
-}
-
-.input:focus,
-.select:focus {
+.input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 
-    0 0 0 4px rgba(102, 126, 234, 0.1),
-    0 2px 4px rgba(102, 126, 234, 0.1);
+  border-color: #000000;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
 }
 
-.input:focus + .inputIcon,
-.select:focus + .inputIcon {
-  color: #667eea;
-}
-
-/* Password Toggle */
-.passwordToggle {
-  position: absolute;
-  right: 1rem;
-  background: none;
-  border: none;
-  color: #94a3b8;
-  cursor: pointer;
-  padding: 0.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-}
-
-.passwordToggle:hover {
-  color: #667eea;
-  background: #f1f5f9;
-}
-
-.passwordToggle:active {
-  transform: scale(0.95);
-}
-
-/* ============================================
-   FORM OPTIONS
-   ============================================ */
-
-.formOptions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: -0.5rem;
-}
-
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  user-select: none;
-}
-
-.checkbox input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #e2e8f0;
-  border-radius: 4px;
-  cursor: pointer;
-  accent-color: #667eea;
-}
-
-.checkboxLabel {
-  font-size: 0.875rem;
-  color: #64748b;
-  font-weight: 500;
-}
-
-.linkButton {
-  background: none;
-  border: none;
-  color: #667eea;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s ease;
-}
-
-.linkButton:hover {
-  color: #5568d3;
-  text-decoration: underline;
-}
-
-/* ============================================
-   SUBMIT BUTTON
-   ============================================ */
-
+/* Submit Button */
 .submitButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
   width: 100%;
-  padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #000000;
+  color: #ffffff;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
+  padding: 1rem;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
+  transition: all 0.15s ease;
   margin-top: 0.5rem;
+  
+  /* 3D Effect */
   box-shadow: 
-    0 0 0 1px rgba(102, 126, 234, 0.1),
-    0 1px 2px rgba(102, 126, 234, 0.2),
-    0 2px 4px rgba(102, 126, 234, 0.2),
-    0 4px 8px rgba(102, 126, 234, 0.2),
-    0 8px 16px rgba(102, 126, 234, 0.15);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.submitButton::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.submitButton:hover {
-  transform: translateY(-2px);
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-1px);
   box-shadow: 
-    0 0 0 1px rgba(102, 126, 234, 0.1),
-    0 2px 4px rgba(102, 126, 234, 0.2),
-    0 4px 8px rgba(102, 126, 234, 0.25),
-    0 8px 16px rgba(102, 126, 234, 0.25),
-    0 16px 32px rgba(102, 126, 234, 0.2);
+    0 6px 12px -2px rgba(0, 0, 0, 0.15),
+    0 4px 6px -1px rgba(0, 0, 0, 0.08),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.submitButton:hover::before {
-  opacity: 1;
-}
-
-.submitButton:active {
-  transform: translateY(0);
+.submitButton:active:not(:disabled) {
+  transform: translateY(1px);
   box-shadow: 
-    0 0 0 1px rgba(102, 126, 234, 0.1),
-    0 1px 2px rgba(102, 126, 234, 0.2),
-    0 2px 4px rgba(102, 126, 234, 0.2);
+    0 2px 4px -1px rgba(0, 0, 0, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    inset 0 2px 0 rgba(255, 255, 255, 0.05);
 }
 
 .submitButton:disabled {
@@ -496,497 +166,127 @@
   transform: none;
 }
 
-.submitButton:disabled:hover {
-  transform: none;
+/* Mode Toggle */
+.modeToggle {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0f0f0;
 }
 
-/* Spinner */
-.spinner {
-  width: 20px;
-  height: 20px;
+.toggleText {
+  color: #666666;
+  font-size: 0.875rem;
+  margin: 0 0 0.75rem 0;
+}
+
+.toggleButton {
+  background: none;
+  border: 1px solid #000000;
+  color: #000000;
+  border-radius: 8px;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toggleButton:hover:not(:disabled) {
+  background: #000000;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.toggleButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Demo Section */
+.demoSection {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f8f8f8;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  text-align: center;
+}
+
+.demoText {
+  font-size: 0.75rem;
+  color: #666666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Loading */
+.loadingText {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.loadingText::after {
+  content: '';
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
   animation: spin 1s linear infinite;
-}
-
-.spinnerCircle {
-  stroke-dasharray: 50;
-  stroke-dashoffset: 25;
-  animation: spinnerDash 1.5s ease-in-out infinite;
 }
 
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-@keyframes spinnerDash {
-  0% {
-    stroke-dasharray: 1, 150;
-    stroke-dashoffset: 0;
-  }
-  50% {
-    stroke-dasharray: 90, 150;
-    stroke-dashoffset: -35;
-  }
-  100% {
-    stroke-dasharray: 90, 150;
-    stroke-dashoffset: -124;
-  }
-}
-
-/* ============================================
-   FOOTER
-   ============================================ */
-
-.footer {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.divider span {
-  padding: 0 1rem;
-  font-size: 0.875rem;
-  color: #94a3b8;
-  font-weight: 500;
-}
-
-.footerText {
-  text-align: center;
-  font-size: 0.875rem;
-  color: #64748b;
-}
-
-.footerLink {
-  background: none;
-  border: none;
-  color: #667eea;
-  font-weight: 600;
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.2s ease;
-}
-
-.footerLink:hover {
-  color: #5568d3;
-  text-decoration: underline;
-}
-
-/* ============================================
-   TRUST INDICATORS
-   ============================================ */
-
-.trustIndicators {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-}
-
-.trustItem {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
-  color: #64748b;
-  font-weight: 500;
-}
-
-.trustItem svg {
-  color: #667eea;
-  flex-shrink: 0;
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-
-/* Tablet */
-@media (max-width: 768px) {
-  .container {
-    padding: 1.5rem 1rem;
-  }
-
-  .gradientOrb1 {
-    width: 400px;
-    height: 400px;
-  }
-
-  .gradientOrb2 {
-    width: 350px;
-    height: 350px;
-  }
-
-  .gradientOrb3 {
-    width: 250px;
-    height: 250px;
-  }
-}
-
-/* Mobile */
-@media (max-width: 640px) {
-  .container {
-    padding: 1rem 0.75rem;
-    align-items: flex-start;
-    padding-top: 2rem;
-  }
-
-  .cardWrapper {
-    max-width: 100%;
-  }
-
-  .card {
-    padding: 2rem 1.25rem;
-    border-radius: 20px;
-  }
-
-  /* Header */
-  .logo {
-    width: 56px;
-    height: 56px;
-    border-radius: 14px;
-  }
-
-  .logoIcon {
-    width: 36px;
-    height: 36px;
-  }
-
-  .title {
-    font-size: 1.5rem;
-    letter-spacing: -0.01em;
-  }
-
-  .subtitle {
-    font-size: 0.875rem;
-  }
-
-  /* Tab Switcher */
-  .tabSwitcher {
-    padding: 3px;
-    border-radius: 10px;
-  }
-
-  .tab {
-    padding: 0.625rem 0.75rem;
-    font-size: 0.875rem;
-  }
-
-  /* Form */
-  .label {
-    font-size: 0.8125rem;
-  }
-
-  .input,
-  .select {
-    padding: 0.75rem 0.875rem 0.75rem 2.75rem;
-    font-size: 0.875rem;
-    border-radius: 10px;
-  }
-
-  .inputIcon {
-    left: 0.875rem;
-    width: 18px;
-    height: 18px;
-  }
-
-  .passwordToggle {
-    right: 0.875rem;
-  }
-
-  .passwordToggle svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  /* Submit Button */
-  .submitButton {
-    padding: 0.875rem 1.25rem;
-    font-size: 0.9375rem;
-    border-radius: 10px;
-  }
-
-  .submitButton svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  /* Form Options */
-  .formOptions {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .checkboxLabel {
-    font-size: 0.8125rem;
-  }
-
-  .linkButton {
-    font-size: 0.8125rem;
-  }
-
-  /* Trust Indicators */
-  .trustIndicators {
-    flex-direction: column;
-    gap: 0.875rem;
-    align-items: flex-start;
-    padding: 1.25rem;
-    border-radius: 14px;
-    margin-top: 1.5rem;
-  }
-
-  .trustItem {
-    font-size: 0.75rem;
-  }
-
-  .trustItem svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  /* Footer */
-  .footer {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-  }
-
-  .divider {
-    margin-bottom: 1.25rem;
-  }
-
-  .divider span {
-    font-size: 0.8125rem;
-  }
-
-  .footerText,
-  .footerLink {
-    font-size: 0.8125rem;
-  }
-
-  /* Background Orbs */
-  .gradientOrb1 {
-    width: 300px;
-    height: 300px;
-  }
-
-  .gradientOrb2 {
-    width: 250px;
-    height: 250px;
-  }
-
-  .gradientOrb3 {
-    width: 200px;
-    height: 200px;
-  }
-}
-
-/* Small Mobile */
-@media (max-width: 375px) {
-  .container {
-    padding: 1rem 0.5rem;
-  }
-
-  .card {
-    padding: 1.75rem 1rem;
-  }
-
-  .title {
-    font-size: 1.375rem;
-  }
-
-  .tab {
-    padding: 0.5rem;
-    font-size: 0.8125rem;
-  }
-
-  .input,
-  .select {
-    padding: 0.625rem 0.75rem 0.625rem 2.5rem;
-    font-size: 0.8125rem;
-  }
-
-  .inputIcon {
-    left: 0.75rem;
-    width: 16px;
-    height: 16px;
-  }
-}
-
-/* Landscape Mode Mobile */
-@media (max-width: 896px) and (max-height: 414px) and (orientation: landscape) {
-  .container {
-    padding: 1rem;
-    align-items: flex-start;
-  }
-
+/* Responsive */
+@media (max-width: 360px) {
   .card {
     padding: 1.5rem 1.25rem;
   }
-
-  .header {
-    margin-bottom: 1rem;
-  }
-
-  .logoWrapper {
-    margin-bottom: 0.75rem;
-  }
-
-  .logo {
-    width: 48px;
-    height: 48px;
-  }
-
-  .form {
-    gap: 0.875rem;
-  }
-
-  .formGroup {
-    gap: 0.375rem;
-  }
-
-  .footer {
-    margin-top: 1rem;
-    padding-top: 1rem;
-  }
-
-  .trustIndicators {
-    flex-direction: row;
-    gap: 1rem;
-    margin-top: 1rem;
-    padding: 1rem;
-  }
-
-  .trustItem {
-    font-size: 0.6875rem;
+  
+  .title {
+    font-size: 1.375rem;
   }
 }
 
-/* ============================================
-   ACCESSIBILITY
-   ============================================ */
-
-
-
-/* Focus visible for keyboard navigation */
-.submitButton:focus-visible,
-.input:focus-visible,
-.select:focus-visible,
-.tab:focus-visible,
-.linkButton:focus-visible,
-.footerLink:focus-visible {
-  outline: 2px solid #667eea;
-  outline-offset: 2px;
-}
-/* Add these to your existing login.module.css */
-
-/* Loading Spinner for Auth Check */
-.loadingSpinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid rgba(102, 126, 234, 0.1);
-  border-top-color: #667eea;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background: #000000;
   }
-}
-
-/* Disable styles when loading */
-.input:disabled,
-.select:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background-color: #f9fafb;
-}
-
-.tab:disabled,
-.linkButton:disabled,
-.footerLink:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.passwordToggle:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Submit button loading state improvements */
-.submitButton:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.spinner {
-  width: 20px;
-  height: 20px;
-  animation: spin 0.8s linear infinite;
-}
-
-.spinnerCircle {
-  stroke-dasharray: 50;
-  stroke-dashoffset: 25;
-  animation: spinnerStroke 1.5s ease-in-out infinite;
-}
-
-@keyframes spinnerStroke {
-  0% {
-    stroke-dashoffset: 50;
+  
+  .card {
+    background: #111111;
+    border-color: #222222;
   }
-  50% {
-    stroke-dashoffset: 0;
+  
+  .input {
+    background: #000000;
+    border-color: #333333;
+    color: #ffffff;
   }
-  100% {
-    stroke-dashoffset: -50;
+  
+  .demoButton {
+    background: #1a1a1a;
+    border-color: #333333;
+    color: #ffffff;
   }
-}
-
-/* Smooth transitions for all interactive elements */
-.input,
-.select,
-.tab,
-.linkButton,
-.footerLink,
-.passwordToggle {
-  transition: all 0.2s ease;
-}
-
-/* Better error message animation */
-.errorAlert {
-  animation: slideDown 0.3s ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+  
+  .demoSection {
+    background: #1a1a1a;
+    border-color: #333333;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .toggleButton {
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+  
+  .toggleButton:hover:not(:disabled) {
+    background: #ffffff;
+    color: #000000;
   }
 }
