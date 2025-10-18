@@ -73,3 +73,4 @@ export function getAllLocations(): Location[] {
 export function isValidUUID(uuid: string): boolean {
   return uuid.length === 36 && uuid.includes('-');
 }
+
