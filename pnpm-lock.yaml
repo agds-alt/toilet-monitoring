@@ -29,6 +29,9 @@ importers:
       next:
         specifier: ^15.5.6
         version: 15.5.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      node:
+        specifier: ^25.0.0
+        version: 25.0.0
       react:
         specifier: ^19.2.0
         version: 19.2.0
@@ -1618,8 +1621,16 @@ packages:
       sass:
         optional: true
 
+  node-bin-setup@1.1.4:
+    resolution: {integrity: sha512-vWNHOne0ZUavArqPP5LJta50+S8R261Fr5SvGul37HbEDcowvLjwdvd0ZeSr0r2lTSrPxl6okq9QUw8BFGiAxA==}
+
   node-releases@2.0.25:
     resolution: {integrity: sha512-4auku8B/vw5psvTiiN9j1dAOsXvMoGqJuKJcR+dTdqiXEK20mMTk1UEo3HS16LeGQsVG6+qKTPM9u/qQ2LqATA==}
+
+  node@25.0.0:
+    resolution: {integrity: sha512-ANfM7zVW8sGj1yxSKSsBE41ZfRAdbsCMMNjbXc/LhsuItMCD9b3Luv/En6YUf4Dg/zZB9xdzunNKgjk7HIrnGQ==}
+    engines: {npm: '>=5.0.0'}
+    hasBin: true
 
   normalize-range@0.1.2:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
@@ -3780,7 +3791,13 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
+  node-bin-setup@1.1.4: {}
+
   node-releases@2.0.25: {}
+
+  node@25.0.0:
+    dependencies:
+      node-bin-setup: 1.1.4
 
   normalize-range@0.1.2: {}
 
