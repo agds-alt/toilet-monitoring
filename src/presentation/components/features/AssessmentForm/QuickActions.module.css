@@ -1,175 +1,98 @@
 /* src/presentation/components/features/AssessmentForm/QuickActions.module.css */
-
 .container {
-  margin-bottom: var(--space-4);
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border: 1px solid #bae6fd;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
 }
 
 .title {
-  font-size: 1.125rem;
+  font-size: 20px;
   font-weight: 700;
-  color: var(--color-gray-900);
+  color: #0369a1;
+  margin-bottom: 8px;
   text-align: center;
-  margin-bottom: var(--space-1);
 }
 
 .subtitle {
-  font-size: 0.875rem;
-  color: var(--color-gray-600);
+  font-size: 14px;
+  color: #0c4a6e;
   text-align: center;
-  margin-bottom: var(--space-4);
+  margin-bottom: 24px;
 }
 
-/* ✅ COMPACT GRID - 2 columns on mobile */
-.grid {
+.actionsGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-/* ✅ SMALLER ACTION BUTTONS */
 .actionButton {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  
-  padding: var(--space-4);
-  min-height: 140px;
-  
-  border: 3px solid transparent;
-  border-radius: var(--radius-lg);
+  padding: 20px 16px;
   background: white;
+  border: 2px solid #e0f2fe;
+  border-radius: 12px;
   cursor: pointer;
-  
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  text-align: center;
 }
 
 .actionButton:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.15);
 }
 
-.actionButton:active {
-  transform: translateY(-1px) scale(0.98);
+.actionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
-/* ✅ ALL GOOD - Green theme */
-.actionButton:first-child {
-  border-color: var(--color-success);
+.actionEmoji {
+  font-size: 20px;
 }
 
-.actionButton:first-child:hover {
-  background: linear-gradient(135deg, 
-    rgba(34, 197, 94, 0.05) 0%, 
-    rgba(34, 197, 94, 0.1) 100%
-  );
-  border-color: var(--color-success);
+.actionLabel {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0c4a6e;
 }
 
-/* ✅ HAS ISSUES - Orange theme */
-.warningButton {
-  border-color: #f59e0b;
-}
-
-.warningButton:hover {
-  background: linear-gradient(135deg, 
-    rgba(245, 158, 11, 0.05) 0%, 
-    rgba(245, 158, 11, 0.1) 100%
-  );
-  border-color: #f59e0b;
-}
-
-.actionIcon {
-  font-size: 2.5rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-  transition: transform 0.2s ease;
-}
-
-.actionButton:hover .actionIcon {
-  transform: scale(1.15);
-}
-
-.actionTitle {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-gray-900);
+.actionDescription {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.4;
   margin: 0;
-  text-align: center;
 }
 
-.actionDesc {
-  font-size: 0.8125rem;
-  color: var(--color-gray-600);
+.note {
   text-align: center;
-  margin: 0;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  border-left: 3px solid #38bdf8;
+}
+
+.note small {
+  color: #475569;
+  font-size: 12px;
   line-height: 1.4;
 }
 
-.actionBadge {
-  margin-top: var(--space-1);
-  padding: var(--space-1) var(--space-2);
-  background: var(--color-gray-100);
-  border-radius: var(--radius-full);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-gray-700);
-}
-
-/* ✅ MOBILE OPTIMIZATION */
-@media (max-width: 640px) {
-  .grid {
-    gap: var(--space-2);
+/* Responsive */
+@media (max-width: 768px) {
+  .actionsGrid {
+    grid-template-columns: 1fr;
   }
-
+  
   .actionButton {
-    padding: var(--space-3);
-    min-height: 130px;
-    gap: var(--space-1);
-  }
-
-  .actionIcon {
-    font-size: 2.25rem;
-  }
-
-  .actionTitle {
-    font-size: 0.9375rem;
-  }
-
-  .actionDesc {
-    font-size: 0.75rem;
-  }
-
-  .actionBadge {
-    font-size: 0.6875rem;
-    padding: 4px 8px;
-  }
-}
-
-@media (max-width: 480px) {
-  .title {
-    font-size: 1rem;
-  }
-
-  .subtitle {
-    font-size: 0.8125rem;
-  }
-
-  .actionButton {
-    min-height: 120px;
-    padding: var(--space-2);
-  }
-
-  .actionIcon {
-    font-size: 2rem;
-  }
-
-  .actionTitle {
-    font-size: 0.875rem;
-  }
-
-  .actionDesc {
-    font-size: 0.6875rem;
+    padding: 16px 12px;
   }
 }

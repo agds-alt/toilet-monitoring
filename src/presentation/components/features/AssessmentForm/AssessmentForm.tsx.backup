@@ -1,0 +1,164 @@
+// src/presentation/components/features/AssessmentForm/AssessmentForm.tsx
+'use client';
+
+import React from 'react';
+import { AssessmentCategory } from './AssessmentCategory';
+import { QuickActions } from './QuickActions';
+import { useAssessmentForm } from './hooks/useAssessmentForm';
+import { AssessmentCategory as CategoryType } from '../../../../core/types/assessment.types';
+import { Assessments } from '../../../../core/entities/Assessment';
+import styles from './AssessmentForm.module.css';
+
+interface AssessmentFormProps {
+  locationName: string;
+  categories: CategoryType[];
+  onSubmit: (data: { assessments: Assessments; overallComment?: string }) => void;
+  onCancel?: () => void;
+}
+
+export const AssessmentForm: React.FC<AssessmentFormProps> = ({
+  locationName,
+  categories,
+  onSubmit,
+  onCancel
+}) => {
+  const {
+    assessments,
+    overallComment,
+    setOverallComment,
+    currentCategory,
+    updateAssessment,
+    nextCategory,
+    prevCategory,
+    submitForm,
+    getProgress,
+    currentCategoryData
+  } = useAssessmentForm({ categories, onSubmit });
+
+  const { completed, total, percentage } = getProgress();
+
+  const handleValueChange = (value: number) => {
+    updateAssessment(currentCategoryData.id, value, assessments[currentCategoryData.id]?.notes);
+  };
+
+  const handleNotesChange = (notes: string) => {
+    const currentValue = assessments[currentCategoryData.id]?.value || 3;
+    updateAssessment(currentCategoryData.id, currentValue, notes);
+  };
+
+  const handleQuickAction = (categoryId: string, value: number, notes: string) => {
+    updateAssessment(categoryId, value, notes);
+  };
+
+  return (
+    <div className={styles.container}>
+      {/* Header */}
+      <div className={styles.header}>
+        <h1 className={styles.title}>Assessment Toilet</h1>
+        <p className={styles.subtitle}>Lokasi: {locationName}</p>
+        
+        {/* Progress Bar */}
+        <div className={styles.progressSection}>
+          <div className={styles.progressInfo}>
+            <span>Progress: {completed}/{total} kategori</span>
+            <span>{Math.round(percentage)}%</span>
+          </div>
+          <div className={styles.progressBar}>
+            <div 
+              className={styles.progressFill} 
+              style={{ width: `${percentage}%` }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      {completed === 0 && (
+        <QuickActions 
+          categories={categories}
+          onActionSelect={handleQuickAction}
+          className={styles.quickActions}
+        />
+      )}
+
+      {/* Category Form */}
+      <div className={styles.categorySection}>
+        <AssessmentCategory
+          category={currentCategoryData}
+          value={assessments[currentCategoryData.id]?.value}
+          notes={assessments[currentCategoryData.id]?.notes || ''}
+          onValueChange={handleValueChange}
+          onNotesChange={handleNotesChange}
+        />
+      </div>
+
+      {/* Overall Comment */}
+      {completed === total && (
+        <div className={styles.overallSection}>
+          <h3>Komentar Keseluruhan</h3>
+          <textarea
+            value={overallComment}
+            onChange={(e) => setOverallComment(e.target.value)}
+            placeholder="Berikan komentar keseluruhan tentang kondisi toilet..."
+            rows={4}
+            className={styles.overallTextarea}
+          />
+        </div>
+      )}
+
+      {/* Navigation */}
+      <div className={styles.navigation}>
+        <div className={styles.navButtons}>
+          {currentCategory > 0 && (
+            <button 
+              onClick={prevCategory}
+              className={styles.navButton}
+              type="button"
+            >
+              ← Sebelumnya
+            </button>
+          )}
+          
+          {currentCategory < total - 1 ? (
+            <button 
+              onClick={nextCategory}
+              disabled={!assessments[currentCategoryData.id]?.value}
+              className={styles.navButton}
+              type="button"
+            >
+              Selanjutnya →
+            </button>
+          ) : (
+            <button 
+              onClick={submitForm}
+              disabled={completed === 0}
+              className={styles.submitButton}
+              type="button"
+            >
+              ✅ Submit Assessment
+            </button>
+          )}
+        </div>
+
+        {onCancel && (
+          <button 
+            onClick={onCancel}
+            className={styles.cancelButton}
+            type="button"
+          >
+            Batalkan
+          </button>
+        )}
+      </div>
+
+      {/* Completion Status */}
+      {completed === total && (
+        <div className={styles.completionStatus}>
+          <div className={styles.completionBadge}>
+            🎉 Semua kategori telah dinilai!
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};

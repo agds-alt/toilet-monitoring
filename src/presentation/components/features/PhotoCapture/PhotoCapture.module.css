@@ -251,3 +251,323 @@
     font-size: 0.875rem;
   }
 }
+/* Tambahkan di PhotoCapture.module.css */
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 0 0 8px 8px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #10b981;
+  transition: width 0.3s ease;
+}
+
+.uploadSuccess {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+  background: rgba(16, 185, 129, 0.9);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploadingIndicator {
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  color: #92400e;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+/* Tambahkan di AssessmentForm.module.css */
+
+/* Photo Section */
+.photoSection {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f8f8f8;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+}
+
+.photoTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 0.5rem 0;
+}
+
+.photoDescription {
+  font-size: 0.875rem;
+  color: #666666;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.4;
+}
+
+/* Add Photo Button */
+.addPhotoButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  background: #ffffff;
+  color: #000000;
+  border: 2px dashed #e0e0e0;
+  border-radius: 10px;
+  padding: 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addPhotoButton:hover {
+  border-color: #000000;
+  background: #fafafa;
+  transform: translateY(-1px);
+}
+
+.photoIcon {
+  font-size: 1.25rem;
+}
+
+/* Photo Preview */
+.photoPreview {
+  width: 100%;
+}
+
+.previewContainer {
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.previewImage {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #f8f8f8;
+  margin-bottom: 1rem;
+}
+
+.photoActions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.uploadButton {
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  max-width: 200px;
+}
+
+.uploadButton:hover:not(:disabled) {
+  background: #333333;
+  transform: translateY(-1px);
+}
+
+.uploadButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.uploadSuccess {
+  background: #10b981;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  flex: 1;
+  max-width: 200px;
+  text-align: center;
+}
+
+.removeButton {
+  background: #ffffff;
+  color: #666666;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  max-width: 200px;
+}
+
+.removeButton:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  transform: translateY(-1px);
+}
+
+/* Update Submit Section untuk accommodate photo */
+.submitSection {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 2rem;
+  margin-top: 1rem;
+}
+
+.cancelButton {
+  background: #ffffff;
+  color: #666666;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  max-width: 150px;
+}
+
+.cancelButton:hover {
+  border-color: #000000;
+  color: #000000;
+}
+
+.submitButton {
+  background: #000000;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  max-width: 200px;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #333333;
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .photoSection {
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+  }
+  
+  .previewImage {
+    height: 150px;
+  }
+  
+  .photoActions {
+    flex-direction: column;
+  }
+  
+  .uploadButton,
+  .uploadSuccess,
+  .removeButton {
+    max-width: none;
+  }
+  
+  .submitSection {
+    flex-direction: column;
+  }
+  
+  .cancelButton,
+  .submitButton {
+    max-width: none;
+  }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .photoSection {
+    background: #1a1a1a;
+    border-color: #333333;
+  }
+  
+  .photoTitle {
+    color: #ffffff;
+  }
+  
+  .photoDescription {
+    color: #cccccc;
+  }
+  
+  .addPhotoButton {
+    background: #2a2a2a;
+    color: #ffffff;
+    border-color: #444444;
+  }
+  
+  .addPhotoButton:hover {
+    border-color: #ffffff;
+  }
+  
+  .previewContainer {
+    background: #2a2a2a;
+    border-color: #333333;
+  }
+  
+  .previewImage {
+    background: #1a1a1a;
+  }
+  
+  .removeButton {
+    background: #2a2a2a;
+    color: #cccccc;
+    border-color: #444444;
+  }
+  
+  .removeButton:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+  }
+  
+  .cancelButton {
+    background: #2a2a2a;
+    color: #cccccc;
+    border-color: #444444;
+  }
+  
+  .cancelButton:hover {
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+}

@@ -1,195 +1,65 @@
 /* src/presentation/components/features/AssessmentForm/AssessmentItem.module.css */
-
-.container {
-  margin-bottom: var(--space-3);
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-3);
-  padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--color-gray-100);
-}
-
-.icon {
-  font-size: 1.5rem;
-}
-
-.label {
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--color-gray-800);
-}
-
-.required {
-  color: var(--color-danger);
-  margin-left: var(--space-1);
-  font-size: 1rem;
-}
-
-/* ✅ COMPACT 3-COLUMN GRID */
-.options {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-2);
-}
-
-/* ✅ SMALLER BUTTON SIZE */
-.optionButton {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  padding: var(--space-3) var(--space-2);
-  min-height: 75px;
-  border: 2px solid var(--color-gray-200);
-  border-radius: var(--radius-md);
+.assessmentItem {
   background: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: all 0.2s;
 }
 
-.optionButton:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-primary-light);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.assessmentItem:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.optionButton:active {
-  transform: translateY(0);
+.assessmentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-.optionIcon {
-  font-size: 1.75rem;
-  transition: transform 0.2s ease;
-}
-
-.optionButton:hover .optionIcon {
-  transform: scale(1.1);
-}
-
-.optionLabel {
-  font-size: 0.8125rem;
+.assessmentName {
+  font-size: 16px;
   font-weight: 600;
-  color: var(--color-gray-700);
-  text-align: center;
+  color: #374151;
+  margin: 0;
 }
 
-/* ✅ SELECTED STATE */
-.selected {
-  border-color: var(--color-primary);
-  background: var(--color-primary-light);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
-}
-
-.selected .optionLabel {
-  color: var(--color-primary);
-}
-
-.checkmark {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  font-size: 1rem;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.selected .checkmark {
-  opacity: 1;
-}
-
-/* ✅ COMMENT BOX */
-.commentBox {
-  margin-top: var(--space-3);
-  padding: var(--space-3);
-  background: var(--color-gray-50);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-gray-200);
-}
-
-.commentLabel {
-  display: block;
-  font-size: 0.8125rem;
+.assessmentValue {
+  padding: 4px 12px;
+  background: #10b981;
+  color: white;
+  border-radius: 20px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--color-gray-700);
-  margin-bottom: var(--space-2);
 }
 
-.commentInput {
-  width: 100%;
-  padding: var(--space-2);
-  border: 1px solid var(--color-gray-300);
-  border-radius: var(--radius-sm);
-  font-size: 0.875rem;
-  font-family: inherit;
-  resize: vertical;
-  min-height: 60px;
+.assessmentNotes {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.4;
+  margin: 0;
 }
 
-.commentInput:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+/* Status variants */
+.assessmentItem.excellent {
+  border-left: 4px solid #10b981;
+  background: #f0fdf4;
 }
 
-/* ✅ MOBILE OPTIMIZATION */
-@media (max-width: 640px) {
-  .header {
-    gap: var(--space-2);
-    margin-bottom: var(--space-2);
-  }
-
-  .icon {
-    font-size: 1.25rem;
-  }
-
-  .label {
-    font-size: 0.875rem;
-  }
-
-  .options {
-    gap: var(--space-2);
-  }
-
-  .optionButton {
-    padding: var(--space-2);
-    min-height: 68px;
-  }
-
-  .optionIcon {
-    font-size: 1.5rem;
-  }
-
-  .optionLabel {
-    font-size: 0.75rem;
-  }
-
-  .commentBox {
-    padding: var(--space-2);
-  }
-
-  .commentInput {
-    min-height: 50px;
-    font-size: 0.8125rem;
-  }
+.assessmentItem.good {
+  border-left: 4px solid #3b82f6;
+  background: #eff6ff;
 }
 
-@media (max-width: 480px) {
-  .optionButton {
-    min-height: 62px;
-    padding: var(--space-2) var(--space-1);
-  }
+.assessmentItem.fair {
+  border-left: 4px solid #f59e0b;
+  background: #fffbeb;
+}
 
-  .optionIcon {
-    font-size: 1.375rem;
-  }
-
-  .optionLabel {
-    font-size: 0.6875rem;
-  }
+.assessmentItem.poor {
+  border-left: 4px solid #ef4444;
+  background: #fef2f2;
 }

@@ -3,7 +3,7 @@
 // CRITICAL: Fix TypeScript syntax error
 // ============================================
 
-import React from 'react';
+import * as React from 'react';
 import styles from './Button.module.css';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';

@@ -3,7 +3,7 @@
 // 📁 src/presentation/components/ui/Input/Input.tsx
 // ===================================
 
-import React from 'react';
+import * as React from 'react';
 import styles from './Input.module.css';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {

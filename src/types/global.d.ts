@@ -1,13 +1,9 @@
-// ===================================
-// 📁 src/types/global.d.ts
-// ===================================
-
-declare global {
-  interface Window {
-    fs: {
-      readFile: (path: string, options?: { encoding?: string }) => Promise<any>;
-    };
-  }
+declare module '*.module.css' {
+  const classes: { [key: string]: string };
+  export default classes;
 }
 
-export {};
+declare module '*.module.scss' {
+  const classes: { [key: string]: string };
+  export default classes;
+}

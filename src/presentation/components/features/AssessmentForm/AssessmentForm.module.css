@@ -1,524 +1,228 @@
-/* presentation/components/features/AssessmentForm/AssessmentForm.module.css */
-.form {
+/* src/presentation/components/features/AssessmentForm/AssessmentForm.module.css */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
   background: #ffffff;
-  min-height: 500px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 16px;
-  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== PROGRESS SECTION ===== */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+/* Progress Section */
 .progressSection {
-  padding: 1.5rem 2rem 1rem;
-  background: #fafafa;
-  border-bottom: 1px solid #f0f0f0;
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.progressInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #4b5563;
 }
 
 .progressBar {
-  background: #f0f0f0;
-  height: 6px;
-  border-radius: 3px;
-  margin-bottom: 0.75rem;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .progressFill {
-  background: #000000;
   height: 100%;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 3px;
+  background: linear-gradient(90deg, #10b981, #059669);
+  transition: width 0.3s ease;
+  border-radius: 4px;
 }
 
-.progressText {
-  text-align: center;
-  font-size: 0.8125rem;
-  color: #666666;
-  font-weight: 500;
-  letter-spacing: 0.025em;
+/* Quick Actions */
+.quickActions {
+  margin-bottom: 32px;
 }
 
-/* ===== ASSESSMENT CONTENT ===== */
-.assessmentContent {
-  flex: 1;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem; /* SPACING DIPERBAIKI */
-}
-
-/* ===== QUESTION SECTION ===== */
-.questionSection {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem; /* SPACING DIPERBAIKI */
-}
-
-.question {
-  font-size: 1.375rem;
-  font-weight: 600;
-  color: #000000;
-  margin: 0;
-  line-height: 1.4;
-  text-align: center;
-  padding: 0 1rem;
-}
-
-/* ===== SCORE SECTION ===== */
-.scoreSection {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem; /* SPACING DIPERBAIKI */
-  padding: 1.5rem;
+/* Category Section */
+.categorySection {
+  margin-bottom: 32px;
+  padding: 24px;
   background: #fafafa;
-  border-radius: 12px;
-  border: 1px solid #f0f0f0;
-}
-
-.scoreLabel {
-  display: block;
-  font-weight: 600;
-  color: #000000;
-  font-size: 1.0625rem;
-  letter-spacing: -0.025em;
-}
-
-.scoreOptions {
-  display: flex;
-  gap: 0.75rem; /* SPACING DIPERBAIKI */
-  margin-bottom: 0.5rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.scoreButton {
-  width: 60px;
-  height: 60px;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  background: #ffffff;
-  color: #000000;
-  font-weight: 700;
-  font-size: 1.125rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.scoreButton:hover {
-  border-color: #000000;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.scoreButton.selected {
-  background: #000000;
-  color: #ffffff;
-  border-color: #000000;
-  transform: scale(1.05);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-}
-
-.scoreLegend {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 300px;
-  font-size: 0.75rem;
-  color: #666666;
-  font-weight: 500;
-}
-
-/* ===== COMMENT SECTION ===== */
-.commentSection {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem; /* SPACING DIPERBAIKI */
-}
-
-.commentLabel {
-  display: block;
-  font-weight: 600;
-  color: #000000;
-  font-size: 0.9375rem;
-}
-
-.commentInput {
-  width: 100%;
-  padding: 1rem;
-  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  font-size: 0.875rem;
+  border: 1px solid #e5e7eb;
+}
+
+/* Overall Comment */
+.overallSection {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+}
+
+.overallSection h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0369a1;
+  margin-bottom: 12px;
+}
+
+.overallTextarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
   resize: vertical;
-  min-height: 100px;
-  transition: all 0.3s ease;
-  font-family: inherit;
-  line-height: 1.5;
+  transition: border-color 0.2s;
 }
 
-.commentInput:focus {
+.overallTextarea:focus {
   outline: none;
-  border-color: #000000;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.commentInput::placeholder {
-  color: #999999;
-}
-
-/* ===== NAVIGATION ===== */
+/* Navigation */
 .navigation {
-  margin-top: auto;
   display: flex;
-  justify-content: space-between; /* POSISI DITUKAR - kiri & kanan */
+  flex-direction: column;
+  gap: 16px;
   align-items: center;
-  gap: 1rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #f0f0f0;
 }
 
-/* Primary Navigation Button (Selanjutnya/Submit) */
-.navButtonPrimary {
-  background: #000000;
-  color: #ffffff;
-  padding: 0.875rem 1.5rem;
+.navButtons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.navButton {
+  padding: 12px 24px;
+  background: #3b82f6;
+  color: white;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-left: auto; /* Dorong ke kanan */
-}
-
-.navButtonPrimary:hover:not(:disabled) {
-  background: #333333;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.navButtonPrimary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Secondary Navigation Button (Sebelumnya) */
-.navButtonSecondary {
-  background: #ffffff;
-  color: #666666;
-  padding: 0.875rem 1.5rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  border-radius: 6px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-right: auto; /* Dorong ke kiri */
+  transition: all 0.2s;
 }
 
-.navButtonSecondary:hover:not(:disabled) {
-  border-color: #000000;
-  color: #000000;
+.navButton:hover:not(:disabled) {
+  background: #2563eb;
   transform: translateY(-1px);
 }
 
-.navButtonSecondary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* ===== FINAL SECTION ===== */
-.finalSection {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem; /* SPACING DIPERBAIKI */
-}
-
-.notesSection {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.notesLabel {
-  display: block;
-  font-weight: 600;
-  color: #000000;
-  font-size: 0.9375rem;
-}
-
-.notesInput {
-  width: 100%;
-  padding: 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  resize: vertical;
-  min-height: 120px;
-  transition: all 0.3s ease;
-  font-family: inherit;
-  line-height: 1.5;
-}
-
-.notesInput:focus {
-  outline: none;
-  border-color: #000000;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-}
-
-.notesInput::placeholder {
-  color: #999999;
-}
-
-/* ===== SUBMIT SECTION - POSISI DITUKAR ===== */
-.submitSection {
-  display: flex;
-  justify-content: space-between; /* POSISI DITUKAR - Batalkan kiri, Simpan kanan */
-  align-items: center;
-  gap: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #f0f0f0;
-}
-
-.cancelButton {
-  background: #ffffff;
-  color: #666666;
-  padding: 0.875rem 1.5rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex: 1;
-  max-width: 140px;
-}
-
-.cancelButton:hover:not(:disabled) {
-  border-color: #000000;
-  color: #000000;
-  transform: translateY(-1px);
-}
-
-.cancelButton:disabled {
-  opacity: 0.5;
+.navButton:disabled {
+  background: #9ca3af;
   cursor: not-allowed;
   transform: none;
 }
 
 .submitButton {
-  background: #000000;
-  color: #ffffff;
-  padding: 0.875rem 1.5rem;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
   border: none;
   border-radius: 8px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  flex: 1;
-  max-width: 140px;
+  transition: all 0.3s;
 }
 
 .submitButton:hover:not(:disabled) {
-  background: #333333;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
 .submitButton:disabled {
-  opacity: 0.5;
+  background: #9ca3af;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+.cancelButton {
+  padding: 10px 20px;
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelButton:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Completion Status */
+.completionStatus {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.completionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #dbeafe, #eff6ff);
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+  border-radius: 20px;
+  font-weight: 500;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .assessmentContent {
-    padding: 1.5rem;
-    gap: 1.5rem;
+  .container {
+    padding: 16px;
+    margin: 8px;
   }
   
-  .progressSection {
-    padding: 1.25rem 1.5rem 0.75rem;
+  .title {
+    font-size: 24px;
   }
   
-  .question {
-    font-size: 1.25rem;
-    padding: 0;
-  }
-  
-  .scoreSection {
-    padding: 1.25rem;
-    gap: 1.25rem;
-  }
-  
-  .scoreOptions {
-    gap: 0.5rem;
-  }
-  
-  .scoreButton {
-    width: 50px;
-    height: 50px;
-    font-size: 1rem;
-  }
-  
-  .navigation {
+  .navButtons {
     flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .navButtonPrimary,
-  .navButtonSecondary {
-    width: 100%;
-    margin: 0;
-  }
-  
-  .submitSection {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .cancelButton,
-  .submitButton {
-    max-width: none;
     width: 100%;
   }
-}
-
-/* ===== DARK MODE SUPPORT ===== */
-@media (prefers-color-scheme: dark) {
-  .form {
-    background: #1a1a1a;
-  }
   
-  .progressSection {
-    background: #0a0a0a;
-    border-bottom-color: #333333;
-  }
-  
-  .progressBar {
-    background: #333333;
-  }
-  
-  .progressFill {
-    background: #ffffff;
-  }
-  
-  .progressText {
-    color: #a0a0a0;
-  }
-  
-  .question {
-    color: #ffffff;
-  }
-  
-  .scoreSection {
-    background: #0a0a0a;
-    border-color: #333333;
-  }
-  
-  .scoreLabel {
-    color: #ffffff;
-  }
-  
-  .scoreButton {
-    background: #1a1a1a;
-    border-color: #333333;
-    color: #ffffff;
-  }
-  
-  .scoreButton:hover {
-    border-color: #ffffff;
-  }
-  
-  .scoreButton.selected {
-    background: #ffffff;
-    color: #000000;
-    border-color: #ffffff;
-  }
-  
-  .scoreLegend {
-    color: #a0a0a0;
-  }
-  
-  .commentLabel {
-    color: #ffffff;
-  }
-  
-  .commentInput {
-    background: #1a1a1a;
-    border-color: #333333;
-    color: #ffffff;
-  }
-  
-  .commentInput:focus {
-    border-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
-  }
-  
-  .commentInput::placeholder {
-    color: #666666;
-  }
-  
-  .navigation {
-    border-top-color: #333333;
-  }
-  
-  .navButtonSecondary {
-    background: #1a1a1a;
-    border-color: #333333;
-    color: #a0a0a0;
-  }
-  
-  .navButtonSecondary:hover:not(:disabled) {
-    border-color: #ffffff;
-    color: #ffffff;
-  }
-  
-  .notesLabel {
-    color: #ffffff;
-  }
-  
-  .notesInput {
-    background: #1a1a1a;
-    border-color: #333333;
-    color: #ffffff;
-  }
-  
-  .notesInput:focus {
-    border-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
-  }
-  
-  .notesInput::placeholder {
-    color: #666666;
-  }
-  
-  .submitSection {
-    border-top-color: #333333;
-  }
-  
-  .cancelButton {
-    background: #1a1a1a;
-    border-color: #333333;
-    color: #a0a0a0;
-  }
-  
-  .cancelButton:hover:not(:disabled) {
-    border-color: #ffffff;
-    color: #ffffff;
-  }
-  
-  .submitButton {
-    background: #ffffff;
-    color: #000000;
-  }
-  
-  .submitButton:hover:not(:disabled) {
-    background: #e0e0e0;
+  .navButton, .submitButton {
+    width: 100%;
   }
 }

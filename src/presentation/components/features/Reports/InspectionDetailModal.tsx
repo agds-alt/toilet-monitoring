@@ -1,7 +1,7 @@
 // src/presentation/components/features/Reports/InspectionDetailModal.tsx
 'use client';
 
-import React from 'react';
+import * as React from 'react';
 import Image from 'next/image';
 import { Card } from '../../ui/Card/Card';
 import Button from '../../ui/Button/Button';
