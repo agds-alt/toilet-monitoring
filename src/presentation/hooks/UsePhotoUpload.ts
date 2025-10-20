@@ -11,7 +11,7 @@ import {
   PhotoMetadata,
   CloudinaryUploadResponse,
 } from '@/core/types/inspection.types';
-import { cloudinaryService } from '@/infrastructure/services/cloudinary.service';
+import { cloudinaryService } from '@/infrastructure/service/cloudinary.service';
 import { validatePhotoFile } from '@/lib/utils/validation.utils';
 
 interface UsePhotoUploadReturn {

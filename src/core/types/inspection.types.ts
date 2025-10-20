@@ -261,23 +261,3 @@ export interface UseInspectionReturn {
   duration: number;
   canSubmit: boolean;
 }
-
-// ============================================
-// RATING EMOJI MAP
-// ============================================
-
-export const RATING_EMOJI_MAP: Record<RatingValue, string> = {
-  1: '😢',
-  2: '😕',
-  3: '😐',
-  4: '😊',
-  5: '🤩',
-};
-
-export const RATING_LABEL_MAP: Record<RatingValue, { en: string; id: string }> = {
-  1: { en: 'Very Poor', id: 'Sangat Buruk' },
-  2: { en: 'Poor', id: 'Kurang' },
-  3: { en: 'Fair', id: 'Cukup' },
-  4: { en: 'Good', id: 'Bagus' },
-  5: { en: 'Excellent', id: 'Sangat Bagus' },
-};
