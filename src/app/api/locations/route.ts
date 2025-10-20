@@ -1,46 +1,80 @@
 // app/api/locations/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { SupabaseLocationRepository } from '@/infrastructure/database/repositories/SupabaseLocationRepository';
-import { CreateLocation } from '@/core/use-cases/CreateLocation';
-import { GetLocations } from '@/core/use-cases/GetLocations';
 
-export async function GET() {
-  console.log('📍 GET /api/locations called');
-  
+// GET - Get all locations
+export async function GET(request: NextRequest) {
   try {
-    const locationRepository = new SupabaseLocationRepository();
-    const getLocations = new GetLocations(locationRepository);
+    console.log('📍 GET /api/locations - Fetching all locations');
     
-    const locations = await getLocations.execute();
-    console.log('📍 Locations found:', locations.length);
+    const { searchParams } = new URL(request.url);
+    const floor = searchParams.get('floor');
+    const section = searchParams.get('section');
+    const includeStats = searchParams.get('includeStats') === 'true';
+
+    const repository = new SupabaseLocationRepository();
+    let locations = await repository.findAll();
+
+    // Apply filters if provided
+    if (floor) {
+      locations = locations.filter(loc => loc.floor === floor);
+    }
     
-    return NextResponse.json(locations);
+    if (section) {
+      locations = locations.filter(loc => loc.section === section);
+    }
+
+    console.log(`✅ Returning ${locations.length} locations`);
+    
+    return NextResponse.json({
+      success: true,
+      data: locations,
+      meta: {
+        total: locations.length,
+        filters: {
+          floor: floor || 'all',
+          section: section || 'all',
+          includeStats
+        }
+      }
+    });
   } catch (error: any) {
-    console.error('❌ GET /api/locations error:', error);
+    console.error('❌ Error fetching locations:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to fetch locations' },
+      { 
+        success: false,
+        error: error.message || 'Internal server error'
+      },
       { status: 500 }
     );
   }
 }
 
+// POST - Create new location
 export async function POST(request: NextRequest) {
-  console.log('📍 POST /api/locations called');
-  
   try {
-    const data = await request.json();
-    console.log('📍 POST data:', data);
+    const body = await request.json();
     
-    const locationRepository = new SupabaseLocationRepository();
-    const createLocation = new CreateLocation(locationRepository);
+    console.log('📍 POST /api/locations - Creating location:', body);
+
+    const repository = new SupabaseLocationRepository();
+    const newLocation = await repository.create(body);
     
-    const location = await createLocation.execute(data);
-    return NextResponse.json(location, { status: 201 });
+    console.log('✅ Location created successfully:', newLocation.id);
+    
+    return NextResponse.json({
+      success: true,
+      data: newLocation
+    }, { status: 201 });
+
   } catch (error: any) {
-    console.error('❌ POST /api/locations error:', error);
+    console.error('❌ Error creating location:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to create location' },
-      { status: 400 }
+      { 
+        success: false,
+        error: error.message || 'Internal server error'
+      },
+      { status: 500 }
     );
   }
 }

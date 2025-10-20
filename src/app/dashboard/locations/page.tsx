@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { Location } from '@/core/entities/Location';
-import LocationForm from '@/presentation/components/features/LocationForm/LocationForm';
+import { LocationForm } from '@/presentation/components/features/LocationForm/LocationForm';
 import { LocationFormData } from '@/core/entities/Location';
 import styles from './page.module.css';
 

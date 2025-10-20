@@ -1,5 +1,5 @@
 // ===================================
-// 📁 SUPABASE USER REPOSITORY - ENHANCED
+// FIXED: SUPABASE USER REPOSITORY
 // src/infrastructure/database/repositories/SupabaseUserRepository.ts
 // ===================================
 
@@ -14,9 +14,21 @@ export class SupabaseUserRepository implements IUserRepository {
     console.log('🔍 Finding user by ID:', id);
 
     try {
+      // ✅ FIXED: Query 'users' table with roles join
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
+        .from('users')  // ← CHANGED FROM 'profiles'
+        .select(`
+          *,
+          user_roles (
+            role_id,
+            roles (
+              id,
+              name,
+              display_name,
+              level
+            )
+          )
+        `)
         .eq('id', id)
         .single();
 
@@ -41,9 +53,21 @@ export class SupabaseUserRepository implements IUserRepository {
     console.log('🔍 Finding user by email:', email);
 
     try {
+      // ✅ FIXED: Query 'users' table
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
+        .from('users')  // ← CHANGED FROM 'profiles'
+        .select(`
+          *,
+          user_roles (
+            role_id,
+            roles (
+              id,
+              name,
+              display_name,
+              level
+            )
+          )
+        `)
         .eq('email', email)
         .single();
 
@@ -74,13 +98,16 @@ export class SupabaseUserRepository implements IUserRepository {
     });
 
     try {
+      // ✅ FIXED: Insert into 'users' table
       const { data, error } = await supabase
-        .from('profiles')
+        .from('users')  // ← CHANGED FROM 'profiles'
         .insert({
           id: user.id,
           email: user.email,
+          password_hash: 'managed_by_auth',
           full_name: user.fullName,
-          role: user.role
+          phone: null,
+          is_active: true
         })
         .select()
         .single();
@@ -101,6 +128,24 @@ export class SupabaseUserRepository implements IUserRepository {
         throw new Error(`Failed to create user: ${error.message}`);
       }
 
+      // Assign default role if provided
+      if (user.role) {
+        const { data: roleData } = await supabase
+          .from('roles')
+          .select('id')
+          .eq('name', user.role.toLowerCase())
+          .single();
+
+        if (roleData) {
+          await supabase
+            .from('user_roles')
+            .insert({
+              user_id: data.id,
+              role_id: roleData.id
+            });
+        }
+      }
+
       console.log('✅ User created successfully!');
       console.log('User ID:', data.id);
       return this.mapToEntity(data);
@@ -114,11 +159,13 @@ export class SupabaseUserRepository implements IUserRepository {
     console.log('✏️ Updating user:', id);
 
     try {
+      // ✅ FIXED: Update 'users' table
       const { data, error } = await supabase
-        .from('profiles')
+        .from('users')  // ← CHANGED FROM 'profiles'
         .update({
           full_name: userData.fullName,
-          role: userData.role
+          phone: userData.phone,
+          updated_at: new Date().toISOString()
         })
         .eq('id', id)
         .select()
@@ -138,11 +185,29 @@ export class SupabaseUserRepository implements IUserRepository {
   }
 
   private mapToEntity(data: any): UserEntity {
+    // Extract primary role from user_roles join
+    let userRole: UserRole = UserRole.STAFF; // Default role
+
+    if (data.user_roles && data.user_roles.length > 0) {
+      const rolesByPriority = {
+        'super_admin': UserRole.ADMIN,
+        'gm': UserRole.ADMIN,
+        'admin': UserRole.ADMIN,
+        'supervisor': UserRole.SUPERVISOR,
+        'team_leader': UserRole.TEAM_LEADER,
+        'cleaner': UserRole.STAFF
+      };
+
+      // Get highest priority role
+      const primaryRoleName = data.user_roles[0]?.roles?.name;
+      userRole = rolesByPriority[primaryRoleName] || UserRole.STAFF;
+    }
+
     return new UserEntity(
       data.id,
       data.email,
       data.full_name,
-      data.role as UserRole,
+      userRole,
       new Date(data.created_at)
     );
   }

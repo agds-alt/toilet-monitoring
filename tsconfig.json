@@ -8,7 +8,7 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -20,7 +20,45 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      
+      // APP PATHS
+      "@/app/*": ["./src/app/*"],
+      "@/api/*": ["./src/app/api/*"],
+      "@/dashboard/*": ["./src/app/dashboard/*"],
+      "@/pages/*": ["./src/app/*"],
+      
+      // CORE LAYER
+      "@/core/*": ["./src/core/*"],
+      "@/entities/*": ["./src/core/entities/*"],
+      "@/dtos/*": ["./src/core/dtos/*"],
+      "@/repositories/*": ["./src/core/repositories/*"],
+      "@/use-cases/*": ["./src/core/use-cases/*"],
+      "@/types/*": ["./src/core/types/*"],
+      
+      // INFRASTRUCTURE LAYER
+      "@/infrastructure/*": ["./src/infrastructure/*"],
+      "@/database/*": ["./src/infrastructure/database/*"],
+      "@/auth/*": ["./src/infrastructure/auth/*"],
+      "@/storage/*": ["./src/infrastructure/storage/*"],
+      
+      // PRESENTATION LAYER
+      "@/presentation/*": ["./src/presentation/*"],
+      "@/components/*": ["./src/presentation/components/*"],
+      "@/features/*": ["./src/presentation/components/features/*"],
+      "@/ui/*": ["./src/presentation/components/ui/*"],
+      "@/layout/*": ["./src/presentation/components/layout/*"],
+      "@/hooks/*": ["./src/presentation/hooks/*"],
+      "@/contexts/*": ["./src/presentation/contexts/*"],
+      "@/styles/*": ["./src/presentation/styles/*"],
+      
+      // LIB & UTILS
+      "@/lib/*": ["./src/lib/*"],
+      "@/constants/*": ["./src/lib/constants/*"],
+      "@/utils/*": ["./src/lib/utils/*"],
+      
+      // TYPES
+      "@/global-types/*": ["./src/types/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -1,30 +1,66 @@
-// src/app/api/locations/[id]/route.ts
+// app/api/locations/[id]/route.ts - PUT
 import { NextRequest, NextResponse } from 'next/server';
 import { SupabaseLocationRepository } from '@/infrastructure/database/repositories/SupabaseLocationRepository';
 
-export async function GET(
+export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  console.log('📍 GET /api/locations/[id] called, id:', id);
   
   try {
-    const locationRepository = new SupabaseLocationRepository();
-    const location = await locationRepository.findById(id);
+    const body = await request.json();
     
-    if (!location) {
-      return NextResponse.json(
-        { error: 'Location not found' },
-        { status: 404 }
-      );
-    }
+    console.log(`📍 PUT /api/locations/${id} - Updating location:`, body);
 
-    return NextResponse.json(location);
-  } catch (error) {
-    console.error('❌ Error fetching location:', error);
+    const repository = new SupabaseLocationRepository();
+    const updatedLocation = await repository.update(id, body);
+    
+    console.log('✅ Location updated successfully:', id);
+    
+    return NextResponse.json({
+      success: true,
+      data: updatedLocation
+    });
+
+  } catch (error: any) {
+    console.error('❌ Error updating location:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        success: false,
+        error: error.message || 'Internal server error'
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  
+  try {
+    console.log(`📍 DELETE /api/locations/${id} - Deleting location`);
+
+    const repository = new SupabaseLocationRepository();
+    await repository.delete(id);
+    
+    console.log('✅ Location deleted successfully:', id);
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Location deleted successfully'
+    });
+
+  } catch (error: any) {
+    console.error('❌ Error deleting location:', error);
+    return NextResponse.json(
+      { 
+        success: false,
+        error: error.message || 'Internal server error'
+      },
       { status: 500 }
     );
   }

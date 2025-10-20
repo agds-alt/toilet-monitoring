@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Location } from '@/core/entities/Location';
-import AssessmentForm from '@/presentation/components/features/AssessmentForm/AssessmentForm';
+import { AssessmentForm } from '@/presentation/components/features/AssessmentForm/AssessmentForm';
 import styles from './page.module.css';
 
 export default function InspectLocationPage() {

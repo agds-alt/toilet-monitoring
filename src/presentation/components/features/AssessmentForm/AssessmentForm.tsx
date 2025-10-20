@@ -21,6 +21,13 @@ export const AssessmentForm: React.FC<AssessmentFormProps> = ({
   const [comment, setComment] = React.useState('');
 
   const handleSubmit = () => {
+    // Add safety check to prevent the error
+    if (typeof onSubmit !== 'function') {
+      console.error('onSubmit is not a function. Please check if the prop is passed correctly.');
+      console.log('Current onSubmit value:', onSubmit);
+      return;
+    }
+    
     onSubmit({
       assessments: {
         test: { value, notes: comment, timestamp: new Date().toISOString() }
@@ -28,7 +35,6 @@ export const AssessmentForm: React.FC<AssessmentFormProps> = ({
       overallComment: comment
     });
   };
-
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>
