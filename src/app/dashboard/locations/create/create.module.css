@@ -1,7 +1,3 @@
-/* ===================================
-   📁 src/app/dashboard/locations/create/create.module.css
-   Create Location Page Styles
-   =================================== */
 
 .container {
   min-height: 100vh;
@@ -9,16 +5,12 @@
 }
 
 .header {
-  background: #FFFFFF;
+  background: white;
   border-bottom: 1px solid #E5E7EB;
   padding: 20px 24px;
   display: flex;
   align-items: center;
   gap: 16px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .btnBack {
@@ -30,15 +22,12 @@
   border: 1px solid #E5E7EB;
   border-radius: 6px;
   font-size: 14px;
-  font-weight: 500;
   cursor: pointer;
   color: #1F2937;
-  transition: all 0.2s;
 }
 
 .btnBack:hover {
   background: #F7F7F8;
-  transform: translateY(-1px);
 }
 
 .title {
@@ -49,17 +38,16 @@
 }
 
 .main {
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
   padding: 24px;
 }
 
 .form {
-  background: #FFFFFF;
+  background: white;
   border: 1px solid #E5E7EB;
-  border-radius: 12px;
-  padding: 32px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 24px;
 }
 
 .section {
@@ -70,8 +58,6 @@
 
 .section:last-of-type {
   border-bottom: none;
-  margin-bottom: 0;
-  padding-bottom: 0;
 }
 
 .sectionTitle {
@@ -93,15 +79,12 @@
 
 .formGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
 }
 
 .formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin-bottom: 20px;
 }
 
 .label {
@@ -112,51 +95,32 @@
   margin-bottom: 8px;
 }
 
-.label.required::after {
-  content: ' *';
-  color: #EF4444;
-}
-
 .input,
-.textarea,
-.select {
+.textarea {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #E5E7EB;
   border-radius: 6px;
   font-size: 14px;
   color: #1F2937;
-  font-family: inherit;
-  transition: all 0.2s;
-  background: #FFFFFF;
+  transition: border-color 0.2s;
 }
 
 .input:focus,
-.textarea:focus,
-.select:focus {
+.textarea:focus {
   outline: none;
   border-color: #2563EB;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.input:disabled,
-.textarea:disabled,
-.select:disabled {
-  background: #F7F7F8;
-  color: #9CA3AF;
-  cursor: not-allowed;
 }
 
 .textarea {
   resize: vertical;
-  min-height: 80px;
+  font-family: inherit;
 }
 
 .metadataRow {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
-  align-items: flex-start;
+  margin-bottom: 8px;
 }
 
 .metadataRow .input {
@@ -175,12 +139,10 @@
   font-weight: 500;
   cursor: pointer;
   color: #1F2937;
-  transition: all 0.2s;
 }
 
 .btnAdd:hover {
   background: #E5E7EB;
-  transform: translateY(-1px);
 }
 
 .btnRemove {
@@ -190,22 +152,16 @@
   border-radius: 6px;
   cursor: pointer;
   color: #EF4444;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 40px;
 }
 
 .btnRemove:hover {
   background: #FEF2F2;
-  border-color: #EF4444;
 }
 
 .qrPreview {
-  padding: 20px;
+  padding: 16px;
   background: #F7F7F8;
-  border-radius: 8px;
+  border-radius: 6px;
   border: 1px solid #E5E7EB;
 }
 
@@ -214,17 +170,12 @@
   color: #6B7280;
   word-break: break-all;
   font-family: 'Courier New', monospace;
-  display: block;
-  padding: 8px;
-  background: #FFFFFF;
-  border-radius: 4px;
 }
 
 .formActions {
   display: flex;
   gap: 12px;
-  padding-top: 24px;
-  border-top: 1px solid #E5E7EB;
+  padding-top: 20px;
 }
 
 .btnSubmit {
@@ -237,79 +188,43 @@
   background: #2563EB;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s;
 }
 
 .btnSubmit:hover:not(:disabled) {
   background: #1D4ED8;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .btnSubmit:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: none;
 }
 
 .btnCancel {
   padding: 12px 24px;
   background: transparent;
   border: 1px solid #E5E7EB;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   color: #1F2937;
-  transition: all 0.2s;
 }
 
 .btnCancel:hover {
   background: #F7F7F8;
-  border-color: #D1D5DB;
 }
 
-/* Help Text */
-.helpText {
-  font-size: 12px;
-  color: #6B7280;
-  margin-top: 4px;
-}
-
-.errorText {
-  font-size: 12px;
-  color: #EF4444;
-  margin-top: 4px;
-}
-
-/* Responsive */
 @media (max-width: 768px) {
-  .main {
-    padding: 16px;
-  }
-
-  .form {
-    padding: 20px;
-  }
-
   .formGrid {
     grid-template-columns: 1fr;
   }
 
   .formActions {
-    flex-direction: column;
-  }
-
-  .btnSubmit,
-  .btnCancel {
-    width: 100%;
-  }
-
-  .metadataRow {
     flex-direction: column;
   }
 }
