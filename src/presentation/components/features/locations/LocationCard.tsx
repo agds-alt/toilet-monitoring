@@ -1,9 +1,11 @@
 // ===================================
 // 📁 src/presentation/components/features/locations/LocationCard.tsx
+// UPDATED - Added QR button
 // ===================================
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Building, MapPin, Copy, Trash2, Check, QrCode } from 'lucide-react';
 import { Location } from '@/core/entities/Location';
 import { deleteLocationUseCase } from '@/lib/di';
@@ -15,15 +17,19 @@ interface LocationCardProps {
 }
 
 export default function LocationCard({ location, onRefresh }: LocationCardProps) {
+  const router = useRouter();
   const [copied, setCopied] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
   const copyQRUrl = async () => {
-    if (location.qr_code) {
-      await navigator.clipboard.writeText(location.qr_code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
+    const qrUrl = `${window.location.origin}/scan/${location.code || location.id}`;
+    await navigator.clipboard.writeText(qrUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const viewQR = () => {
+    router.push(`/dashboard/locations/${location.id}/qr`);
   };
 
   const handleDelete = async () => {
@@ -50,11 +56,18 @@ export default function LocationCard({ location, onRefresh }: LocationCardProps)
         </div>
         <div className={styles.actions}>
           <button
+            onClick={viewQR}
+            className={styles.btnAction}
+            title="View QR Code"
+          >
+            <QrCode size={16} />
+          </button>
+          <button
             onClick={copyQRUrl}
             className={styles.btnAction}
             title="Copy QR URL"
           >
-            {copied ? <Check size={16} /> : <Copy size={16} />}
+            {copied ? <Check size={16} color="#10B981" /> : <Copy size={16} />}
           </button>
           <button
             onClick={handleDelete}
@@ -62,7 +75,7 @@ export default function LocationCard({ location, onRefresh }: LocationCardProps)
             className={styles.btnAction}
             title="Delete"
           >
-            <Trash2 size={16} />
+            <Trash2 size={16} color="#EF4444" />
           </button>
         </div>
       </div>

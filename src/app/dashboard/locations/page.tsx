@@ -1,11 +1,12 @@
 // ===================================
 // 📁 src/app/dashboard/locations/page.tsx
+// UPDATED - Added Bulk Print button
 // ===================================
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Building, MapPin, Plus, Search } from 'lucide-react';
+import { Building, MapPin, Plus, Search, Printer } from 'lucide-react';
 import { getLocationsUseCase } from '@/lib/di';
 import { Location } from '@/core/entities/Location';
 import LocationCard from '@/presentation/components/features/locations/LocationCard';
@@ -57,6 +58,13 @@ export default function LocationsPage() {
           </div>
           
           <div className={styles.headerActions}>
+            <button 
+              onClick={() => router.push('/dashboard/locations/print-qr')}
+              className={styles.btnSecondary}
+            >
+              <Printer size={18} />
+              Bulk Print QR
+            </button>
             <button 
               onClick={() => router.push('/dashboard/locations/create')}
               className={styles.btnPrimary}

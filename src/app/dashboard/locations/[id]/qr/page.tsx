@@ -1,12 +1,12 @@
 // ===================================
 // 📁 src/app/dashboard/locations/[id]/qr/page.tsx
-// PAGE: Show QR for specific location
+// Page untuk show QR specific location
 // ===================================
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Download, Printer } from 'lucide-react';
 import { getLocationsUseCase } from '@/lib/di';
 import { Location } from '@/core/entities/Location';
 import QRCodeDisplay from '@/presentation/components/features/locations/QRCodeDisplay';
@@ -37,26 +37,39 @@ export default function LocationQRPage() {
   }, [locationId]);
 
   if (loading) {
-    return <div className={styles.loading}>Loading...</div>;
+    return (
+      <div className={styles.loading}>
+        <div className={styles.spinner}></div>
+        <p>Loading QR Code...</p>
+      </div>
+    );
   }
 
   if (!location) {
     return (
       <div className={styles.notFound}>
         <h2>Location not found</h2>
-        <button onClick={() => router.back()}>Go Back</button>
+        <button onClick={() => router.back()} className={styles.btn}>
+          Go Back
+        </button>
       </div>
     );
   }
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
+      <header className={styles.header} data-print-hide>
         <button onClick={() => router.back()} className={styles.btnBack}>
           <ArrowLeft size={20} />
           Kembali
         </button>
-        <h1 className={styles.title}>QR Code</h1>
+        <h1 className={styles.title}>QR Code Generator</h1>
+        <div className={styles.headerActions}>
+          <button onClick={() => window.print()} className={styles.btnPrimary}>
+            <Printer size={18} />
+            Print
+          </button>
+        </div>
       </header>
 
       <main className={styles.main}>
@@ -64,26 +77,37 @@ export default function LocationQRPage() {
           locationId={location.id}
           locationCode={location.code || location.id}
           locationName={location.name}
-          size={300}
+          building={location.building || undefined}
+          floor={location.floor || undefined}
+          size={280}
         />
 
-        <div className={styles.instructions}>
-          <h3>Cara Menggunakan:</h3>
+        <div className={styles.instructions} data-print-hide>
+          <h3>📋 Cara Menggunakan QR Code:</h3>
           <ol>
-            <li>Download QR code dengan klik tombol "Download"</li>
-            <li>Print dan tempel di lokasi toilet</li>
-            <li>Cleaner scan QR untuk mulai inspeksi</li>
-            <li>Atau bagikan URL langsung via WhatsApp/Email</li>
+            <li>
+              <strong>Download</strong> QR code dengan klik tombol "Download PNG"
+            </li>
+            <li>
+              <strong>Print</strong> langsung dengan klik tombol "Print"
+            </li>
+            <li>
+              <strong>Tempel</strong> QR code di pintu masuk toilet atau area yang mudah terlihat
+            </li>
+            <li>
+              <strong>Scan</strong> - Cleaner tinggal scan untuk mulai inspeksi
+            </li>
           </ol>
-        </div>
 
-        <div className={styles.printButton}>
-          <button 
-            onClick={() => window.print()}
-            className={styles.btn}
-          >
-            🖨️ Print QR Code
-          </button>
+          <div className={styles.tips}>
+            <h4>💡 Tips:</h4>
+            <ul>
+              <li>Print dengan ukuran minimal 10x10 cm agar mudah di-scan</li>
+              <li>Gunakan kertas berkualitas atau laminating agar tahan lama</li>
+              <li>Pasang di tempat yang terang dan tidak terhalang</li>
+              <li>Test scan QR sebelum ditempel permanent</li>
+            </ul>
+          </div>
         </div>
       </main>
     </div>
