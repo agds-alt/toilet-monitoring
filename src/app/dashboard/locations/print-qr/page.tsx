@@ -1,15 +1,15 @@
 // ===================================
-// 📁 src/app/dashboard/locations/print-qr/page.tsx
-// Bulk QR Print - Print multiple QR codes
+// UPDATED: Complete print-qr page.tsx
 // ===================================
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ArrowLeft, Printer, Download, Check } from 'lucide-react';
+import { ArrowLeft, Printer, Check } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 import { getLocationsUseCase } from '@/lib/di';
 import { Location } from '@/core/entities/Location';
-import QRCodeDisplay from '@/presentation/components/features/locations/QRCodeDisplay';
 import styles from './print-qr.module.css';
 
 export default function BulkQRPrintPage() {
@@ -30,7 +30,6 @@ export default function BulkQRPrintPage() {
         const data = await getLocationsUseCase.execute();
         setLocations(data);
         
-        // Pre-select from URL params
         const ids = searchParams.get('ids');
         if (ids) {
           setSelectedIds(new Set(ids.split(',')));
@@ -44,6 +43,38 @@ export default function BulkQRPrintPage() {
 
     loadLocations();
   }, [searchParams]);
+
+  // Inject print styles
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @media print {
+        [data-print-hide] { display: none !important; }
+        body { background: white !important; }
+        .printArea { display: block !important; }
+        .qrGrid {
+          display: grid !important;
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 40px !important;
+          padding: 30px !important;
+        }
+        .qrPrintCard {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+        }
+        svg {
+          display: block !important;
+          visibility: visible !important;
+        }
+        * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  }, []);
 
   const filteredLocations = locations.filter(loc => {
     const matchBuilding = filter.building === 'all' || loc.building === filter.building;
@@ -69,8 +100,18 @@ export default function BulkQRPrintPage() {
     setSelectedIds(new Set());
   };
 
-  const selectedLocations = locations.filter(loc => selectedIds.has(loc.id));
+  const handlePrint = () => {
+    // Force visibility before print
+    const printArea = document.querySelector(`.${styles.printArea}`) as HTMLElement;
+    if (printArea) {
+      printArea.style.display = 'block';
+      printArea.style.visibility = 'visible';
+    }
+    
+    setTimeout(() => window.print(), 200);
+  };
 
+  const selectedLocations = locations.filter(loc => selectedIds.has(loc.id));
   const buildings = Array.from(new Set(locations.map(l => l.building).filter(Boolean)));
   const floors = Array.from(new Set(locations.map(l => l.floor).filter(Boolean))).sort();
 
@@ -135,12 +176,12 @@ export default function BulkQRPrintPage() {
               {selectedIds.size} lokasi dipilih
             </div>
             <button 
-              onClick={() => window.print()} 
+              onClick={handlePrint}
               disabled={selectedIds.size === 0}
               className={styles.btnPrint}
             >
               <Printer size={18} />
-              Print QR Codes
+              Print QR Codes ({selectedIds.size})
             </button>
           </div>
         </div>
@@ -182,15 +223,56 @@ export default function BulkQRPrintPage() {
           <div className={styles.qrGrid}>
             {selectedLocations.map(location => (
               <div key={location.id} className={styles.qrPrintCard}>
-                <QRCodeDisplay
-                  locationId={location.id}
-                  locationCode={location.code || location.id}
-                  locationName={location.name}
-                  building={location.building || undefined}
-                  floor={location.floor || undefined}
-                  size={200}
-                  showActions={false}
-                />
+                <div style={{ textAlign: 'center', padding: '20px' }}>
+                  <QRCodeSVG
+                    value={`${typeof window !== 'undefined' ? window.location.origin : ''}/scan/${location.code || location.id}`}
+                    size={200}
+                    level="H"
+                    includeMargin={true}
+                    bgColor="#FFFFFF"
+                    fgColor="#1F2937"
+                    style={{ margin: '0 auto', display: 'block' }}
+                  />
+                  <h3 style={{ 
+                    marginTop: '20px', 
+                    fontSize: '18px', 
+                    fontWeight: '600',
+                    color: '#1F2937'
+                  }}>
+                    {location.name}
+                  </h3>
+                  <div style={{ 
+                    marginTop: '12px', 
+                    background: '#F7F7F8', 
+                    padding: '6px 16px', 
+                    borderRadius: '6px',
+                    display: 'inline-block',
+                    fontFamily: 'Courier New, monospace',
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    color: '#2563EB',
+                    letterSpacing: '1px'
+                  }}>
+                    {location.code || location.id.substring(0, 8)}
+                  </div>
+                  {location.building && (
+                    <div style={{ 
+                      marginTop: '10px', 
+                      fontSize: '14px', 
+                      color: '#6B7280' 
+                    }}>
+                      {location.building}
+                    </div>
+                  )}
+                  {location.floor && (
+                    <div style={{ 
+                      fontSize: '14px', 
+                      color: '#6B7280' 
+                    }}>
+                      Lantai {location.floor}
+                    </div>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -204,7 +286,7 @@ export default function BulkQRPrintPage() {
           <ul>
             <li>Gunakan kertas A4 standar atau stiker label</li>
             <li>Setting print: Portrait, Fit to page</li>
-            <li>Rekomendasi: 4-6 QR per halaman untuk ukuran optimal</li>
+            <li>Rekomendasi: 2 kolom per halaman</li>
             <li>Test scan QR sebelum ditempel di lokasi</li>
             <li>Laminating untuk ketahanan lebih lama</li>
           </ul>

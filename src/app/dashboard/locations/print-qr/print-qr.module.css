@@ -223,6 +223,7 @@
   color: #6B7280;
 }
 
+/* Print Area - FIXED */
 .printArea {
   display: none;
 }
@@ -239,6 +240,47 @@
 .qrPrintCard {
   page-break-inside: avoid;
   break-inside: avoid;
+  background: white;
+  padding: 20px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.qrCode {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+}
+
+.locationInfo {
+  text-align: center;
+}
+
+.locationName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 4px;
+}
+
+.locationCode {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: #2563EB;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.locationDetails {
+  font-size: 12px;
+  color: #6B7280;
 }
 
 .instructions {
@@ -278,17 +320,17 @@
     display: none !important;
   }
   
-  .container {
-    background: white;
-  }
-  
   .printArea {
     display: block !important;
   }
   
+  .container {
+    background: white;
+  }
+  
   .qrGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: 30px;
     padding: 20px;
   }
