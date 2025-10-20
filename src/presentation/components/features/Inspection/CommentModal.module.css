@@ -1,0 +1,406 @@
+/* src/presentation/components/features/inspection/CommentModal.module.css */
+/* ============================================ */
+/* COMMENT MODAL STYLES */
+/* ============================================ */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ============================================ */
+/* MODAL */
+/* ============================================ */
+
+.modal {
+  width: 100%;
+  max-width: 500px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ============================================ */
+/* HEADER */
+/* ============================================ */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+}
+
+.closeButton {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: var(--background-secondary, #f8f9fa);
+  border: none;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, #6b7280);
+}
+
+.closeButton:hover {
+  background: var(--error-light, #fee2e2);
+  color: var(--error-color, #ef4444);
+  transform: scale(1.05);
+}
+
+.closeButton:focus {
+  outline: none;
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--primary-color, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* ============================================ */
+/* COMPONENT BADGE */
+/* ============================================ */
+
+.componentBadge {
+  padding: 12px 24px;
+  background: var(--primary-light, #dbeafe);
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.badgeText {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-color, #3b82f6);
+}
+
+/* ============================================ */
+/* BODY */
+/* ============================================ */
+
+.body {
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid var(--border-color, #e0e0e0);
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.6;
+  color: var(--text-primary, #1f2937);
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.2s ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--primary-color, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.textarea::placeholder {
+  color: var(--text-secondary, #9ca3af);
+}
+
+.textarea.error {
+  border-color: var(--error-color, #ef4444);
+}
+
+.textarea.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.charCount {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 4px;
+}
+
+.charCount span {
+  font-size: 12px;
+  color: var(--text-secondary, #6b7280);
+  transition: color 0.2s ease;
+}
+
+.charCount .overLimit {
+  color: var(--error-color, #ef4444);
+  font-weight: 600;
+}
+
+/* ============================================ */
+/* FOOTER */
+/* ============================================ */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  gap: 12px;
+}
+
+.clearButton {
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clearButton:hover:not(:disabled) {
+  background: var(--error-light, #fee2e2);
+  border-color: var(--error-color, #ef4444);
+  color: var(--error-color, #ef4444);
+}
+
+.clearButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.mainActions {
+  display: flex;
+  gap: 8px;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  background: white;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary, #1f2937);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+  background: var(--background-secondary, #f8f9fa);
+  border-color: var(--text-secondary, #6b7280);
+}
+
+.saveButton {
+  padding: 10px 24px;
+  background: var(--primary-color, #3b82f6);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.saveButton:hover:not(:disabled) {
+  background: var(--primary-hover, #2563eb);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.saveButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.saveButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.saveButton:focus,
+.cancelButton:focus,
+.clearButton:focus {
+  outline: none;
+}
+
+.saveButton:focus-visible,
+.cancelButton:focus-visible,
+.clearButton:focus-visible {
+  outline: 2px solid var(--primary-color, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* ============================================ */
+/* RESPONSIVE */
+/* ============================================ */
+
+@media (max-width: 640px) {
+  .modal {
+    max-height: 95vh;
+    border-radius: 16px 16px 0 0;
+    position: absolute;
+    bottom: 0;
+  }
+
+  .header {
+    padding: 16px 20px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .body {
+    padding: 20px;
+  }
+
+  .footer {
+    padding: 12px 20px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .clearButton,
+  .mainActions {
+    width: 100%;
+  }
+
+  .mainActions {
+    flex-direction: row;
+  }
+
+  .cancelButton,
+  .saveButton {
+    flex: 1;
+  }
+}
+
+/* ============================================ */
+/* DARK MODE */
+/* ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  .modal {
+    background: var(--background-secondary-dark, #1f2937);
+  }
+
+  .header {
+    border-bottom-color: var(--border-color-dark, #374151);
+  }
+
+  .title {
+    color: var(--text-primary-dark, #f9fafb);
+  }
+
+  .closeButton {
+    background: var(--background-tertiary-dark, #111827);
+    color: var(--text-secondary-dark, #9ca3af);
+  }
+
+  .closeButton:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--error-light, #fca5a5);
+  }
+
+  .componentBadge {
+    background: rgba(59, 130, 246, 0.2);
+    border-bottom-color: var(--border-color-dark, #374151);
+  }
+
+  .badgeText {
+    color: var(--primary-light, #93c5fd);
+  }
+
+  .textarea {
+    background: var(--background-tertiary-dark, #111827);
+    border-color: var(--border-color-dark, #374151);
+    color: var(--text-primary-dark, #f9fafb);
+  }
+
+  .textarea:focus {
+    border-color: var(--primary-color, #3b82f6);
+  }
+
+  .footer {
+    border-top-color: var(--border-color-dark, #374151);
+  }
+
+  .clearButton {
+    background: transparent;
+    border-color: var(--border-color-dark, #374151);
+    color: var(--text-secondary-dark, #9ca3af);
+  }
+
+  .cancelButton {
+    background: var(--background-tertiary-dark, #111827);
+    border-color: var(--border-color-dark, #374151);
+    color: var(--text-primary-dark, #f9fafb);
+  }
+
+  .cancelButton:hover {
+    background: var(--background-secondary-dark, #1f2937);
+  }
+}

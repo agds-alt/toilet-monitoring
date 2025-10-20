@@ -1,573 +1,254 @@
-/* src/presentation/components/features/PhotoCapture/PhotoCapture.module.css */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s;
+}
 
-.container {
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: white;
+  border-radius: 16px;
   width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #E5E7EB;
 }
 
 .title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-gray-900);
-  margin-bottom: var(--space-2);
-  text-align: center;
-}
-
-.description {
-  font-size: 0.875rem;
-  color: var(--color-gray-600);
-  text-align: center;
-  margin-bottom: var(--space-6);
-  min-height: 1.5rem; /* Prevent layout shift */
-}
-
-.photoArea {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  background: var(--color-gray-100);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-bottom: var(--space-4);
-  box-shadow: var(--shadow-md);
-}
-
-.placeholder {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: var(--color-gray-400);
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+  margin: 0;
 }
 
-.placeholderIcon {
-  font-size: 4rem;
-  margin-bottom: var(--space-3);
+.btnClose {
+  padding: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #6B7280;
+  transition: all 0.2s;
 }
 
-.cameraView,
-.preview {
-  width: 100%;
-  height: 100%;
+.btnClose:hover {
+  background: #F7F7F8;
+  color: #1F2937;
+}
+
+.content {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.geoStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.geoStatus[data-status="loading"] {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.geoStatus[data-status="success"] {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.geoStatus[data-status="error"] {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+.error {
+  padding: 12px 16px;
+  background: #FEE2E2;
+  border: 1px solid #FCA5A5;
+  border-radius: 8px;
+  color: #991B1B;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.cameraContainer {
   position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
 }
 
 .video,
-.previewImage {
+.photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: var(--color-gray-600);
-  gap: var(--space-4);
-  background: var(--color-gray-50);
-}
-
-.spinner {
-  width: 48px;
-  height: 48px;
-  border: 4px solid var(--color-gray-200);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.loading p {
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--color-gray-700);
-}
-
-.photoInfo {
-  position: absolute;
-  bottom: var(--space-2);
-  right: var(--space-2);
-  background: rgba(0, 0, 0, 0.75);
-  color: white;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  font-size: 0.75rem;
-  font-weight: 500;
-  backdrop-filter: blur(4px);
-}
-
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-/* Mobile optimizations */
-@media (max-width: 768px) {
-  .photoArea {
-    aspect-ratio: 3 / 4; /* Portrait for mobile */
-  }
-
-  .title {
-    font-size: 1.125rem;
-  }
-
-  .placeholderIcon {
-    font-size: 3rem;
-  }
-
-  .actions {
-    gap: var(--space-2);
-  }
-}
-
-/* Landscape mode on mobile */
-@media (max-width: 768px) and (orientation: landscape) {
-  .photoArea {
-    aspect-ratio: 16 / 9;
-  }
-}
-
-/* Prevent layout shift during loading */
-.photoArea > * {
+.cameraOverlay {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
 }
 
-/* Smooth transitions */
-.preview,
-.loading,
-.cameraView {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-/* ADD THIS TO: src/presentation/components/features/PhotoCapture/PhotoCapture.module.css */
-
-/* Wrapper for Next.js Image component */
-.previewImageWrapper {
-  position: relative;
-  width: 100%;
-  height: 400px;
+.frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 70%;
+  border: 3px solid rgba(255, 255, 255, 0.6);
   border-radius: 12px;
-  overflow: hidden;
-  background: #f0f0f0;
 }
 
-/* Adjust previewImage to work with fill layout */
-.previewImage {
-  object-fit: contain;
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-/* Mobile responsive */
-@media (max-width: 768px) {
-  .previewImageWrapper {
-    height: 300px;
-  }
+.btnCapture {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  background: #2563EB;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-@media (max-width: 480px) {
-  .previewImageWrapper {
-    height: 250px;
-  }
-}
-/* Tambahkan di akhir file PhotoCapture.module.css */
-
-.geoInfo {
-  margin-top: var(--space-4);
-  padding: var(--space-3);
-  background: var(--color-success-light, #e8f5e9);
-  border-left: 3px solid var(--color-success);
-  border-radius: var(--radius-md);
-  font-size: 0.875rem;
-  color: var(--color-gray-700);
-  text-align: center;
-  font-weight: 500;
+.btnCapture:hover:not(:disabled) {
+  background: #1D4ED8;
+  transform: translateY(-2px);
 }
 
-@media (max-width: 768px) {
-  .geoInfo {
-    font-size: 0.8125rem;
-    padding: var(--space-2);
-  }
+.btnCapture:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
-/* Tambahkan di akhir file PhotoCapture.module.css */
 
-.metadata {
-  margin: var(--space-4) 0;
-  padding: var(--space-3);
-  background: var(--color-gray-50);
-  border-radius: var(--radius-md);
+.btnRetake,
+.btnConfirm {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnRetake {
+  background: white;
+  color: #1F2937;
+  border: 2px solid #E5E7EB;
+}
+
+.btnRetake:hover {
+  background: #F7F7F8;
+  border-color: #2563EB;
+}
+
+.btnConfirm {
+  background: #10B981;
+  color: white;
+  border: none;
+}
+
+.btnConfirm:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}
+
+.tips {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 8px;
 }
 
-.metadataItem {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-2);
-  font-size: 0.875rem;
-  color: var(--color-gray-700);
-}
-
-.metadataIcon {
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-
-.metadataText {
-  flex: 1;
-  line-height: 1.4;
-  word-break: break-word;
-}
-
-@media (max-width: 768px) {
-  .metadata {
-    padding: var(--space-2);
-  }
-  
-  .metadataItem {
-    font-size: 0.8125rem;
-  }
-  
-  .metadataIcon {
-    font-size: 0.875rem;
-  }
-}
-/* Tambahkan di PhotoCapture.module.css */
-.progressBar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 0 0 8px 8px;
-  overflow: hidden;
-}
-
-.progressFill {
-  height: 100%;
-  background: #10b981;
-  transition: width 0.3s ease;
-}
-
-.uploadSuccess {
-  position: absolute;
-  top: 0.25rem;
-  left: 0.25rem;
-  background: rgba(16, 185, 129, 0.9);
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.uploadingIndicator {
-  background: #fffbeb;
-  border: 1px solid #fef3c7;
-  color: #92400e;
-  padding: 0.5rem;
+.tip {
+  font-size: 13px;
+  color: #6B7280;
+  padding: 8px 12px;
+  background: #F7F7F8;
   border-radius: 6px;
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
-}
-/* Tambahkan di AssessmentForm.module.css */
-
-/* Photo Section */
-.photoSection {
-  margin: 2rem 0;
-  padding: 1.5rem;
-  background: #f8f8f8;
-  border-radius: 12px;
-  border: 1px solid #f0f0f0;
 }
 
-.photoTitle {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #000000;
-  margin: 0 0 0.5rem 0;
-}
-
-.photoDescription {
-  font-size: 0.875rem;
-  color: #666666;
-  margin: 0 0 1.5rem 0;
-  line-height: 1.4;
-}
-
-/* Add Photo Button */
-.addPhotoButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  background: #ffffff;
-  color: #000000;
-  border: 2px dashed #e0e0e0;
-  border-radius: 10px;
-  padding: 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.addPhotoButton:hover {
-  border-color: #000000;
-  background: #fafafa;
-  transform: translateY(-1px);
-}
-
-.photoIcon {
-  font-size: 1.25rem;
-}
-
-/* Photo Preview */
-.photoPreview {
-  width: 100%;
-}
-
-.previewContainer {
-  background: #ffffff;
-  border: 1px solid #e8e8e8;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.previewImage {
-  width: 100%;
-  height: 200px;
-  object-fit: contain;
-  border-radius: 8px;
-  background: #f8f8f8;
-  margin-bottom: 1rem;
-}
-
-.photoActions {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.uploadButton {
-  background: #000000;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex: 1;
-  max-width: 200px;
-}
-
-.uploadButton:hover:not(:disabled) {
-  background: #333333;
-  transform: translateY(-1px);
-}
-
-.uploadButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.uploadSuccess {
-  background: #10b981;
-  color: #ffffff;
-  border-radius: 8px;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  flex: 1;
-  max-width: 200px;
-  text-align: center;
-}
-
-.removeButton {
-  background: #ffffff;
-  color: #666666;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 0.75rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex: 1;
-  max-width: 200px;
-}
-
-.removeButton:hover {
-  border-color: #ef4444;
-  color: #ef4444;
-  transform: translateY(-1px);
-}
-
-/* Update Submit Section untuk accommodate photo */
-.submitSection {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  border-top: 1px solid #f0f0f0;
-  padding-top: 2rem;
-  margin-top: 1rem;
-}
-
-.cancelButton {
-  background: #ffffff;
-  color: #666666;
-  padding: 0.75rem 1.5rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex: 1;
-  max-width: 150px;
-}
-
-.cancelButton:hover {
-  border-color: #000000;
-  color: #000000;
-}
-
-.submitButton {
-  background: #000000;
-  color: #ffffff;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex: 1;
-  max-width: 200px;
-}
-
-.submitButton:hover:not(:disabled) {
-  background: #333333;
-  transform: translateY(-1px);
-}
-
-.submitButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .photoSection {
-    padding: 1.25rem;
-    margin: 1.5rem 0;
+@media (max-width: 640px) {
+  .modal {
+    max-height: 95vh;
+    border-radius: 16px 16px 0 0;
+    margin-top: auto;
   }
   
-  .previewImage {
-    height: 150px;
+  .content {
+    padding: 16px;
   }
   
-  .photoActions {
-    flex-direction: column;
-  }
-  
-  .uploadButton,
-  .uploadSuccess,
-  .removeButton {
-    max-width: none;
-  }
-  
-  .submitSection {
-    flex-direction: column;
-  }
-  
-  .cancelButton,
-  .submitButton {
-    max-width: none;
-  }
-}
-
-/* Dark Mode */
-@media (prefers-color-scheme: dark) {
-  .photoSection {
-    background: #1a1a1a;
-    border-color: #333333;
-  }
-  
-  .photoTitle {
-    color: #ffffff;
-  }
-  
-  .photoDescription {
-    color: #cccccc;
-  }
-  
-  .addPhotoButton {
-    background: #2a2a2a;
-    color: #ffffff;
-    border-color: #444444;
-  }
-  
-  .addPhotoButton:hover {
-    border-color: #ffffff;
-  }
-  
-  .previewContainer {
-    background: #2a2a2a;
-    border-color: #333333;
-  }
-  
-  .previewImage {
-    background: #1a1a1a;
-  }
-  
-  .removeButton {
-    background: #2a2a2a;
-    color: #cccccc;
-    border-color: #444444;
-  }
-  
-  .removeButton:hover {
-    border-color: #ef4444;
-    color: #ef4444;
-  }
-  
-  .cancelButton {
-    background: #2a2a2a;
-    color: #cccccc;
-    border-color: #444444;
-  }
-  
-  .cancelButton:hover {
-    border-color: #ffffff;
-    color: #ffffff;
+  .cameraContainer {
+    aspect-ratio: 3/4;
   }
 }

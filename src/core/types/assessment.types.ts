@@ -1,52 +1,35 @@
-export interface AssessmentCategory {
-  id: string;
-  name: string;
-  description: string;
-  criteria: string[];
+// ===================================
+// 📁 src/core/types/assessment.types.ts
+// Assessment Types
+// ===================================
+export interface AssessmentItem {
+  key: string;
+  label: string;
+  icon: string;
   weight: number;
 }
 
-export interface AssessmentFormData {
-  assessments: Record<string, {
-    value: number;
-    notes: string;
-    timestamp: string;
-  }>;
-  overallComment?: string;
+export const ASSESSMENT_ITEMS: AssessmentItem[] = [
+  { key: 'aroma', label: 'Aroma / Bau', icon: '👃', weight: 1.5 },
+  { key: 'lantai', label: 'Kebersihan Lantai', icon: '🧹', weight: 1.2 },
+  { key: 'dinding', label: 'Kebersihan Dinding', icon: '🧱', weight: 1.0 },
+  { key: 'wastafel', label: 'Kebersihan Wastafel', icon: '🚰', weight: 1.2 },
+  { key: 'cermin', label: 'Kebersihan Cermin', icon: '🪞', weight: 1.0 },
+  { key: 'closet', label: 'Kebersihan Closet', icon: '🚽', weight: 1.5 },
+  { key: 'urinoir', label: 'Kebersihan Urinoir', icon: '🚿', weight: 1.0 },
+  { key: 'sabun', label: 'Ketersediaan Sabun', icon: '🧼', weight: 1.2 },
+  { key: 'tissue', label: 'Ketersediaan Tissue', icon: '🧻', weight: 1.2 },
+  { key: 'pewangi', label: 'Ketersediaan Pewangi', icon: '🌸', weight: 1.0 },
+  { key: 'sampah', label: 'Kondisi Tempat Sampah', icon: '🗑️', weight: 1.0 },
+];
+
+export interface AssessmentValue {
+  rawValue: string | number;
+  normalizedValue: number; // 1-5
+  inputMode: 'stars' | 'emoji' | 'checkbox';
+  comment?: string;
 }
 
-export interface AssessmentSubmission {
-  locationId: string;
-  userId: string;
-  assessments: Record<string, {
-    value: number;
-    notes: string;
-    timestamp: string;
-  }>;
-  overallComment?: string;
-  status: 'completed' | 'in_progress';
+export interface AssessmentData {
+  [key: string]: AssessmentValue;
 }
-
-export const ASSESSMENT_STANDARDS = {
-  CLEANLINESS: {
-    EXCELLENT: 5,
-    GOOD: 4,
-    FAIR: 3,  
-    POOR: 2,
-    VERY_POOR: 1
-  },
-  SUPPLIES: {
-    COMPLETE: 5,
-    ADEQUATE: 4,
-    LIMITED: 3,
-    LOW: 2,
-    EMPTY: 1
-  },
-  FUNCTIONALITY: {
-    PERFECT: 5,
-    GOOD: 4,
-    FAIR: 3,
-    POOR: 2,
-    BROKEN: 1
-  }
-} as const;

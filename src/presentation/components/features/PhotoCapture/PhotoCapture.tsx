@@ -1,222 +1,174 @@
-// presentation/components/features/PhotoCapture/PhotoCapture.tsx
+// ===================================
+// 📁 src/presentation/components/features/inspection/PhotoCapture.tsx
+// Photo Capture with Geolocation
+// ===================================
 'use client';
 
-import { useState, useRef } from 'react';
-// HAPUS import yang error, atau perbaiki jadi:
-// import { uploadToCloudinary } from '@/lib/utils/cloudinary.client'; // Jika perlu
+import { useState, useRef, useEffect } from 'react';
+import { Camera, X, RotateCcw, Check, MapPin } from 'lucide-react';
 import styles from './PhotoCapture.module.css';
 
-interface PhotoCaptureProps {
-  onPhotoCapture: (file: File) => void;
+interface Props {
+  onCapture: (photo: string, geoData: {lat: number, lng: number} | null) => void;
   onClose: () => void;
-  currentPhoto?: string | null;
 }
 
-export default function PhotoCapture({ 
-  onPhotoCapture, 
-  onClose, 
-  currentPhoto 
-}: PhotoCaptureProps) {
-  const [mode, setMode] = useState<'select' | 'camera' | 'preview'>('select');
-  const [photoPreview, setPhotoPreview] = useState<string | null>(currentPhoto || null);
-  const [isCapturing, setIsCapturing] = useState(false);
-  
-  const fileInputRef = useRef<HTMLInputElement>(null);
+export default function PhotoCapture({ onCapture, onClose }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [geoData, setGeoData] = useState<{lat: number, lng: number} | null>(null);
+  const [geoStatus, setGeoStatus] = useState<'loading' | 'success' | 'error'>('loading');
+  const [error, setError] = useState('');
 
-  // Handle file upload dari gallery
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Validasi file type
-      if (!file.type.startsWith('image/')) {
-        alert('Please select an image file');
-        return;
-      }
+  useEffect(() => {
+    startCamera();
+    getGeolocation();
+    
+    return () => {
+      stopCamera();
+    };
+  }, []);
 
-      // Validasi file size (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        alert('Image size should be less than 10MB');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPhotoPreview(e.target?.result as string);
-        setMode('preview');
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Start camera
   const startCamera = async () => {
     try {
-      setIsCapturing(true);
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          facingMode: 'environment', // Use back camera
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'environment', // Back camera on mobile
           width: { ideal: 1920 },
-          height: { ideal: 1080 }
-        } 
+          height: { ideal: 1080 },
+        }
       });
       
-      streamRef.current = stream;
+      setStream(mediaStream);
       
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+        videoRef.current.srcObject = mediaStream;
       }
-      
-      setMode('camera');
-    } catch (error) {
-      console.error('Error accessing camera:', error);
-      alert('Cannot access camera. Please check permissions.');
-    } finally {
-      setIsCapturing(false);
+    } catch (err: any) {
+      console.error('Camera error:', err);
+      setError('Cannot access camera. Please check permissions.');
     }
   };
 
-  // Capture photo dari camera
-  const capturePhoto = () => {
-    if (videoRef.current) {
-      const canvas = document.createElement('canvas');
-      const video = videoRef.current;
-      
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      
-      const context = canvas.getContext('2d');
-      if (context) {
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const file = new File([blob], `photo_${Date.now()}.jpg`, { 
-              type: 'image/jpeg' 
-            });
-            
-            const previewUrl = URL.createObjectURL(blob);
-            setPhotoPreview(previewUrl);
-            setMode('preview');
-            
-            // Stop camera stream
-            stopCamera();
-          }
-        }, 'image/jpeg', 0.8); // 80% quality
-      }
-    }
-  };
-
-  // Stop camera
   const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
     }
   };
 
-  // Confirm photo
-  const confirmPhoto = () => {
-    if (photoPreview && photoPreview.startsWith('data:')) {
-      // Convert dataURL to File
-      fetch(photoPreview)
-        .then(res => res.blob())
-        .then(blob => {
-          const file = new File([blob], `inspection_photo_${Date.now()}.jpg`, {
-            type: 'image/jpeg'
-          });
-          onPhotoCapture(file);
-          onClose();
-        })
-        .catch(error => {
-          console.error('Error converting photo:', error);
-          alert('Error processing photo. Please try again.');
-        });
-    } else {
-      // Handle case where photo is already a URL (from existing photo)
-      onClose();
+  const getGeolocation = () => {
+    if (!navigator.geolocation) {
+      setGeoStatus('error');
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setGeoData({ lat: latitude, lng: longitude });
+        setGeoStatus('success');
+        console.log('📍 Location:', { lat: latitude, lng: longitude });
+      },
+      (err) => {
+        console.error('Geolocation error:', err);
+        setGeoStatus('error');
+        // Continue without location
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
   };
 
-  // Retake photo
-  const retakePhoto = () => {
-    setPhotoPreview(null);
-    setMode('select');
+  const capturePhoto = () => {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
     
-    // Cleanup preview URL
-    if (photoPreview && photoPreview.startsWith('blob:')) {
-      URL.revokeObjectURL(photoPreview);
-    }
-  };
+    // Set canvas size to match video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-  // Cancel dan cleanup
-  const handleClose = () => {
+    // Draw video frame to canvas
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Add timestamp overlay
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillRect(10, canvas.height - 60, 300, 50);
+    
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 16px Arial';
+    ctx.fillText(new Date().toLocaleString(), 20, canvas.height - 30);
+    
+    // Add GPS overlay if available
+    if (geoData) {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(canvas.width - 310, canvas.height - 60, 300, 50);
+      
+      ctx.fillStyle = '#10B981';
+      ctx.font = '14px Arial';
+      ctx.fillText(`📍 ${geoData.lat.toFixed(6)}, ${geoData.lng.toFixed(6)}`, canvas.width - 300, canvas.height - 30);
+    }
+    
+    // Convert to base64
+    const photoData = canvas.toDataURL('image/jpeg', 0.9);
+    setPhoto(photoData);
     stopCamera();
-    
-    // Cleanup preview URL
-    if (photoPreview && photoPreview.startsWith('blob:')) {
-      URL.revokeObjectURL(photoPreview);
+  };
+
+  const retakePhoto = () => {
+    setPhoto(null);
+    startCamera();
+  };
+
+  const confirmPhoto = () => {
+    if (photo) {
+      onCapture(photo, geoData);
     }
-    
-    onClose();
   };
 
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        
-        {/* Header */}
         <div className={styles.header}>
-          <h2 className={styles.title}>Add Photo</h2>
-          <button onClick={handleClose} className={styles.closeButton}>
-            ×
+          <h3 className={styles.title}>
+            <Camera size={20} />
+            Take Photo
+          </h3>
+          <button onClick={onClose} className={styles.btnClose}>
+            <X size={24} />
           </button>
         </div>
 
-        {/* Content berdasarkan mode */}
         <div className={styles.content}>
-          
-          {/* Mode Pilih: Upload atau Camera */}
-          {mode === 'select' && (
-            <div className={styles.selectMode}>
-              <div className={styles.optionCard} onClick={startCamera}>
-                <div className={styles.optionIcon}>📷</div>
-                <h3 className={styles.optionTitle}>Take Photo</h3>
-                <p className={styles.optionDescription}>
-                  Use your camera to take a new photo
-                </p>
-                {isCapturing && (
-                  <div className={styles.loading}>Starting camera...</div>
-                )}
-              </div>
+          {/* Geolocation Status */}
+          <div className={styles.geoStatus} data-status={geoStatus}>
+            <MapPin size={16} />
+            {geoStatus === 'loading' && 'Getting location...'}
+            {geoStatus === 'success' && `Location: ${geoData?.lat.toFixed(4)}, ${geoData?.lng.toFixed(4)}`}
+            {geoStatus === 'error' && 'Location unavailable'}
+          </div>
 
-              <div 
-                className={styles.optionCard}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <div className={styles.optionIcon}>🖼️</div>
-                <h3 className={styles.optionTitle}>Choose from Gallery</h3>
-                <p className={styles.optionDescription}>
-                  Select an existing photo from your device
-                </p>
-              </div>
-
-              {/* Hidden file input */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleFileUpload}
-                className={styles.hiddenInput}
-              />
+          {error && (
+            <div className={styles.error}>
+              ⚠️ {error}
             </div>
           )}
 
-          {/* Mode Camera */}
-          {mode === 'camera' && (
-            <div className={styles.cameraMode}>
-              <div className={styles.cameraPreview}>
+          {/* Camera/Photo View */}
+          <div className={styles.cameraContainer}>
+            {photo ? (
+              <img src={photo} alt="Captured" className={styles.photo} />
+            ) : (
+              <>
                 <video
                   ref={videoRef}
                   autoPlay
@@ -225,62 +177,44 @@ export default function PhotoCapture({
                   className={styles.video}
                 />
                 <div className={styles.cameraOverlay}>
-                  <div className={styles.captureFrame} />
+                  <div className={styles.frame} />
                 </div>
-              </div>
-              
-              <div className={styles.cameraControls}>
-                <button 
-                  onClick={capturePhoto}
-                  className={styles.captureButton}
-                >
-                  📸
+              </>
+            )}
+            <canvas ref={canvasRef} style={{ display: 'none' }} />
+          </div>
+
+          {/* Controls */}
+          <div className={styles.controls}>
+            {photo ? (
+              <>
+                <button onClick={retakePhoto} className={styles.btnRetake}>
+                  <RotateCcw size={20} />
+                  Retake
                 </button>
-                <button 
-                  onClick={() => {
-                    stopCamera();
-                    setMode('select');
-                  }}
-                  className={styles.cancelButton}
-                >
-                  Cancel
+                <button onClick={confirmPhoto} className={styles.btnConfirm}>
+                  <Check size={20} />
+                  Use Photo
                 </button>
-              </div>
+              </>
+            ) : (
+              <button onClick={capturePhoto} className={styles.btnCapture} disabled={!!error}>
+                <Camera size={24} />
+                Capture
+              </button>
+            )}
+          </div>
+
+          {/* Tips */}
+          {!photo && (
+            <div className={styles.tips}>
+              <div className={styles.tip}>💡 Make sure the area is well-lit</div>
+              <div className={styles.tip}>📸 Hold the camera steady</div>
+              {geoStatus === 'success' && (
+                <div className={styles.tip}>📍 Location data will be included</div>
+              )}
             </div>
           )}
-
-          {/* Mode Preview */}
-          {mode === 'preview' && photoPreview && (
-            <div className={styles.previewMode}>
-              <div className={styles.photoPreview}>
-                <img 
-                  src={photoPreview} 
-                  alt="Preview" 
-                  className={styles.previewImage}
-                />
-              </div>
-              
-              <div className={styles.previewControls}>
-                <button 
-                  onClick={confirmPhoto}
-                  className={styles.confirmButton}
-                >
-                  ✅ Use This Photo
-                </button>
-                <button 
-                  onClick={retakePhoto}
-                  className={styles.retakeButton}
-                >
-                  🔄 Retake
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Warning - Hanya 1 foto yang diperbolehkan */}
-        <div className={styles.warning}>
-          ⚠️ Only 1 photo allowed per inspection
         </div>
       </div>
     </div>

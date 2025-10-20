@@ -1,46 +1,98 @@
 // src/presentation/hooks/useGeolocation.ts
+// ============================================
+// GEOLOCATION HOOK
+// ============================================
+
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
+import { GeolocationData } from '@/core/types/inspection.types';
+import {
+  getCurrentPosition,
+  checkGeolocationPermission,
+} from '@/lib/utils/geolocation.utils';
 
-interface GeoData {
-  latitude: number;
-  longitude: number;
-  accuracy: number;
+interface UseGeolocationReturn {
+  geolocation: GeolocationData | null;
+  loading: boolean;
+  error: string | null;
+  permission: PermissionState | null;
+  getLocation: () => Promise<GeolocationData | null>;
+  checkPermission: () => Promise<PermissionState>;
+  clearLocation: () => void;
 }
 
-export const useGeolocation = () => {
-  const [geoData, setGeoData] = useState<GeoData | null>(null);
+export function useGeolocation(): UseGeolocationReturn {
+  const [geolocation, setGeolocation] = useState<GeolocationData | null>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [permission, setPermission] = useState<PermissionState | null>(null);
 
-  useEffect(() => {
-    if (!navigator.geolocation) {
-      setError('Geolocation not supported');
+  // ============================================
+  // GET CURRENT LOCATION
+  // ============================================
+
+  const getLocation = useCallback(async (): Promise<GeolocationData | null> => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      console.log('📍 Getting current location...');
+
+      const position = await getCurrentPosition();
+
+      setGeolocation(position);
+      console.log('✅ Location obtained:', {
+        lat: position.latitude.toFixed(6),
+        lng: position.longitude.toFixed(6),
+        accuracy: `${position.accuracy.toFixed(0)}m`,
+        address: position.formatted_address || 'No address',
+      });
+
+      return position;
+    } catch (err: any) {
+      console.error('❌ Geolocation error:', err);
+      setError(err.message || 'Gagal mendapatkan lokasi');
+      setGeolocation(null);
+      return null;
+    } finally {
       setLoading(false);
-      return;
     }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setGeoData({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracy: position.coords.accuracy
-        });
-        setLoading(false);
-      },
-      (err) => {
-        setError(err.message);
-        setLoading(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      }
-    );
   }, []);
 
-  return { geoData, error, loading };
-};
+  // ============================================
+  // CHECK PERMISSION
+  // ============================================
+
+  const checkPermission = useCallback(async (): Promise<PermissionState> => {
+    try {
+      const state = await checkGeolocationPermission();
+      setPermission(state);
+      console.log('🔐 Geolocation permission:', state);
+      return state;
+    } catch (err) {
+      console.error('❌ Permission check error:', err);
+      return 'prompt';
+    }
+  }, []);
+
+  // ============================================
+  // CLEAR LOCATION
+  // ============================================
+
+  const clearLocation = useCallback(() => {
+    setGeolocation(null);
+    setError(null);
+    console.log('🗑️ Location cleared');
+  }, []);
+
+  return {
+    geolocation,
+    loading,
+    error,
+    permission,
+    getLocation,
+    checkPermission,
+    clearLocation,
+  };
+}
