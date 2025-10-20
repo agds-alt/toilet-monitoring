@@ -1,19 +1,15 @@
-// app/login/layout.tsx
+// src/app/login/layout.tsx
+// REMOVE <html> and <body> tags!
+
 export default function LoginLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id">
-      <body style={{ 
-        margin: 0, 
-        padding: 0,
-        background: '#ffffff',
-        minHeight: '100vh'
-      }}>
-        {children}
-      </body>
-    </html>
+    // Just wrap children, NO <html> or <body>!
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      {children}
+    </div>
   );
 }

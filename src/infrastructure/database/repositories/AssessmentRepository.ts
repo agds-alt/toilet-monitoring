@@ -1,19 +1,33 @@
-// src/infrastructure/database/repositories/AssessmentRepository.ts
+// =====================================================
+// FILE 1: src/infrastructure/database/repositories/AssessmentRepository.ts
+// FIXED: Use inspection_records instead of inspections
+// =====================================================
+
 import { supabase } from '../supabase';
 import { AssessmentSubmission, Assessments } from '../../../core/types/assessment.types';
 
 export class AssessmentRepository {
   async createInspection(submission: AssessmentSubmission & { overallScore: number }): Promise<string> {
+    // Get default template
+    const { data: template } = await supabase
+      .from('inspection_templates')
+      .select('id')
+      .eq('is_default', true)
+      .single();
+
+    const now = new Date();
     const { data, error } = await supabase
-      .from('inspections')
+      .from('inspection_records') // ✅ FIXED: Changed from 'inspections'
       .insert({
+        template_id: template?.id,
         user_id: submission.userId,
         location_id: submission.locationId,
-        status: submission.status,
-        assessments: submission.assessments,
-        overall_comment: submission.overallComment,
-        overall_score: submission.overallScore, // Optional: tambah kolom ini
-        created_at: new Date().toISOString()
+        inspection_date: now.toISOString().split('T')[0],
+        inspection_time: now.toTimeString().split(' ')[0],
+        overall_status: submission.status === 'completed' ? 'Clean' : 'Needs Work',
+        responses: submission.assessments, // ✅ Changed from assessments to responses
+        notes: submission.overallComment, // ✅ Changed from overall_comment to notes
+        photo_urls: [] // ✅ Changed from photo_url to photo_urls array
       })
       .select('id')
       .single();
@@ -28,10 +42,10 @@ export class AssessmentRepository {
 
   async getInspectionHistory(userId: string, limit: number = 10) {
     const { data, error } = await supabase
-      .from('inspections')
+      .from('inspection_records') // ✅ FIXED: Changed from 'inspections'
       .select('*')
       .eq('user_id', userId)
-      .order('created_at', { ascending: false })
+      .order('submitted_at', { ascending: false }) // ✅ Changed from created_at
       .limit(limit);
 
     if (error) throw new Error(`Failed to fetch history: ${error.message}`);

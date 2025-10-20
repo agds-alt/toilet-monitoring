@@ -1,0 +1,195 @@
+/* ===================================
+   📁 src/presentation/components/features/locations/QRCodeDisplay.module.css
+   QR Code Component Styles
+   =================================== */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 32px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.qrWrapper {
+  padding: 24px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid #E5E7EB;
+  transition: all 0.3s;
+}
+
+.qrWrapper:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+.info {
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.locationName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.locationCode {
+  margin-bottom: 12px;
+}
+
+.locationCode code {
+  font-family: 'Courier New', monospace;
+  background: #F7F7F8;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2563EB;
+  border: 1px solid #E5E7EB;
+}
+
+.qrUrl {
+  font-size: 12px;
+  color: #6B7280;
+  word-break: break-all;
+  padding: 12px;
+  background: #F7F7F8;
+  border-radius: 6px;
+  border: 1px solid #E5E7EB;
+  font-family: monospace;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #F7F7F8;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #1F2937;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background: #E5E7EB;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Special button states */
+.btn.success {
+  background: #D1FAE5;
+  border-color: #10B981;
+  color: #065F46;
+}
+
+.btn.success:hover {
+  background: #A7F3D0;
+}
+
+/* Print Styles for QR Component */
+@media print {
+  .actions {
+    display: none !important;
+  }
+
+  .container {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+
+  .qrWrapper {
+    box-shadow: none;
+    border: 2px solid #000;
+  }
+
+  .locationName {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+
+  .locationCode code {
+    font-size: 20px;
+    padding: 8px 20px;
+  }
+
+  .qrUrl {
+    font-size: 14px;
+    padding: 16px;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 24px;
+  }
+
+  .qrWrapper {
+    padding: 16px;
+  }
+
+  .actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .locationName {
+    font-size: 16px;
+  }
+
+  .locationCode code {
+    font-size: 14px;
+    padding: 4px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 16px;
+  }
+
+  .qrWrapper {
+    padding: 12px;
+  }
+
+  .locationName {
+    font-size: 15px;
+  }
+
+  .qrUrl {
+    font-size: 11px;
+  }
+}

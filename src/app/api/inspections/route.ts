@@ -1,11 +1,17 @@
-// src/app/api/inspections/route.ts
+// =====================================================
+// FILE 2: src/app/api/inspections/route.ts
+// FIXED: Use inspection_records table
+// =====================================================
+
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/infrastructure/database/supabase';
 
 export async function GET() {
   try {
+    console.log('📋 GET /api/inspections called');
+    
     const { data: inspections, error } = await supabase
-      .from('inspection_records')
+      .from('inspection_records') // ✅ FIXED
       .select(`
         *,
         locations:location_id (
@@ -21,15 +27,18 @@ export async function GET() {
           email
         )
       `)
-      .order('submitted_at', { ascending: false })
+      .order('submitted_at', { ascending: false }) // ✅ FIXED
       .limit(20);
 
     if (error) {
+      console.error('❌ GET /api/inspections error:', error);
       throw new Error(`Failed to fetch inspections: ${error.message}`);
     }
 
+    console.log('✅ GET /api/inspections successful:', inspections?.length || 0, 'items');
     return NextResponse.json(inspections || []);
   } catch (error: any) {
+    console.error('❌ GET /api/inspections error:', error);
     return NextResponse.json(
       { error: error.message || 'Failed to fetch inspections' },
       { status: 500 }
@@ -50,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     const now = new Date();
     const { data, error } = await supabase
-      .from('inspection_records')
+      .from('inspection_records') // ✅ FIXED
       .insert({
         template_id: template?.id,
         location_id: body.locationId,
@@ -58,9 +67,9 @@ export async function POST(request: NextRequest) {
         inspection_date: now.toISOString().split('T')[0],
         inspection_time: now.toTimeString().split(' ')[0],
         overall_status: body.status || 'Clean',
-        responses: body.assessments || {},
-        photo_urls: body.photoUrl ? [body.photoUrl] : [],
-        notes: body.notes || null
+        responses: body.assessments || {}, // ✅ FIXED
+        photo_urls: body.photoUrl ? [body.photoUrl] : [], // ✅ FIXED
+        notes: body.notes || null // ✅ FIXED
       })
       .select()
       .single();
