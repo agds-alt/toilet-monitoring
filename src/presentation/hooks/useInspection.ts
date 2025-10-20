@@ -70,31 +70,37 @@ export function useInspection(
 
   useEffect(() => {
     const loadTemplate = async () => {
-      if (templateId) {
-        const template = await templateService.getTemplateById(templateId);
-        if (template) {
-          setState((prev) => ({
-            ...prev,
-            template,
-            uiState: {
-              ...prev.uiState,
-              totalSteps: template.fields.components.length,
-            },
-          }));
+      try {
+        if (templateId) {
+          const template = await templateService.getTemplateById(templateId);
+          if (template && template.fields?.components) {
+            setState((prev) => ({
+              ...prev,
+              template,
+              uiState: {
+                ...prev.uiState,
+                totalSteps: template.fields.components.length,
+              },
+            }));
+          }
+        } else {
+          // Load default template
+          const defaultTemplate = await templateService.getDefaultTemplate();
+          if (defaultTemplate && defaultTemplate.fields?.components) {
+            setState((prev) => ({
+              ...prev,
+              template: defaultTemplate,
+              uiState: {
+                ...prev.uiState,
+                totalSteps: defaultTemplate.fields.components.length,
+              },
+            }));
+          } else {
+            console.error('❌ No default template found or template has no components');
+          }
         }
-      } else {
-        // Load default template
-        const defaultTemplate = await templateService.getDefaultTemplate();
-        if (defaultTemplate) {
-          setState((prev) => ({
-            ...prev,
-            template: defaultTemplate,
-            uiState: {
-              ...prev.uiState,
-              totalSteps: defaultTemplate.fields.components.length,
-            },
-          }));
-        }
+      } catch (error) {
+        console.error('❌ Error loading template:', error);
       }
     };
 

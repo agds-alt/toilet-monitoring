@@ -247,7 +247,7 @@ export default function DashboardPage() {
               <p className={styles.emptyText}>Belum ada inspeksi</p>
               <button
                 className={styles.emptyButton}
-                onClick={() => router.push('/inspection')}
+                onClick={() => router.push('dashboard/inspection')}
               >
                 Mulai Inspeksi
               </button>

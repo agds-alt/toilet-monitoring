@@ -1,0 +1,324 @@
+/* src/presentation/components/features/inspection/ComponentRating.module.css */
+/* ============================================ */
+/* COMPONENT RATING STYLES */
+/* ============================================ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--border-color, #e0e0e0);
+  transition: all 0.2s ease;
+}
+
+.container:hover {
+  border-color: var(--primary-color, #3b82f6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================ */
+/* HEADER */
+/* ============================================ */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.componentIcon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.label {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  line-height: 1.4;
+}
+
+.required {
+  color: var(--error-color, #ef4444);
+  margin-left: 4px;
+}
+
+.ratingBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 32px;
+  padding: 0 12px;
+  background: var(--primary-light, #dbeafe);
+  border-radius: 16px;
+  font-weight: 600;
+}
+
+.ratingText {
+  font-size: 14px;
+  color: var(--primary-color, #3b82f6);
+}
+
+.ratingEmoji {
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* ============================================ */
+/* RATING WRAPPER */
+/* ============================================ */
+
+.ratingWrapper {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* ============================================ */
+/* STAR RATING (Professional) */
+/* ============================================ */
+
+.starRating {
+  display: flex;
+  gap: 8px;
+}
+
+.star {
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 36px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  filter: grayscale(100%);
+  opacity: 0.3;
+}
+
+.star:hover {
+  transform: scale(1.15);
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+.star.filled {
+  filter: grayscale(0%);
+  opacity: 1;
+  animation: starPop 0.3s ease;
+}
+
+.star:focus {
+  outline: none;
+}
+
+.star:focus-visible {
+  outline: 2px solid var(--primary-color, #3b82f6);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+@keyframes starPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ============================================ */
+/* EMOJI RATING (Gen Z) */
+/* ============================================ */
+
+.emojiRating {
+  display: flex;
+  gap: 12px;
+}
+
+.emoji {
+  position: relative;
+  padding: 8px;
+  background: var(--background-secondary, #f8f9fa);
+  border: 2px solid transparent;
+  border-radius: 50%;
+  font-size: 40px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.4;
+}
+
+.emoji:hover,
+.emoji.hovered {
+  opacity: 1;
+  transform: scale(1.15);
+  background: white;
+  border-color: var(--primary-color, #3b82f6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.emoji.selected {
+  opacity: 1;
+  transform: scale(1.1);
+  background: var(--primary-light, #dbeafe);
+  border-color: var(--primary-color, #3b82f6);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+  animation: emojiPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.emoji:focus {
+  outline: none;
+}
+
+.emoji:focus-visible {
+  outline: 2px solid var(--primary-color, #3b82f6);
+  outline-offset: 4px;
+}
+
+@keyframes emojiPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3) rotate(5deg);
+  }
+  100% {
+    transform: scale(1.1) rotate(0deg);
+  }
+}
+
+/* ============================================ */
+/* RATING LABEL */
+/* ============================================ */
+
+.ratingLabel {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+}
+
+.labelText {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 16px;
+  animation: fadeIn 0.3s ease;
+}
+
+.labelText.professional {
+  background: var(--primary-light, #dbeafe);
+  color: var(--primary-color, #3b82f6);
+}
+
+.labelText.genz {
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================ */
+/* RESPONSIVE */
+/* ============================================ */
+
+@media (max-width: 640px) {
+  .container {
+    padding: 12px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ratingBadge {
+    align-self: flex-end;
+  }
+
+  .star {
+    font-size: 32px;
+  }
+
+  .emoji {
+    font-size: 36px;
+    padding: 6px;
+  }
+
+  .emojiRating {
+    gap: 8px;
+  }
+
+  .labelText {
+    font-size: 13px;
+  }
+}
+
+/* ============================================ */
+/* DARK MODE */
+/* ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  .container {
+    background: var(--background-secondary-dark, #1f2937);
+    border-color: var(--border-color-dark, #374151);
+  }
+
+  .label {
+    color: var(--text-primary-dark, #f9fafb);
+  }
+
+  .ratingBadge {
+    background: rgba(59, 130, 246, 0.2);
+  }
+
+  .ratingText {
+    color: var(--primary-light, #93c5fd);
+  }
+
+  .emoji {
+    background: var(--background-tertiary-dark, #111827);
+  }
+
+  .emoji:hover,
+  .emoji.hovered {
+    background: var(--background-secondary-dark, #1f2937);
+  }
+
+  .emoji.selected {
+    background: rgba(59, 130, 246, 0.2);
+  }
+
+  .ratingLabel {
+    border-top-color: var(--border-color-dark, #374151);
+  }
+
+  .labelText.professional {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--primary-light, #93c5fd);
+  }
+}

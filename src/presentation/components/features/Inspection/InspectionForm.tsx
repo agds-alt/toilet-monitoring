@@ -101,6 +101,26 @@ export function InspectionForm({
       <div className={styles.loading}>
         <div className={styles.spinner} />
         <p>Memuat template...</p>
+        <p className={styles.loadingHint}>
+          Jika loading terlalu lama, kemungkinan template belum ada di database.
+          <br />
+          Silakan hubungi admin untuk membuat template default.
+        </p>
+      </div>
+    );
+  }
+
+  if (!state.template.fields?.components || state.template.fields.components.length === 0) {
+    return (
+      <div className={styles.error}>
+        <h2>❌ Template Error</h2>
+        <p>Template tidak memiliki komponen inspeksi.</p>
+        <p>Silakan hubungi admin untuk memperbaiki template.</p>
+        {onCancel && (
+          <button onClick={onCancel} className={styles.cancelButton}>
+            Kembali
+          </button>
+        )}
       </div>
     );
   }
