@@ -18,12 +18,12 @@ import {
   UseInspectionReturn,
 } from '@/core/types/inspection.types';
 import { useTimer } from './useTimer';
-import { usePhotoUpload } from './UsePhotoUpload';
+import { usePhotoUpload } from './usePhotoUpload';
 import { useGeolocation } from './useGeolocation';
-import { inspectionService } from '@/infrastructure/service/inspection.service';
-import { templateService } from '@/infrastructure/service/template.service';
-import { locationService } from '@/infrastructure/service/location.service';
-import { calculateOverallStatus, getCompletionPercentage } from '@/utils/rating.utils';
+import { inspectionService } from '@/infrastructure/services/inspection.service';
+import { templateService } from '@/infrastructure/services/template.service';
+import { locationService } from '@/infrastructure/services/location.service';
+import { calculateOverallStatus, getCompletionPercentage } from '@/lib/utils/rating.utils';
 import { canSubmitInspection, validateInspectionForm } from '@/lib/utils/validation.utils';
 import { DRAFT_CONFIG } from '@/lib/constants/inspection.constants';
 

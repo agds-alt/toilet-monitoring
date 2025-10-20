@@ -9,9 +9,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Sparkles, Briefcase } from 'lucide-react';
 import { getLocationsUseCase } from '@/lib/di';
 import { Location } from '@/core/entities/Location';
-import InspectionModeSelector from '@/presentation/components/features/inspection/InspectionModeSelector';
-import InspectionFormGenZ from '@/presentation/components/features/inspection/InspectionFormGenZ';
-import InspectionFormProfessional from '@/presentation/components/features/inspection/InspectionFormProfessional';
+import InspectionModeSelector from '@/features/Inspection/InspectionModeSelector';
 import styles from './inspect.module.css';
 
 export type InspectionMode = 'genz' | 'professional';
@@ -72,24 +70,5 @@ export default function InspectionPage() {
     );
   }
 
-  // Inspection form based on mode
-  return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <button onClick={() => setMode(null)} className={styles.btnBack}>
-          <ArrowLeft size={20} />
-          Change Mode
-        </button>
-        <h1 className={styles.title}>
-          {mode === 'genz' ? '😎 Inspection' : '📋 Inspection Form'}
-        </h1>
-      </header>
-
-      {mode === 'genz' ? (
-        <InspectionFormGenZ location={location} />
-      ) : (
-        <InspectionFormProfessional location={location} />
-      )}
-    </div>
-  );
+ 
 }

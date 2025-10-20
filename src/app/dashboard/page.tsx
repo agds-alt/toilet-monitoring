@@ -1,4 +1,8 @@
-// app/dashboard/page.tsx - ENHANCED VERSION
+// src/app/dashboard/page.tsx
+// ============================================
+// DASHBOARD - ENTERPRISE MOBILE-FIRST
+// ============================================
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -12,10 +16,22 @@ interface DashboardStats {
   locationsCount: number;
 }
 
+interface RecentInspection {
+  id: string;
+  status: string;
+  created_at: string;
+  locations?: { name: string };
+  assessments?: {
+    locationName?: string;
+    totalScore: number;
+    maxScore: number;
+  };
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [recentInspections, setRecentInspections] = useState<any[]>([]);
+  const [recentInspections, setRecentInspections] = useState<RecentInspection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -24,61 +40,65 @@ export default function DashboardPage() {
 
   const loadDashboardData = async () => {
     try {
-      // Simulate API calls
       const inspectionsResponse = await fetch('/api/inspections');
-      const inspections = inspectionsResponse.ok ? await inspectionsResponse.json() : [];
+      const inspections: RecentInspection[] = inspectionsResponse.ok 
+        ? await inspectionsResponse.json() 
+        : [];
 
       const locationsResponse = await fetch('/api/locations');
       const locations = locationsResponse.ok ? await locationsResponse.json() : [];
 
-      // Calculate stats
-      const totalScore = inspections.reduce((sum: number, inspection: any) => 
-        sum + (inspection.assessments?.totalScore || 0), 0);
-      const maxScore = inspections.reduce((sum: number, inspection: any) => 
-        sum + (inspection.assessments?.maxScore || 0), 0);
+      const totalScore = inspections.reduce(
+        (sum, inspection) => sum + (inspection.assessments?.totalScore || 0),
+        0
+      );
+      const maxScore = inspections.reduce(
+        (sum, inspection) => sum + (inspection.assessments?.maxScore || 0),
+        0
+      );
       const averageScore = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
 
-      const pendingActions = inspections.filter((insp: any) => 
-        insp.status === 'need_maintenance' || insp.status === 'need_cleaning'
+      const pendingActions = inspections.filter(
+        (insp) => insp.status === 'need_maintenance' || insp.status === 'need_cleaning'
       ).length;
 
       setStats({
         totalInspections: inspections.length,
         averageScore,
         pendingActions,
-        locationsCount: locations.length
+        locationsCount: locations.length,
       });
 
       setRecentInspections(inspections.slice(0, 5));
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      console.error('Error loading dashboard:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'all_good': return '#10b981';
-      case 'need_maintenance': return '#f59e0b';
-      case 'need_cleaning': return '#ef4444';
-      default: return '#6b7280';
-    }
+  const getStatusColor = (status: string): string => {
+    const colors: Record<string, string> = {
+      all_good: '#10b981',
+      need_maintenance: '#f59e0b',
+      need_cleaning: '#ef4444',
+    };
+    return colors[status] || '#6b7280';
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'all_good': return 'Baik';
-      case 'need_maintenance': return 'Perawatan';
-      case 'need_cleaning': return 'Pembersihan';
-      default: return status;
-    }
+  const getStatusText = (status: string): string => {
+    const texts: Record<string, string> = {
+      all_good: 'Baik',
+      need_maintenance: 'Perawatan',
+      need_cleaning: 'Pembersihan',
+    };
+    return texts[status] || status;
   };
 
   if (isLoading) {
     return (
       <div className={styles.loadingContainer}>
-        <div className={styles.loadingSpinner}></div>
+        <div className={styles.loadingSpinner} />
         <p>Memuat dashboard...</p>
       </div>
     );
@@ -86,110 +106,110 @@ export default function DashboardPage() {
 
   return (
     <div className={styles.container}>
-      {/* Welcome Section */}
-      <div className={styles.welcomeSection}>
-        <h1 className={styles.welcomeTitle}>Selamat Datang! 👋</h1>
+      {/* Welcome Header */}
+      <header className={styles.welcomeSection}>
+        <h1 className={styles.welcomeTitle}>Dashboard</h1>
         <p className={styles.welcomeSubtitle}>
-          Dashboard monitoring kebersihan dan kondisi toilet
+          Monitor kebersihan & kondisi toilet secara real-time
         </p>
-      </div>
+      </header>
 
-      {/* Quick Stats */}
+      {/* Stats Grid */}
       {stats && (
-        <div className={styles.statsGrid}>
+        <section className={styles.statsGrid}>
           <div className={styles.statCard}>
             <div className={styles.statIcon}>📋</div>
-            <div className={styles.statInfo}>
+            <div className={styles.statContent}>
               <div className={styles.statValue}>{stats.totalInspections}</div>
-              <div className={styles.statLabel}>Total Inspeksi</div>
+              <div className={styles.statLabel}>Inspeksi</div>
             </div>
           </div>
 
           <div className={styles.statCard}>
             <div className={styles.statIcon}>📊</div>
-            <div className={styles.statInfo}>
+            <div className={styles.statContent}>
               <div className={styles.statValue}>{stats.averageScore}%</div>
-              <div className={styles.statLabel}>Rata-rata Skor</div>
+              <div className={styles.statLabel}>Skor Rata-rata</div>
             </div>
           </div>
 
           <div className={styles.statCard}>
             <div className={styles.statIcon}>⚠️</div>
-            <div className={styles.statInfo}>
+            <div className={styles.statContent}>
               <div className={styles.statValue}>{stats.pendingActions}</div>
-              <div className={styles.statLabel}>Perlu Tindakan</div>
+              <div className={styles.statLabel}>Tindakan</div>
             </div>
           </div>
 
           <div className={styles.statCard}>
             <div className={styles.statIcon}>📍</div>
-            <div className={styles.statInfo}>
+            <div className={styles.statContent}>
               <div className={styles.statValue}>{stats.locationsCount}</div>
               <div className={styles.statLabel}>Lokasi</div>
             </div>
           </div>
-        </div>
+        </section>
       )}
 
       {/* Quick Actions */}
-      <div className={styles.actionsSection}>
+      <section className={styles.actionsSection}>
         <h2 className={styles.sectionTitle}>Aksi Cepat</h2>
         <div className={styles.actionsGrid}>
-          <button 
+          <button
             className={styles.actionCard}
             onClick={() => router.push('/dashboard/scan')}
           >
             <div className={styles.actionIcon}>📷</div>
             <div className={styles.actionText}>
-              <h3>Scan QR Code</h3>
-              <p>Scan kode QR di lokasi toilet</p>
+              <h3>Scan QR</h3>
+              <p>Scan kode lokasi</p>
             </div>
           </button>
 
-          <button 
+          <button
             className={styles.actionCard}
-            onClick={() => router.push('/dashboard/inspect')}
+            onClick={() => router.push('/inspection')}
           >
-            <div className={styles.actionIcon}>🔍</div>
+            <div className={styles.actionIcon}>⚡</div>
             <div className={styles.actionText}>
-              <h3>Inspeksi Manual</h3>
-              <p>Pilih lokasi untuk inspeksi</p>
+              <h3>Quick Inspect</h3>
+              <p>Inspeksi langsung</p>
             </div>
           </button>
 
-          <button 
+          <button
             className={styles.actionCard}
-            onClick={() => router.push('/dashboard/history')}
+            onClick={() => router.push('/dashboard/locations')}
           >
-            <div className={styles.actionIcon}>📋</div>
+            <div className={styles.actionIcon}>📍</div>
             <div className={styles.actionText}>
-              <h3>Lihat Riwayat</h3>
-              <p>Lihat semua inspeksi sebelumnya</p>
+              <h3>Lokasi</h3>
+              <p>Kelola lokasi</p>
             </div>
           </button>
 
-          <button 
+          <button
             className={styles.actionCard}
             onClick={() => router.push('/dashboard/reports')}
           >
             <div className={styles.actionIcon}>📈</div>
             <div className={styles.actionText}>
               <h3>Laporan</h3>
-              <p>Analisis dan statistik</p>
+              <p>Lihat statistik</p>
             </div>
           </button>
         </div>
-      </div>
+      </section>
 
       {/* Recent Activity */}
-      <div className={styles.recentSection}>
+      <section className={styles.recentSection}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>Aktivitas Terbaru</h2>
-          <button 
+          <button
             className={styles.viewAllButton}
             onClick={() => router.push('/dashboard/history')}
           >
-            Lihat Semua
+            Semua
           </button>
         </div>
 
@@ -197,20 +217,23 @@ export default function DashboardPage() {
           {recentInspections.length > 0 ? (
             recentInspections.map((inspection) => (
               <div key={inspection.id} className={styles.activityItem}>
-                <div 
+                <div
                   className={styles.statusDot}
                   style={{ backgroundColor: getStatusColor(inspection.status) }}
                 />
                 <div className={styles.activityInfo}>
                   <h3 className={styles.activityTitle}>
-                    {inspection.locations?.name || inspection.assessments?.locationName || 'Unknown Location'}
+                    {inspection.locations?.name ||
+                      inspection.assessments?.locationName ||
+                      'Unknown'}
                   </h3>
-                  <p className={styles.activitySubtitle}>
-                    {inspection.assessments?.totalScore || 0}/{inspection.assessments?.maxScore || 25} 
-                    • {new Date(inspection.created_at).toLocaleDateString('id-ID')}
+                  <p className={styles.activityMeta}>
+                    {inspection.assessments?.totalScore || 0}/
+                    {inspection.assessments?.maxScore || 25} •{' '}
+                    {new Date(inspection.created_at).toLocaleDateString('id-ID')}
                   </p>
                 </div>
-                <div 
+                <div
                   className={styles.activityStatus}
                   style={{ color: getStatusColor(inspection.status) }}
                 >
@@ -219,18 +242,19 @@ export default function DashboardPage() {
               </div>
             ))
           ) : (
-            <div className={styles.emptyActivity}>
-              <p>Belum ada aktivitas inspeksi</p>
-              <button 
-                className={styles.startInspectionButton}
-                onClick={() => router.push('/dashboard/inspect')}
+            <div className={styles.emptyState}>
+              <div className={styles.emptyIcon}>📋</div>
+              <p className={styles.emptyText}>Belum ada inspeksi</p>
+              <button
+                className={styles.emptyButton}
+                onClick={() => router.push('/inspection')}
               >
-                Mulai Inspeksi Pertama
+                Mulai Inspeksi
               </button>
             </div>
           )}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

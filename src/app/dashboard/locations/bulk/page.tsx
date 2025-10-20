@@ -9,6 +9,7 @@ import { ArrowLeft, Zap } from 'lucide-react';
 import { bulkCreateLocationsUseCase } from '@/lib/di';
 import styles from './bulk.module.css';
 
+
 const BUILDINGS = [
   { id: '1', name: 'Tower A - Apartment' },
   { id: '2', name: 'Main Building - Office' },
