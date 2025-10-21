@@ -5,7 +5,7 @@ import React from 'react';
 
 interface PhotoPreviewProps {
   url: string;
-  onRemove?: () => void;
+  onRemove?: (preview: string) => void;
 }
 
 export function PhotoPreview({ url, onRemove }: PhotoPreviewProps) {

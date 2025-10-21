@@ -1,0 +1,5 @@
+Find this line in src/presentation/components/features/Inspection/PhotoPreview.tsx:
+  onRemove?: () => void;
+
+Replace with:
+  onRemove?: (preview: string) => void;

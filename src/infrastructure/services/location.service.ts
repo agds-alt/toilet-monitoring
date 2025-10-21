@@ -1,17 +1,55 @@
-// Helper to map DB location to LocationData
-function dbToLocationData(dbLoc: any) {
-  return {
-    id: dbLoc.id,
-    name: dbLoc.name,
-    address: dbLoc.name, // Use name as address if not exists
-    city: dbLoc.area,
-    postal_code: dbLoc.code,
-    floor: dbLoc.floor,
-    building: dbLoc.building,
-    qr_code: dbLoc.qr_code,
-  };
-}
+// src/infrastructure/services/location.service.ts
+// ============================================
+// LOCATION SERVICE
+// ============================================
 
-// Use this in all location.service.ts returns
-// Replace: return data as LocationData;
-// With: return dbToLocationData(data);
+import { supabase } from '../database/supabase';
+import { Location } from '@/core/types/database.types';
+
+export const locationService = {
+  async getLocationByQR(qrCode: string): Promise<Location | null> {
+    const { data, error } = await supabase
+      .from('locations')
+      .select('*')
+      .eq('qr_code', qrCode)
+      .eq('is_active', true)
+      .single();
+
+    if (error) {
+      console.error('Error fetching location:', error);
+      return null;
+    }
+
+    return data;
+  },
+
+  async getLocationById(id: string): Promise<Location | null> {
+    const { data, error } = await supabase
+      .from('locations')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching location:', error);
+      return null;
+    }
+
+    return data;
+  },
+
+  async getAllLocations(): Promise<Location[]> {
+    const { data, error } = await supabase
+      .from('locations')
+      .select('*')
+      .eq('is_active', true)
+      .order('name');
+
+    if (error) {
+      console.error('Error fetching locations:', error);
+      return [];
+    }
+
+    return data || [];
+  },
+};

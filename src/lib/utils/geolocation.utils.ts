@@ -58,7 +58,7 @@ export async function getCurrentPosition(): Promise<GeolocationData> {
             longitude,
             accuracy,
             ...addressData,
-            timestamp: new Date().toISOString(),
+            timestamp: Date.now(),
           });
         } catch (error) {
           // Return basic geolocation without address if reverse geocoding fails
@@ -67,7 +67,7 @@ export async function getCurrentPosition(): Promise<GeolocationData> {
             latitude,
             longitude,
             accuracy,
-            timestamp: new Date().toISOString(),
+            timestamp: Date.now(),
           });
         }
       },
@@ -116,8 +116,6 @@ export async function reverseGeocode(
     const formattedAddress = formatIndonesianAddress(data);
 
     return {
-      address: formattedAddress.street,
-      city: formattedAddress.city,
       state: formattedAddress.state,
       country: formattedAddress.country,
       postal_code: formattedAddress.postalCode,
@@ -272,14 +270,14 @@ export function watchPosition(
           longitude,
           accuracy,
           ...addressData,
-          timestamp: new Date().toISOString(),
+          timestamp: Date.now(),
         });
       } catch (error) {
         onUpdate({
           latitude,
           longitude,
           accuracy,
-          timestamp: new Date().toISOString(),
+          timestamp: Date.now(),
         });
       }
     },

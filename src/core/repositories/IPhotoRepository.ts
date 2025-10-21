@@ -1,5 +1,5 @@
 // 📁 src/core/repositories/IPhotoRepository.ts
-import { Photo } from '@/core/entities/Photo';
+// import { Photo } from '@/core/entities/Photo';
 
 export interface IPhotoRepository {
   upload(photoData: {

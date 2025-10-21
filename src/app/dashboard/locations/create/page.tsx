@@ -124,7 +124,7 @@ export default function CreateLocationPage() {
               <div className={styles.formGroup}>
                 <label className={styles.label}>Gedung *</label>
                 <select
-                  value={formData.building}
+                  value={formData.building || ""}
                   onChange={(e) => setFormData({ ...formData, building: e.target.value })}
                   required
                   className={styles.input}
@@ -154,7 +154,7 @@ export default function CreateLocationPage() {
                 <label className={styles.label}>Kode (Auto)</label>
                 <input
                   type="text"
-                  value={formData.code}
+                  value={formData.code || ""}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value })}
                   placeholder="AUTO-1-FRONT"
                   className={styles.input}
@@ -165,7 +165,7 @@ export default function CreateLocationPage() {
                 <label className={styles.label}>Lantai *</label>
                 <input
                   type="number"
-                  value={formData.floor}
+                  value={formData.floor || ""}
                   onChange={(e) => setFormData({ ...formData, floor: e.target.value })}
                   placeholder="1"
                   required

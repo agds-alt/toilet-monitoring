@@ -470,7 +470,7 @@ export function InspectionForm({
           onChange={setLocationMode}
           onGetLocation={handleGetLocation}
           onScanQR={onOpenQRScanner}
-          locationName={state.locationName}
+          locationName={state.locationName || undefined}
         />
       </div>
 
@@ -494,7 +494,7 @@ export function InspectionForm({
                 componentId={component.id}
                 label={component.label}
                 icon={component.icon}
-                value={response?.rating || null}
+                value={response?.rating || undefined}
                 onChange={(rating) => updateResponse(component.id, { rating })}
                 uiMode={state.uiMode}
                 required={component.required}
@@ -588,7 +588,7 @@ export function InspectionForm({
             ? state.responses[currentComponentId]?.comment || '' 
             : ''
         }
-        componentLabel={
+        componentName={
           state.components.find(c => c.id === currentComponentId)?.label || ''
         }
       />

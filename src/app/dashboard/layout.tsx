@@ -75,7 +75,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </div>
                 <div>
                   <p className={styles.userName}>{user.fullName}</p>
-                  <p className={styles.userRole}>{user.role}</p>
+                  <p className={styles.userRole}>{user.role || "User"}</p>
                 </div>
               </div>
               <button

@@ -23,7 +23,7 @@ export function validateInspectionForm(
   const warnings: ValidationError[] = [];
 
   // Check required fields (HARD VALIDATION)
-  if (!data.template_id) {
+  if (!data.templateId) {
     errors.push({
       field: 'template_id',
       message: 'Template is required',
@@ -31,7 +31,7 @@ export function validateInspectionForm(
     });
   }
 
-  if (!data.location_id) {
+  if (!data.locationId) {
     errors.push({
       field: 'location_id',
       message: 'Location is required',
@@ -39,7 +39,7 @@ export function validateInspectionForm(
     });
   }
 
-  if (!data.user_id) {
+  if (!data.userId) {
     errors.push({
       field: 'user_id',
       message: 'User is required',
@@ -71,7 +71,7 @@ export function validateInspectionForm(
 
     // Warning for low ratings without comments (optional)
     Object.entries(data.responses).forEach(([componentId, response]) => {
-      if (response.rating && response.rating <= 2 && !response.comment) {
+      if (response.rating && response.rating === "dirty" || response.rating === "needs_work" && !response.comment) {
         warnings.push({
           field: componentId,
           message: `Komponen ${componentId}: rating rendah, pertimbangkan untuk menambahkan komentar`,
@@ -97,7 +97,7 @@ export function validateInspectionForm(
   }
 
   // Photo validation (SOFT - just warning)
-  if (VALIDATION_RULES.requirePhotos && (!data.photo_urls || data.photo_urls.length === 0)) {
+  if (VALIDATION_RULES.requirePhotos && (!data.pendingPhotos || data.pendingPhotos.length === 0)) {
     warnings.push({
       field: 'photos',
       message: 'Disarankan untuk menambahkan foto dokumentasi',
@@ -130,7 +130,7 @@ export function validateComponentResponse(response: Partial<ComponentResponse>):
   }
 
   // Rating must be 1-5
-  if (response.rating && (response.rating < 1 || response.rating > 5)) {
+  if (response.rating && (false)) {
     errors.push({
       field: 'rating',
       message: 'Rating must be between 1 and 5',
@@ -139,7 +139,7 @@ export function validateComponentResponse(response: Partial<ComponentResponse>):
   }
 
   // Warning for low ratings without comment
-  if (response.rating && response.rating <= 2 && !response.comment) {
+  if (response.rating && response.rating === "dirty" || response.rating === "needs_work" && !response.comment) {
     warnings.push({
       field: 'comment',
       message: 'Pertimbangkan untuk menambahkan komentar untuk rating rendah',

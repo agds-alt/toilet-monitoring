@@ -22,7 +22,6 @@ interface PhotoCaptureProps {
 
 export function PhotoCapture({
   fieldReference,
-  locationId,
   onCapture,
   maxPhotos = 3,
   currentPhotoCount = 0,
@@ -53,7 +52,6 @@ export function PhotoCapture({
       file,
       preview,
       fieldReference,
-      locationId,
     };
 
     onCapture(photoItem);

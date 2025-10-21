@@ -1,185 +1,137 @@
 // src/lib/utils/rating.utils.ts
 // ============================================
-// RATING CALCULATION UTILITIES
+// RATING UTILITIES - String-based ratings
 // ============================================
 
 import {
-  ComponentResponse,
-  InspectionStatus,
   RatingValue,
+  ComponentResponse,
+  OverallStatus,
 } from '@/core/types/inspection.types';
-import {
-  STATUS_THRESHOLDS,
-  RATING_EMOJI_MAP,
-  RATING_LABEL_MAP,
-} from '@/lib/constants/inspection.constants';
+
+// ============================================
+// RATING CONSTANTS
+// ============================================
+
+export const RATING_VALUES: RatingValue[] = ['clean', 'needs_work', 'dirty'];
+
+export const RATING_EMOJI_MAP: Record<RatingValue, string> = {
+  clean: '😊',
+  needs_work: '😐',
+  dirty: '😞',
+};
+
+export const RATING_LABEL_MAP: Record<RatingValue, { en: string; id: string }> = {
+  clean: { en: 'Clean', id: 'Bersih' },
+  needs_work: { en: 'Needs Work', id: 'Perlu Perbaikan' },
+  dirty: { en: 'Dirty', id: 'Kotor' },
+};
+
+export const RATING_COLORS: Record<RatingValue, string> = {
+  clean: '#10b981',
+  needs_work: '#f59e0b',
+  dirty: '#ef4444',
+};
+
+// ============================================
+// RATING TO SCORE CONVERSION
+// ============================================
+
+export function ratingToScore(rating: RatingValue): number {
+  const scoreMap: Record<RatingValue, number> = {
+    clean: 5,
+    needs_work: 3,
+    dirty: 1,
+  };
+  return scoreMap[rating];
+}
+
+export function scoreToRating(score: number): RatingValue {
+  if (score >= 4) return 'clean';
+  if (score >= 2) return 'needs_work';
+  return 'dirty';
+}
 
 // ============================================
 // CALCULATE OVERALL STATUS
 // ============================================
 
-export function calculateOverallStatus(
-  responses: Record<string, ComponentResponse>
-): InspectionStatus {
+export function calculateOverallStatus(responses: Record<string, ComponentResponse>): OverallStatus {
   const ratings = Object.values(responses)
-    .map((r) => r.rating)
-    .filter((r) => r !== undefined);
+    .map(r => r.rating)
+    .filter((r): r is RatingValue => r !== null);
 
-  if (ratings.length === 0) {
-    return 'Poor';
-  }
+  if (ratings.length === 0) return 'needs_work';
 
-  const average = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+  // Count each rating type
+  const counts = {
+    clean: ratings.filter(r => r === 'clean').length,
+    needs_work: ratings.filter(r => r === 'needs_work').length,
+    dirty: ratings.filter(r => r === 'dirty').length,
+  };
 
-  if (average >= STATUS_THRESHOLDS.EXCELLENT) return 'Excellent';
-  if (average >= STATUS_THRESHOLDS.GOOD) return 'Good';
-  if (average >= STATUS_THRESHOLDS.FAIR) return 'Fair';
-  if (average >= STATUS_THRESHOLDS.POOR) return 'Poor';
-  return 'Critical';
+  // If more than 30% dirty → overall dirty
+  if (counts.dirty / ratings.length > 0.3) return 'dirty';
+  
+  // If more than 70% clean → overall clean
+  if (counts.clean / ratings.length > 0.7) return 'clean';
+  
+  // Otherwise needs work
+  return 'needs_work';
 }
 
 // ============================================
-// CALCULATE AVERAGE RATING
+// CALCULATE AVERAGE SCORE
 // ============================================
 
-export function calculateAverageRating(
-  responses: Record<string, ComponentResponse>
-): number {
-  const ratings = Object.values(responses)
-    .map((r) => r.rating)
-    .filter((r) => r !== undefined);
+export function calculateAverageScore(responses: Record<string, ComponentResponse>): number {
+  const scores = Object.values(responses)
+    .map(r => r.rating)
+    .filter((r): r is RatingValue => r !== null)
+    .map(ratingToScore);
 
-  if (ratings.length === 0) return 0;
+  if (scores.length === 0) return 0;
 
-  const sum = ratings.reduce((a, b) => a + b, 0);
-  return Number((sum / ratings.length).toFixed(2));
+  const sum = scores.reduce((a, b) => a + b, 0);
+  return Number((sum / scores.length).toFixed(2));
 }
 
 // ============================================
-// CALCULATE SCORE (1-100)
-// ============================================
-
-export function calculateScore(
-  responses: Record<string, ComponentResponse>
-): number {
-  const average = calculateAverageRating(responses);
-  // Convert 1-5 scale to 1-100
-  return Math.round((average / 5) * 100);
-}
-
-// ============================================
-// GET RATING EMOJI
+// UI HELPERS
 // ============================================
 
 export function getRatingEmoji(rating: RatingValue): string {
   return RATING_EMOJI_MAP[rating] || '😐';
 }
 
-// ============================================
-// GET RATING LABEL
-// ============================================
-
-export function getRatingLabel(
-  rating: RatingValue,
-  lang: 'en' | 'id' = 'en'
-): string {
+export function getRatingLabel(rating: RatingValue, lang: 'en' | 'id' = 'id'): string {
   return RATING_LABEL_MAP[rating]?.[lang] || 'Unknown';
 }
 
-// ============================================
-// GET STATUS COLOR
-// ============================================
-
-export function getStatusColor(status: InspectionStatus): {
-  bg: string;
-  text: string;
-  badge: string;
-} {
-  const colors = {
-    Excellent: { bg: '#10b981', text: '#ffffff', badge: 'bg-green-500' },
-    Good: { bg: '#3b82f6', text: '#ffffff', badge: 'bg-blue-500' },
-    Fair: { bg: '#f59e0b', text: '#ffffff', badge: 'bg-yellow-500' },
-    Poor: { bg: '#ef4444', text: '#ffffff', badge: 'bg-red-500' },
-    Critical: { bg: '#991b1b', text: '#ffffff', badge: 'bg-red-800' },
-  };
-
-  return colors[status] || colors.Fair;
+export function getRatingColor(rating: RatingValue): string {
+  return RATING_COLORS[rating] || '#6b7280';
 }
 
 // ============================================
-// CHECK IF RATING IS COMPLETE
+// STATISTICS
 // ============================================
 
-export function isRatingComplete(
-  responses: Record<string, ComponentResponse>,
-  requiredCount: number
-): boolean {
-  const ratedCount = Object.values(responses).filter(
-    (r) => r.rating !== undefined
-  ).length;
-  return ratedCount >= requiredCount;
-}
-
-// ============================================
-// GET COMPLETION PERCENTAGE
-// ============================================
-
-export function getCompletionPercentage(
-  responses: Record<string, ComponentResponse>,
-  totalComponents: number
-): number {
-  const ratedCount = Object.values(responses).filter(
-    (r) => r.rating !== undefined
-  ).length;
-  return Math.round((ratedCount / totalComponents) * 100);
-}
-
-// ============================================
-// FORMAT RATING FOR DISPLAY
-// ============================================
-
-export function formatRating(rating: number): string {
-  return rating.toFixed(1);
-}
-
-// ============================================
-// GET RATING STATISTICS
-// ============================================
-
-export function getRatingStatistics(
-  responses: Record<string, ComponentResponse>
-): {
-  average: number;
-  score: number;
-  status: InspectionStatus;
+export interface RatingBreakdown {
+  clean: number;
+  needs_work: number;
+  dirty: number;
   total: number;
-  rated: number;
-  percentage: number;
-  breakdown: Record<RatingValue, number>;
-} {
+}
+
+export function getRatingBreakdown(responses: Record<string, ComponentResponse>): RatingBreakdown {
   const ratings = Object.values(responses)
-    .map((r) => r.rating)
-    .filter((r) => r !== undefined) as RatingValue[];
-
-  const breakdown: Record<RatingValue, number> = {
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-  };
-
-  ratings.forEach((rating) => {
-    breakdown[rating] = (breakdown[rating] || 0) + 1;
-  });
+    .map(r => r.rating)
+    .filter((r): r is RatingValue => r !== null);
 
   return {
-    average: calculateAverageRating(responses),
-    score: calculateScore(responses),
-    status: calculateOverallStatus(responses),
-    total: Object.keys(responses).length,
-    rated: ratings.length,
-    percentage: getCompletionPercentage(responses, Object.keys(responses).length),
-    breakdown,
+    clean: ratings.filter(r => r === 'clean').length,
+    needs_work: ratings.filter(r => r === 'needs_work').length,
+    dirty: ratings.filter(r => r === 'dirty').length,
+    total: ratings.length,
   };
 }

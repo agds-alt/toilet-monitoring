@@ -26,7 +26,7 @@ export const Header = () => {
     <div className={styles.header}>
       <div className={styles.user}>
         <span className={styles.userName}>{user.fullName}</span>
-        <span className={styles.userRole}>{user.role}</span>
+        <span className={styles.userRole}>{user.role || "User"}</span>
       </div>
       <Button variant="secondary" size="sm" onClick={handleLogout}>
         Logout
