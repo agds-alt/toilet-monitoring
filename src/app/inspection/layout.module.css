@@ -1,0 +1,242 @@
+/* src/app/inspection/layout.module.css */
+/* ============================================ */
+/* INSPECTION LAYOUT - MOBILE FIRST */
+/* ============================================ */
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+}
+
+/* ============================================ */
+/* HEADER */
+/* ============================================ */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  gap: 12px;
+}
+
+.backButton {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.backButton:hover {
+  background: #f3f4f6;
+}
+
+.backButton:active {
+  background: #e5e7eb;
+  transform: scale(0.95);
+}
+
+.headerTitle {
+  flex: 1;
+  text-align: center;
+}
+
+.headerTitle h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  letter-spacing: -0.01em;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.userAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #111827;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* ============================================ */
+/* MAIN CONTENT */
+/* ============================================ */
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================ */
+/* LOADING STATE */
+/* ============================================ */
+
+.loadingContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: #f8f9fa;
+}
+
+.loadingSpinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* ============================================ */
+/* RESPONSIVE - TABLET & DESKTOP */
+/* ============================================ */
+
+@media (min-width: 768px) {
+  .header {
+    padding: 16px 24px;
+  }
+
+  .headerTitle h1 {
+    font-size: 20px;
+  }
+
+  .backButton {
+    width: 44px;
+    height: 44px;
+  }
+
+  .userAvatar {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header {
+    padding: 20px 32px;
+  }
+
+  .headerTitle h1 {
+    font-size: 24px;
+  }
+}
+
+/* ============================================ */
+/* FOCUS STATES (Accessibility) */
+/* ============================================ */
+
+.backButton:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ============================================ */
+/* DARK MODE */
+/* ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  .layout {
+    background: #0a0a0a;
+  }
+
+  .header {
+    background: #111827;
+    border-color: #1f2937;
+  }
+
+  .headerTitle h1 {
+    color: #f9fafb;
+  }
+
+  .backButton {
+    color: #9ca3af;
+  }
+
+  .backButton:hover {
+    background: #1f2937;
+    color: #f9fafb;
+  }
+
+  .backButton:active {
+    background: #374151;
+  }
+
+  .userAvatar {
+    background: #f9fafb;
+    color: #111827;
+  }
+
+  .loadingContainer {
+    background: #0a0a0a;
+  }
+
+  .loadingSpinner {
+    border-color: #1f2937;
+    border-top-color: #3b82f6;
+  }
+
+  .loadingText {
+    color: #9ca3af;
+  }
+}
+
+/* ============================================ */
+/* PRINT STYLES */
+/* ============================================ */
+
+@media print {
+  .header {
+    position: static;
+    box-shadow: none;
+    border-bottom: 1px solid #000;
+  }
+
+  .backButton,
+  .userInfo {
+    display: none;
+  }
+}

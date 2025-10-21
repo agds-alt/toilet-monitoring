@@ -1,0 +1,160 @@
+/* presentation/components/layout/BottomNav/BottomNav.module.css */
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5rem 0;
+  z-index: 50;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  text-decoration: none;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  flex: 1;
+  max-width: 80px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.navItem:hover {
+  color: #374151;
+}
+
+.navItem.active {
+  color: #000000;
+}
+
+.icon {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+  transition: transform 0.2s ease;
+}
+
+.navItem.active .icon {
+  transform: scale(1.1);
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: font-weight 0.2s ease;
+}
+
+.navItem.active .label {
+  font-weight: 600;
+}
+
+/* Desktop Styles */
+@media (min-width: 768px) {
+  .nav {
+    position: static;
+    border-top: none;
+    border-right: 1px solid #e5e7eb;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 1rem 0;
+    box-shadow: none;
+    width: 200px;
+    height: 100vh;
+  }
+  
+  .navItem {
+    flex-direction: row;
+    padding: 0.75rem 1.5rem;
+    max-width: none;
+    justify-content: flex-start;
+    border-radius: 8px;
+    margin: 0.25rem 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .navItem:hover {
+    background: #f8f8f8;
+    color: #000000;
+  }
+  
+  .navItem.active {
+    background: #000000;
+    color: #ffffff;
+  }
+  
+  .icon {
+    margin-bottom: 0;
+    margin-right: 0.75rem;
+    font-size: 1rem;
+  }
+  
+  .label {
+    font-size: 0.875rem;
+  }
+}
+
+/* Animation for active state */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.navItem.active .icon {
+  animation: pulse 0.3s ease;
+}
+
+/* Ensure proper spacing on mobile */
+@media (max-width: 767px) {
+  .nav {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .nav {
+    background: #1f2937;
+    border-top-color: #374151;
+  }
+  
+  .navItem {
+    color: #9ca3af;
+  }
+  
+  .navItem:hover {
+    color: #d1d5db;
+  }
+  
+  .navItem.active {
+    color: #ffffff;
+  }
+  
+  @media (min-width: 768px) {
+    .nav {
+      border-right-color: #374151;
+    }
+    
+    .navItem:hover {
+      background: #374151;
+    }
+    
+    .navItem.active {
+      background: #000000;
+    }
+  }
+}
