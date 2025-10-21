@@ -18,7 +18,7 @@ export default function InspectionPage() {
   const params = useParams();
   const router = useRouter();
   const locationId = params.locationId as string;
-  
+
   const [location, setLocation] = useState<Location | null>(null);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<InspectionMode | null>(null);
@@ -27,7 +27,7 @@ export default function InspectionPage() {
     const loadLocation = async () => {
       try {
         const locations = await getLocationsUseCase.execute();
-        const found = locations.find(l => l.id === locationId);
+        const found = locations.find((l) => l.id === locationId);
         setLocation(found || null);
       } catch (error) {
         console.error('Failed to load location:', error);
@@ -69,6 +69,4 @@ export default function InspectionPage() {
       />
     );
   }
-
- 
 }

@@ -1,4 +1,3 @@
-
 // ===================================
 // 📁 src/core/use-cases/GetLocationById.ts
 // ===================================
@@ -11,13 +10,13 @@ export class GetLocationById {
   async execute(id: string): Promise<Location | null> {
     try {
       console.log('🔍 Fetching location by ID:', id);
-      
+
       if (!id) {
         throw new Error('Location ID is required');
       }
 
       const location = await this.locationRepository.findById(id);
-      
+
       if (!location) {
         console.log('⚠️ Location not found');
         return null;

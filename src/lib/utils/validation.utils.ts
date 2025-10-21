@@ -49,9 +49,7 @@ export function validateInspectionForm(
 
   // Check responses (SOFT VALIDATION - just warnings)
   if (data.responses) {
-    const ratedCount = Object.values(data.responses).filter(
-      (r) => r.rating !== undefined
-    ).length;
+    const ratedCount = Object.values(data.responses).filter((r) => r.rating !== undefined).length;
 
     // Warning if less than minimum rated components
     if (ratedCount < VALIDATION_RULES.minRatedComponents) {
@@ -118,9 +116,7 @@ export function validateInspectionForm(
 // VALIDATE COMPONENT RESPONSE
 // ============================================
 
-export function validateComponentResponse(
-  response: Partial<ComponentResponse>
-): ValidationResult {
+export function validateComponentResponse(response: Partial<ComponentResponse>): ValidationResult {
   const errors: ValidationError[] = [];
   const warnings: ValidationError[] = [];
 
@@ -212,7 +208,7 @@ export function canSubmitInspection(
   totalComponents: number
 ): boolean {
   const validation = validateInspectionForm(data, totalComponents);
-  
+
   // Can submit if no ERRORS (warnings are okay)
   return validation.errors.length === 0;
 }
@@ -257,10 +253,7 @@ export function sanitizeInput(input: string): string {
 // VALIDATE GEOLOCATION DATA
 // ============================================
 
-export function validateGeolocation(
-  lat: number,
-  lng: number
-): ValidationResult {
+export function validateGeolocation(lat: number, lng: number): ValidationResult {
   const errors: ValidationError[] = [];
 
   if (lat < -90 || lat > 90) {

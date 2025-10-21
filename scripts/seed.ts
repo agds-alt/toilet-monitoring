@@ -1,18 +1,57 @@
-// scripts/seed.ts - FIXED VERSION
+// scripts/seed.ts
 // ============================================
 // DATABASE SEEDER CLI
 // ============================================
 
 import { createClient } from '@supabase/supabase-js';
 import { DEFAULT_TOILET_COMPONENTS } from '../src/lib/constants/inspection.constants';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// FIX: Gunakan service role key untuk seeding
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// ============================================
+// LOAD .env OR .env.local
+// ============================================
+
+function loadEnv() {
+  const envFiles = ['.env.local', '.env'];
+  
+  for (const file of envFiles) {
+    const filePath = path.join(process.cwd(), file);
+    
+    if (fs.existsSync(filePath)) {
+      console.log(`📄 Loading environment from: ${file}`);
+      const envContent = fs.readFileSync(filePath, 'utf8');
+      
+      envContent.split('\n').forEach((line) => {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith('#')) {
+          const [key, ...valueParts] = trimmed.split('=');
+          const value = valueParts.join('=').trim();
+          process.env[key.trim()] = value;
+        }
+      });
+      
+      return true;
+    }
+  }
+  
+  return false;
+}
+
+// Load environment
+if (!loadEnv()) {
+  console.error('❌ No .env or .env.local file found!');
+  console.log('\n💡 Create .env.local with:');
+  console.log('   NEXT_PUBLIC_SUPABASE_URL=your-url');
+  console.log('   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-key\n');
+  process.exit(1);
+}
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('❌ Missing Supabase credentials in .env');
-  console.error('   Make sure SUPABASE_SERVICE_ROLE_KEY is set');
   process.exit(1);
 }
 

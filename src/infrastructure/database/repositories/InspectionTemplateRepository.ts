@@ -1,118 +1,112 @@
-// src/infrastructure/repositories/InspectionTemplateRepository.ts
-import { supabase } from '../database/supabase';
+// 📁 src/infrastructure/database/repositories/InspectionTemplateRepository.ts
+import { supabase } from '@/infrastructure/database/supabase';
 import { InspectionTemplate } from '@/core/entities/InspectionTemplate';
+import { Json } from '@/core/types/database.types';
 
 export class InspectionTemplateRepository {
-  async getAll(activeOnly: boolean = true): Promise<InspectionTemplate[]> {
-    let query = supabase
+  async findAll(): Promise<InspectionTemplate[]> {
+    const { data, error } = await supabase
       .from('inspection_templates')
-      .select('*');
-    
-    if (activeOnly) {
-      query = query.eq('is_active', true);
-    }
-    
-    const { data, error } = await query.order('created_at', { ascending: false });
-    
+      .select('*')
+      .eq('is_active', true)
+      .order('name');
+
     if (error) throw error;
-    return data.map(this.mapToEntity);
+    return data || [];
   }
 
-  async getById(id: string): Promise<InspectionTemplate | null> {
+  async findById(id: string): Promise<InspectionTemplate | null> {
     const { data, error } = await supabase
       .from('inspection_templates')
       .select('*')
       .eq('id', id)
       .single();
-    
-    if (error) return null;
-    return this.mapToEntity(data);
+
+    if (error) {
+      if (error.code === 'PGRST116') return null;
+      throw error;
+    }
+
+    return data;
   }
 
-  async create(template: Omit<InspectionTemplate, 'id' | 'createdAt' | 'updatedAt'>): Promise<InspectionTemplate> {
+  async findDefault(): Promise<InspectionTemplate | null> {
+    const { data, error } = await supabase
+      .from('inspection_templates')
+      .select('*')
+      .eq('is_default', true)
+      .eq('is_active', true)
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') return null;
+      throw error;
+    }
+
+    return data;
+  }
+
+  async create(templateData: {
+    name: string;
+    description?: string | null;
+    fields: Json;
+    estimated_time?: number | null;
+    created_by?: string | null;
+  }): Promise<InspectionTemplate> {
     const { data, error } = await supabase
       .from('inspection_templates')
       .insert({
-        name: template.name,
-        description: template.description || null,
-        estimated_time: template.estimatedTime || null,
-        is_active: template.isActive,
-        is_default: template.isDefault,
-        fields: template.fields as any,
-        created_by: template.createdBy || null,
+        name: templateData.name,
+        description: templateData.description,
+        fields: templateData.fields,
+        estimated_time: templateData.estimated_time,
+        created_by: templateData.created_by,
+        is_active: true,
       })
       .select()
       .single();
-    
+
     if (error) throw error;
-    return this.mapToEntity(data);
+    return data;
   }
 
-  async update(id: string, updates: Partial<InspectionTemplate>): Promise<InspectionTemplate> {
+  async update(id: string, templateData: Partial<InspectionTemplate>): Promise<InspectionTemplate> {
     const { data, error } = await supabase
       .from('inspection_templates')
       .update({
-        name: updates.name,
-        description: updates.description,
-        estimated_time: updates.estimatedTime,
-        is_active: updates.isActive,
-        is_default: updates.isDefault,
-        fields: updates.fields as any,
+        ...templateData,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
       .select()
       .single();
-    
+
     if (error) throw error;
-    return this.mapToEntity(data);
+    return data;
   }
 
   async delete(id: string): Promise<void> {
     const { error } = await supabase
       .from('inspection_templates')
-      .delete()
+      .update({ 
+        is_active: false,
+        updated_at: new Date().toISOString()
+      })
       .eq('id', id);
-    
+
     if (error) throw error;
   }
 
-  async assignToLocation(templateId: string, locationId: string, assignedBy: string): Promise<void> {
-    const { error } = await supabase
+  async findByLocation(locationId: string): Promise<InspectionTemplate[]> {
+    const { data, error } = await supabase
       .from('template_location_assignments')
-      .insert({
-        template_id: templateId,
-        location_id: locationId,
-        assigned_by: assignedBy,
-      });
-    
-    if (error) throw error;
-  }
+      .select(`
+        template:inspection_templates (*)
+      `)
+      .eq('location_id', locationId);
 
-  async assignToRole(templateId: string, roleId: string, assignedBy: string): Promise<void> {
-    const { error } = await supabase
-      .from('template_role_assignments')
-      .insert({
-        template_id: templateId,
-        role_id: roleId,
-        assigned_by: assignedBy,
-      });
-    
     if (error) throw error;
-  }
 
-  private mapToEntity(data: any): InspectionTemplate {
-    return {
-      id: data.id,
-      name: data.name,
-      description: data.description,
-      estimatedTime: data.estimated_time,
-      isActive: data.is_active,
-      isDefault: data.is_default,
-      fields: data.fields,
-      createdBy: data.created_by,
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at),
-    };
+    return data?.map(item => item.template) || [];
   }
 }

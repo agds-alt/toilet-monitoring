@@ -1,1 +1,1 @@
-export { default } from './PhotoCapture';
+export { default as PhotoCapture } from './PhotoCapture/PhotoCapture';

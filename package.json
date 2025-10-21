@@ -14,13 +14,16 @@
     "seed": "tsx scripts/seed.ts",
     "seed:inspection": "tsx scripts/seed-inspection-template.ts",
     "fix:template": "tsx scripts/fix-template.ts",
-    "db:reset": "tsx scripts/reset-db.ts"
+    "db:reset": "tsx scripts/reset-db.ts",
+    "db:types": "supabase gen types typescript --project-id zznhsfsvankfewasstel > src/core/types/database.types.ts",    
+       "db:seed": "npx supabase db seed"
   },
   "dependencies": {
     "@babel/runtime": "^7.28.4",
     "@supabase/auth-helpers-nextjs": "^0.8.7",
     "@supabase/supabase-js": "^2.75.0",
     "cloudinary": "^2.7.0",
+    "create-next-app": "^15.5.6",
     "html5-qrcode": "^2.3.8",
     "jsqr": "^1.4.0",
     "lucide-react": "^0.546.0",
@@ -43,9 +46,12 @@
     "eslint-config-next": "^14.0.4",
     "postcss": "^8.5.6",
     "prettier": "^3.1.1",
+    "supabase": "^2.51.0",
     "tailwindcss": "^4.1.14",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.7.0",
     "typescript": "^5.9.3"
   }
+  
+  
 }

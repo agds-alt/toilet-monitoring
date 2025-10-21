@@ -41,8 +41,8 @@ export default function DashboardPage() {
   const loadDashboardData = async () => {
     try {
       const inspectionsResponse = await fetch('/api/inspections');
-      const inspections: RecentInspection[] = inspectionsResponse.ok 
-        ? await inspectionsResponse.json() 
+      const inspections: RecentInspection[] = inspectionsResponse.ok
+        ? await inspectionsResponse.json()
         : [];
 
       const locationsResponse = await fetch('/api/locations');
@@ -155,10 +155,7 @@ export default function DashboardPage() {
       <section className={styles.actionsSection}>
         <h2 className={styles.sectionTitle}>Aksi Cepat</h2>
         <div className={styles.actionsGrid}>
-          <button
-            className={styles.actionCard}
-            onClick={() => router.push('/dashboard/scan')}
-          >
+          <button className={styles.actionCard} onClick={() => router.push('/dashboard/scan')}>
             <div className={styles.actionIcon}>📷</div>
             <div className={styles.actionText}>
               <h3>Scan QR</h3>
@@ -166,10 +163,7 @@ export default function DashboardPage() {
             </div>
           </button>
 
-          <button
-            className={styles.actionCard}
-            onClick={() => router.push('/inspection')}
-          >
+          <button className={styles.actionCard} onClick={() => router.push('/inspection')}>
             <div className={styles.actionIcon}>⚡</div>
             <div className={styles.actionText}>
               <h3>Quick Inspect</h3>
@@ -177,10 +171,7 @@ export default function DashboardPage() {
             </div>
           </button>
 
-          <button
-            className={styles.actionCard}
-            onClick={() => router.push('/dashboard/locations')}
-          >
+          <button className={styles.actionCard} onClick={() => router.push('/dashboard/locations')}>
             <div className={styles.actionIcon}>📍</div>
             <div className={styles.actionText}>
               <h3>Lokasi</h3>
@@ -188,10 +179,7 @@ export default function DashboardPage() {
             </div>
           </button>
 
-          <button
-            className={styles.actionCard}
-            onClick={() => router.push('/dashboard/reports')}
-          >
+          <button className={styles.actionCard} onClick={() => router.push('/dashboard/reports')}>
             <div className={styles.actionIcon}>📈</div>
             <div className={styles.actionText}>
               <h3>Laporan</h3>

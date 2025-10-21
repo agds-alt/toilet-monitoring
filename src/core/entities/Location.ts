@@ -1,6 +1,6 @@
-// ===================================
-// 📁 src/core/entities/Location.ts - UPDATED INTERFACE
-// ===================================
+// 📁 src/core/entities/Location.ts
+import { Json } from '@/core/types/database.types';
+
 export interface Location {
   id: string;
   name: string;
@@ -9,32 +9,44 @@ export interface Location {
   section: string | null;
   building: string | null;
   area: string | null;
-  qr_code: string | null;
+  qr_code: string;
   description: string | null;
+  coordinates: Json | null;
   photo_url: string | null;
-  coordinates: { lat: number; lng: number } | null;
-  is_active: boolean;
+  is_active: boolean | null;
+  created_at: string | null;
   created_by: string | null;
-  created_at: string;
-  updated_at: string;
+  updated_at: string | null;
 }
 
 export interface LocationFormData {
   name: string;
-  code?: string;
-  floor?: string;
-  section?: string;
-  building?: string;
-  area?: string;
-  qr_code?: string;
-  description?: string;
-  photo_url?: string;
-  coordinates?: { lat: number; lng: number } | null;
+  code?: string | null;
+  floor?: string | null;
+  section?: string | null;
+  building?: string | null;
+  area?: string | null;
+  qr_code: string;
+  description?: string | null;
+  coordinates?: Json | null;
+  photo_url?: string | null;
   is_active?: boolean;
+  created_by?: string | null;
 }
 
 export interface LocationWithDetails extends Location {
-  inspection_count?: number;
-  last_inspection?: string;
-  average_score?: number;
+  inspection_stats: {
+    total_inspections: number;
+    clean_count: number;
+    dirty_count: number;
+    needs_work_count: number;
+  };
+}
+
+export interface LocationInspectionStats {
+  total_inspections: number;
+  clean_count: number;
+  dirty_count: number;
+  needs_work_count: number;
+  avg_duration_seconds?: number;
 }

@@ -61,6 +61,6 @@
       "@/global-types/*": ["./src/types/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/setup/page.modulecss", "src/presentation/hooks/useInspection.ts.backup"],
   "exclude": ["node_modules"]
 }

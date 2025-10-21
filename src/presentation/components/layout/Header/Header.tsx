@@ -28,11 +28,7 @@ export const Header = () => {
         <span className={styles.userName}>{user.fullName}</span>
         <span className={styles.userRole}>{user.role}</span>
       </div>
-      <Button
-        variant="secondary"
-        size="sm"
-        onClick={handleLogout}
-      >
+      <Button variant="secondary" size="sm" onClick={handleLogout}>
         Logout
       </Button>
     </div>

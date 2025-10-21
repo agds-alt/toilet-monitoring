@@ -23,11 +23,7 @@ export default function InspectionPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f3f4f6' }}>
-      <InspectionForm
-        userId={user.id}
-        onSuccess={handleSuccess}
-        onCancel={handleCancel}
-      />
+      <InspectionForm userId={user.id} onSuccess={handleSuccess} onCancel={handleCancel} />
     </div>
   );
 }

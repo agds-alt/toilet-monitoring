@@ -78,9 +78,7 @@ export default function SetupPage() {
         {/* Header */}
         <div className={styles.header}>
           <h1 className={styles.title}>🚽 Inspection Module Setup</h1>
-          <p className={styles.subtitle}>
-            One-click setup untuk inspection module
-          </p>
+          <p className={styles.subtitle}>One-click setup untuk inspection module</p>
         </div>
 
         {/* Steps */}
@@ -99,9 +97,7 @@ export default function SetupPage() {
             <div className={styles.stepNumber}>2</div>
             <div className={styles.stepContent}>
               <h3 className={styles.stepTitle}>Verify</h3>
-              <p className={styles.stepDesc}>
-                Check apakah template berhasil dibuat
-              </p>
+              <p className={styles.stepDesc}>Check apakah template berhasil dibuat</p>
             </div>
           </div>
 
@@ -109,20 +105,14 @@ export default function SetupPage() {
             <div className={styles.stepNumber}>3</div>
             <div className={styles.stepContent}>
               <h3 className={styles.stepTitle}>Ready!</h3>
-              <p className={styles.stepDesc}>
-                Navigate ke /inspection dan mulai inspeksi
-              </p>
+              <p className={styles.stepDesc}>Navigate ke /inspection dan mulai inspeksi</p>
             </div>
           </div>
         </div>
 
         {/* Actions */}
         <div className={styles.actions}>
-          <button
-            onClick={handleSetup}
-            disabled={loading}
-            className={styles.setupButton}
-          >
+          <button onClick={handleSetup} disabled={loading} className={styles.setupButton}>
             {loading ? (
               <>
                 <span className={styles.spinner} />
@@ -136,11 +126,7 @@ export default function SetupPage() {
             )}
           </button>
 
-          <button
-            onClick={handleVerify}
-            disabled={loading}
-            className={styles.verifyButton}
-          >
+          <button onClick={handleVerify} disabled={loading} className={styles.verifyButton}>
             {loading ? (
               <>
                 <span className={styles.spinner} />
@@ -165,13 +151,19 @@ export default function SetupPage() {
                 {result.data && (
                   <div className={styles.resultDetails}>
                     {result.data.id && (
-                      <p>Template ID: <code>{result.data.id}</code></p>
+                      <p>
+                        Template ID: <code>{result.data.id}</code>
+                      </p>
                     )}
                     {result.data.name && (
-                      <p>Template Name: <strong>{result.data.name}</strong></p>
+                      <p>
+                        Template Name: <strong>{result.data.name}</strong>
+                      </p>
                     )}
                     {result.data.count !== undefined && (
-                      <p>Total Templates: <strong>{result.data.count}</strong></p>
+                      <p>
+                        Total Templates: <strong>{result.data.count}</strong>
+                      </p>
                     )}
                   </div>
                 )}
@@ -181,7 +173,9 @@ export default function SetupPage() {
             <div className={styles.nextSteps}>
               <h4>🎯 Next Steps:</h4>
               <ol>
-                <li>Navigate to <a href="/inspection">/inspection</a></li>
+                <li>
+                  Navigate to <a href="/inspection">/inspection</a>
+                </li>
                 <li>Test the inspection form</li>
                 <li>Create your first inspection!</li>
               </ol>
@@ -212,9 +206,7 @@ export default function SetupPage() {
         {/* Info */}
         <div className={styles.info}>
           <h4>ℹ️ Information</h4>
-          <p>
-            Setup ini akan membuat default inspection template dengan 11 komponen:
-          </p>
+          <p>Setup ini akan membuat default inspection template dengan 11 komponen:</p>
           <div className={styles.components}>
             <span>🚽 Toilet Bowl</span>
             <span>🧹 Floor</span>

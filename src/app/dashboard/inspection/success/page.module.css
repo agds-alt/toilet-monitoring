@@ -6,15 +6,15 @@
 .container {
   min-height: 100vh;
   padding: 20px;
-  background: #ffffff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
   padding-bottom: 100px;
 }
 
 /* ============================================ */
-/* SUCCESS ANIMATION - CLEAN */
+/* SUCCESS ANIMATION */
 /* ============================================ */
 
 .successAnimation {
@@ -22,23 +22,23 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding: 32px 20px;
+  padding: 40px 20px;
   text-align: center;
 }
 
 .checkmark {
-  width: 72px;
-  height: 72px;
-  animation: successZoom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  width: 80px;
+  height: 80px;
+  animation: scaleIn 0.5s ease;
 }
 
-@keyframes successZoom {
+@keyframes scaleIn {
   0% {
     transform: scale(0);
     opacity: 0;
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.1);
   }
   100% {
     transform: scale(1);
@@ -52,11 +52,11 @@
 }
 
 .checkmarkCircle {
-  stroke: #10b981;
+  stroke: white;
   stroke-width: 2;
   stroke-dasharray: 166;
   stroke-dashoffset: 166;
-  animation: strokeCircle 0.5s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  animation: strokeCircle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
 
 @keyframes strokeCircle {
@@ -66,12 +66,12 @@
 }
 
 .checkmarkCheck {
-  stroke: #10b981;
+  stroke: white;
   stroke-width: 3;
   stroke-linecap: round;
   stroke-dasharray: 48;
   stroke-dashoffset: 48;
-  animation: strokeCheck 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+  animation: strokeCheck 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
 }
 
 @keyframes strokeCheck {
@@ -82,24 +82,23 @@
 
 .successTitle {
   margin: 0;
-  font-size: 26px;
+  font-size: 32px;
   font-weight: 700;
-  color: #111827;
-  letter-spacing: -0.02em;
-  animation: fadeInUp 0.4s ease 0.3s both;
+  color: white;
+  animation: fadeInUp 0.5s ease 0.3s both;
 }
 
 .successSubtitle {
   margin: 0;
-  font-size: 15px;
-  color: #6b7280;
-  animation: fadeInUp 0.4s ease 0.4s both;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  animation: fadeInUp 0.5s ease 0.4s both;
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(15px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -108,89 +107,79 @@
 }
 
 /* ============================================ */
-/* SUMMARY CARD - PROFESSIONAL */
+/* SUMMARY CARD */
 /* ============================================ */
 
 .summaryCard {
   background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  border: 1px solid #f3f4f6;
-  animation: fadeInUp 0.4s ease 0.5s both;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeInUp 0.5s ease 0.5s both;
 }
 
 .summaryHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .summaryTitle {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-primary, #1f2937);
 }
 
 .statusBadge {
-  padding: 6px 14px;
-  border-radius: 16px;
-  font-size: 12px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
   font-weight: 600;
   color: white;
 }
 
 /* ============================================ */
-/* STATS GRID - CLEAN LAYOUT */
+/* STATS GRID */
 /* ============================================ */
 
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .statItem {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px;
-  background: #f9fafb;
-  border-radius: 10px;
-  transition: all 0.2s ease;
-}
-
-.statItem:hover {
-  background: #f3f4f6;
-  transform: translateY(-1px);
+  padding: 16px;
+  background: var(--background-secondary, #f8f9fa);
+  border-radius: 12px;
 }
 
 .statIcon {
-  font-size: 24px;
+  font-size: 28px;
   line-height: 1;
 }
 
 .statContent {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .statValue {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  color: #111827;
+  color: var(--text-primary, #1f2937);
 }
 
 .statLabel {
-  font-size: 11px;
-  color: #6b7280;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  font-size: 12px;
+  color: var(--text-secondary, #6b7280);
 }
 
 /* ============================================ */
@@ -281,118 +270,75 @@
 }
 
 /* ============================================ */
-/* ACTIONS - SIMPLIFIED */
+/* ACTIONS */
 /* ============================================ */
 
 .actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
-  animation: fadeInUp 0.4s ease 0.6s both;
+  animation: fadeInUp 0.5s ease 0.6s both;
 }
 
 .btnPrimary,
 .btnSecondary {
-  padding: 13px 22px;
+  padding: 14px 24px;
   border: none;
-  border-radius: 10px;
-  font-size: 14px;
+  border-radius: 12px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .btnPrimary {
-  background: #3b82f6;
-  color: white;
-  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.2);
+  background: white;
+  color: #667eea;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .btnPrimary:hover {
-  background: #2563eb;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
-}
-
-.btnPrimary:active {
-  transform: translateY(0);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .btnSecondary {
-  background: #f9fafb;
-  color: #374151;
-  border: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .btnSecondary:hover {
-  background: #f3f4f6;
-  border-color: #d1d5db;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* ============================================ */
-/* QUICK ACTIONS - GRID */
+/* QUICK ACTIONS */
 /* ============================================ */
 
 .quickActions {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  animation: fadeInUp 0.4s ease 0.7s both;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  animation: fadeInUp 0.5s ease 0.7s both;
 }
 
 .quickAction {
-  padding: 14px;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  font-size: 13px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  font-size: 14px;
   font-weight: 600;
-  color: #374151;
+  color: white;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .quickAction:hover {
-  background: #f9fafb;
-  border-color: #3b82f6;
-  color: #3b82f6;
-  transform: translateY(-1px);
-}
-
-.quickAction:active {
-  transform: translateY(0);
-}
-
-/* ============================================ */
-/* PRINT STYLES (for PDF export) */
-/* ============================================ */
-
-@media print {
-  .container {
-    background: white;
-    padding: 20px;
-  }
-
-  .successAnimation {
-    display: none;
-  }
-
-  .actions,
-  .quickActions {
-    display: none;
-  }
-
-  .summaryCard {
-    box-shadow: none;
-    border: 1px solid #e5e7eb;
-    page-break-inside: avoid;
-  }
-
-  .statsGrid,
-  .breakdown,
-  .info {
-    page-break-inside: avoid;
-  }
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
 }
 
 /* ============================================ */
@@ -444,7 +390,7 @@
 }
 
 /* ============================================ */
-/* RESPONSIVE - MOBILE OPTIMIZED */
+/* RESPONSIVE */
 /* ============================================ */
 
 @media (max-width: 640px) {
@@ -454,7 +400,7 @@
   }
 
   .successTitle {
-    font-size: 22px;
+    font-size: 24px;
   }
 
   .successSubtitle {
@@ -462,20 +408,12 @@
   }
 
   .summaryCard {
-    padding: 16px;
+    padding: 20px;
   }
 
   .statsGrid {
     grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .statItem {
-    padding: 12px;
-  }
-
-  .statValue {
-    font-size: 16px;
+    gap: 12px;
   }
 
   .actions {
@@ -484,124 +422,5 @@
 
   .quickActions {
     grid-template-columns: 1fr;
-  }
-}
-
-/* ============================================ */
-/* PRINT STYLES (for PDF export) */
-/* ============================================ */
-
-@media print {
-  .container {
-    background: white;
-    padding: 20px;
-  }
-
-  .successAnimation {
-    display: none;
-  }
-
-  .actions,
-  .quickActions {
-    display: none;
-  }
-
-  .summaryCard {
-    box-shadow: none;
-    border: 1px solid #e5e7eb;
-    page-break-inside: avoid;
-  }
-
-  .statsGrid,
-  .breakdown,
-  .info {
-    page-break-inside: avoid;
-  }
-}
-
-/* ============================================ */
-/* PERFORMANCE OPTIMIZATIONS */
-/* ============================================ */
-
-.summaryCard,
-.actions,
-.quickActions {
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-
-/* Reduce motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ============================================ */
-/* DARK MODE - SIMPLE & CLEAN */
-/* ============================================ */
-
-@media (prefers-color-scheme: dark) {
-  .container {
-    background: #111827;
-  }
-
-  .successTitle {
-    color: #f9fafb;
-  }
-
-  .successSubtitle {
-    color: #9ca3af;
-  }
-
-  .summaryCard {
-    background: #1f2937;
-    border-color: #374151;
-  }
-
-  .summaryTitle {
-    color: #f9fafb;
-  }
-
-  .statItem {
-    background: #111827;
-  }
-
-  .statValue {
-    color: #f9fafb;
-  }
-
-  .statLabel {
-    color: #9ca3af;
-  }
-
-  .btnSecondary {
-    background: #1f2937;
-    border-color: #374151;
-    color: #f9fafb;
-  }
-
-  .btnSecondary:hover {
-    background: #374151;
-  }
-
-  .quickAction {
-    background: #1f2937;
-    border-color: #374151;
-    color: #f9fafb;
-  }
-
-  .quickAction:hover {
-    background: #374151;
-    border-color: #3b82f6;
-  }
-
-  .checkmarkCircle,
-  .checkmarkCheck {
-    stroke: #10b981;
   }
 }

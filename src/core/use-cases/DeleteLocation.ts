@@ -1,4 +1,3 @@
-
 // ===================================
 // 📁 src/core/use-cases/DeleteLocation.ts
 // ===================================
@@ -27,7 +26,7 @@ export class DeleteLocation {
 
       // Delete location (soft delete in repository)
       await this.locationRepository.delete(id);
-      
+
       console.log('✅ Location deleted:', location.name);
     } catch (error) {
       console.error('❌ Error in DeleteLocation use case:', error);

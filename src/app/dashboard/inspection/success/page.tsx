@@ -1,463 +1,281 @@
-/* src/app/dashboard/inspection/success/page.module.css */
-/* ============================================ */
-/* SUCCESS PAGE STYLES */
-/* ============================================ */
+// src/app/dashboard/inspection/success/page.tsx
+// ============================================
+// INSPECTION SUCCESS PAGE
+// ============================================
 
-.container {
-  min-height: 100vh;
-  padding: 20px;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding-bottom: 100px;
-}
+'use client';
 
-/* ============================================ */
-/* SUCCESS ANIMATION - CLEAN */
-/* ============================================ */
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { inspectionService } from '@/infrastructure/services/inspection.service';
+import { notificationService } from '@/infrastructure/services/notification.service';
+import { InspectionRecord } from '@/core/types/inspection.types';
+import { getRatingStatistics } from '@/lib/utils/rating.utils';
+import { getStatusColor } from '@/lib/utils/rating.utils';
+import styles from './page.module.css';
 
-.successAnimation {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 32px 20px;
-  text-align: center;
-}
+export default function InspectionSuccessPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const inspectionId = searchParams.get('id');
 
-.checkmark {
-  width: 72px;
-  height: 72px;
-  animation: successZoom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+  const [inspection, setInspection] = useState<InspectionRecord | null>(null);
+  const [loading, setLoading] = useState(true);
 
-@keyframes successZoom {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
+  useEffect(() => {
+    if (inspectionId) {
+      loadInspection(inspectionId);
+    }
+  }, [inspectionId]);
 
-.checkmarkSvg {
-  width: 100%;
-  height: 100%;
-}
+  // Request notification permission on mount
+  useEffect(() => {
+    notificationService.requestPermission();
+  }, []);
 
-.checkmarkCircle {
-  stroke: #10b981;
-  stroke-width: 2;
-  stroke-dasharray: 166;
-  stroke-dashoffset: 166;
-  animation: strokeCircle 0.5s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-}
+  const loadInspection = async (id: string) => {
+    try {
+      const data = await inspectionService.getInspectionById(id);
+      setInspection(data);
 
-@keyframes strokeCircle {
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
+      // Show success notification
+      if (data) {
+        const stats = getRatingStatistics(data.responses);
 
-.checkmarkCheck {
-  stroke: #10b981;
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-dasharray: 48;
-  stroke-dashoffset: 48;
-  animation: strokeCheck 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
-}
+        // Push notification
+        await notificationService.notifyInspectionSuccess({
+          locationName: 'Toilet', // TODO: Get from location data
+          score: stats.score,
+          status: data.overall_status,
+          inspectionId: data.id,
+        });
 
-@keyframes strokeCheck {
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
+        // In-app notification as fallback
+        notificationService.showInAppNotification(
+          'success',
+          `Inspeksi berhasil! Skor: ${stats.score}%`,
+          3000
+        );
 
-.successTitle {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 700;
-  color: #111827;
-  letter-spacing: -0.02em;
-  animation: fadeInUp 0.4s ease 0.3s both;
-}
+        // Check for low score alert
+        if (stats.score < 60) {
+          const lowRatingComponents = Object.entries(data.responses)
+            .filter(([_, response]) => response.rating <= 2)
+            .map(([id]) => id);
 
-.successSubtitle {
-  margin: 0;
-  font-size: 15px;
-  color: #6b7280;
-  animation: fadeInUp 0.4s ease 0.4s both;
-}
+          await notificationService.notifyLowScore({
+            locationName: 'Toilet',
+            score: stats.score,
+            issues: lowRatingComponents.slice(0, 3),
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load inspection:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ============================================ */
-/* SUMMARY CARD */
-/* ============================================ */
-
-.summaryCard {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  animation: fadeInUp 0.5s ease 0.5s both;
-}
-
-.summaryHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-}
-
-.summaryTitle {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary, #1f2937);
-}
-
-.statusBadge {
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
-  color: white;
-}
-
-/* ============================================ */
-/* STATS GRID */
-/* ============================================ */
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
-.statItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: var(--background-secondary, #f8f9fa);
-  border-radius: 12px;
-}
-
-.statIcon {
-  font-size: 28px;
-  line-height: 1;
-}
-
-.statContent {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.statValue {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary, #1f2937);
-}
-
-.statLabel {
-  font-size: 12px;
-  color: var(--text-secondary, #6b7280);
-}
-
-/* ============================================ */
-/* BREAKDOWN */
-/* ============================================ */
-
-.breakdown {
-  padding: 20px;
-  background: var(--background-secondary, #f8f9fa);
-  border-radius: 12px;
-  margin-bottom: 24px;
-}
-
-.breakdownTitle {
-  margin: 0 0 16px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary, #1f2937);
-}
-
-.breakdownBars {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.breakdownBar {
-  display: grid;
-  grid-template-columns: 50px 1fr 40px;
-  align-items: center;
-  gap: 12px;
-}
-
-.breakdownLabel {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-secondary, #6b7280);
-}
-
-.breakdownProgress {
-  height: 8px;
-  background: var(--border-color, #e5e7eb);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.breakdownFill {
-  height: 100%;
-  background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
-  border-radius: 4px;
-  transition: width 0.5s ease;
-}
-
-.breakdownCount {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary, #1f2937);
-  text-align: right;
-}
-
-/* ============================================ */
-/* INFO */
-/* ============================================ */
-
-.info {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-color, #e5e7eb);
-}
-
-.infoRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.infoLabel {
-  font-size: 13px;
-  color: var(--text-secondary, #6b7280);
-}
-
-.infoValue {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary, #1f2937);
-}
-
-/* ============================================ */
-/* ACTIONS */
-/* ============================================ */
-
-.actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  animation: fadeInUp 0.5s ease 0.6s both;
-}
-
-.btnPrimary,
-.btnSecondary {
-  padding: 14px 24px;
-  border: none;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btnPrimary {
-  background: white;
-  color: #667eea;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.btnPrimary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-}
-
-.btnSecondary {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.btnSecondary:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-/* ============================================ */
-/* QUICK ACTIONS */
-/* ============================================ */
-
-.quickActions {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  animation: fadeInUp 0.5s ease 0.7s both;
-}
-
-.quickAction {
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  color: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.quickAction:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
-}
-
-.quickAction:active {
-  transform: translateY(0);
-}
-
-/* ============================================ */
-/* PRINT STYLES (for PDF export) */
-/* ============================================ */
-
-@media print {
-  .container {
-    background: white;
-    padding: 20px;
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner} />
+        <p>Memuat hasil...</p>
+      </div>
+    );
   }
 
-  .successAnimation {
-    display: none;
+  if (!inspection) {
+    return (
+      <div className={styles.errorContainer}>
+        <div className={styles.errorIcon}>❌</div>
+        <h2>Inspeksi tidak ditemukan</h2>
+        <button onClick={() => router.push('/dashboard')} className={styles.btnPrimary}>
+          Kembali ke Dashboard
+        </button>
+      </div>
+    );
   }
 
-  .actions,
-  .quickActions {
-    display: none;
+  const stats = getRatingStatistics(inspection.responses);
+  const statusColor = getStatusColor(inspection.overall_status);
+
+  return (
+    <div className={styles.container}>
+      {/* Success Animation */}
+      <div className={styles.successAnimation}>
+        <div className={styles.checkmark}>
+          <svg viewBox="0 0 52 52" className={styles.checkmarkSvg}>
+            <circle cx="26" cy="26" r="25" fill="none" className={styles.checkmarkCircle} />
+            <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" className={styles.checkmarkCheck} />
+          </svg>
+        </div>
+        <h1 className={styles.successTitle}>Inspeksi Berhasil! 🎉</h1>
+        <p className={styles.successSubtitle}>Data inspeksi telah tersimpan dengan baik</p>
+      </div>
+
+      {/* Summary Card */}
+      <div className={styles.summaryCard}>
+        <div className={styles.summaryHeader}>
+          <h2 className={styles.summaryTitle}>Ringkasan Inspeksi</h2>
+          <div className={styles.statusBadge} style={{ backgroundColor: statusColor.bg }}>
+            {inspection.overall_status}
+          </div>
+        </div>
+
+        {/* Stats Grid */}
+        <div className={styles.statsGrid}>
+          <div className={styles.statItem}>
+            <div className={styles.statIcon}>⭐</div>
+            <div className={styles.statContent}>
+              <div className={styles.statValue}>{stats.average.toFixed(1)}/5</div>
+              <div className={styles.statLabel}>Rating Rata-rata</div>
+            </div>
+          </div>
+
+          <div className={styles.statItem}>
+            <div className={styles.statIcon}>📊</div>
+            <div className={styles.statContent}>
+              <div className={styles.statValue}>{stats.score}%</div>
+              <div className={styles.statLabel}>Skor Keseluruhan</div>
+            </div>
+          </div>
+
+          <div className={styles.statItem}>
+            <div className={styles.statIcon}>✓</div>
+            <div className={styles.statContent}>
+              <div className={styles.statValue}>
+                {stats.rated}/{stats.total}
+              </div>
+              <div className={styles.statLabel}>Komponen Dinilai</div>
+            </div>
+          </div>
+
+          <div className={styles.statItem}>
+            <div className={styles.statIcon}>⏱️</div>
+            <div className={styles.statContent}>
+              <div className={styles.statValue}>
+                {Math.floor(inspection.duration_seconds / 60)}m {inspection.duration_seconds % 60}s
+              </div>
+              <div className={styles.statLabel}>Durasi</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Rating Breakdown */}
+        <div className={styles.breakdown}>
+          <h3 className={styles.breakdownTitle}>Distribusi Rating</h3>
+          <div className={styles.breakdownBars}>
+            {[5, 4, 3, 2, 1].map((rating) => {
+              const count = stats.breakdown[rating as 1 | 2 | 3 | 4 | 5];
+              const percentage = stats.rated > 0 ? (count / stats.rated) * 100 : 0;
+
+              return (
+                <div key={rating} className={styles.breakdownBar}>
+                  <span className={styles.breakdownLabel}>{rating}⭐</span>
+                  <div className={styles.breakdownProgress}>
+                    <div className={styles.breakdownFill} style={{ width: `${percentage}%` }} />
+                  </div>
+                  <span className={styles.breakdownCount}>{count}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Info */}
+        <div className={styles.info}>
+          <div className={styles.infoRow}>
+            <span className={styles.infoLabel}>ID Inspeksi:</span>
+            <span className={styles.infoValue}>{inspection.id.slice(0, 8)}...</span>
+          </div>
+          <div className={styles.infoRow}>
+            <span className={styles.infoLabel}>Tanggal:</span>
+            <span className={styles.infoValue}>
+              {new Date(inspection.inspection_date).toLocaleDateString('id-ID')}
+            </span>
+          </div>
+          <div className={styles.infoRow}>
+            <span className={styles.infoLabel}>Waktu:</span>
+            <span className={styles.infoValue}>{inspection.inspection_time}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className={styles.actions}>
+        <button onClick={() => router.push('/dashboard')} className={styles.btnSecondary}>
+          Dashboard
+        </button>
+
+        <button
+          onClick={() => router.push(`/dashboard/inspection?location_id=${inspection.location_id}`)}
+          className={styles.btnPrimary}
+        >
+          Inspeksi Lagi
+        </button>
+      </div>
+
+      {/* Quick Actions */}
+      <div className={styles.quickActions}>
+        <button onClick={() => router.push('/dashboard/history')} className={styles.quickAction}>
+          📋 Lihat Riwayat
+        </button>
+
+        <button onClick={() => router.push('/dashboard/reports')} className={styles.quickAction}>
+          📊 Lihat Laporan
+        </button>
+
+        <button onClick={() => handleShare()} className={styles.quickAction}>
+          📤 Share Hasil
+        </button>
+
+        <button onClick={() => handleExportPDF()} className={styles.quickAction}>
+          📄 Export PDF
+        </button>
+      </div>
+    </div>
+  );
+
+  // ============================================
+  // SHARE FUNCTIONALITY
+  // ============================================
+
+  async function handleShare() {
+    const shareData = {
+      title: 'Hasil Inspeksi Toilet',
+      text: `Inspeksi selesai dengan status ${inspection.overall_status}\nSkor: ${stats.score}%\nRating: ${stats.average.toFixed(1)}/5`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
+        console.log('✅ Shared successfully');
+      } else {
+        // Fallback: Copy to clipboard
+        await navigator.clipboard.writeText(
+          `Hasil Inspeksi Toilet\n\n` +
+            `Status: ${inspection.overall_status}\n` +
+            `Skor: ${stats.score}%\n` +
+            `Rating: ${stats.average.toFixed(1)}/5\n` +
+            `Tanggal: ${new Date(inspection.inspection_date).toLocaleDateString('id-ID')}\n` +
+            `Link: ${window.location.href}`
+        );
+        alert('Link berhasil disalin ke clipboard!');
+      }
+    } catch (error) {
+      console.error('Share error:', error);
+    }
   }
 
-  .summaryCard {
-    box-shadow: none;
-    border: 1px solid #e5e7eb;
-    page-break-inside: avoid;
-  }
+  // ============================================
+  // PDF EXPORT FUNCTIONALITY
+  // ============================================
 
-  .statsGrid,
-  .breakdown,
-  .info {
-    page-break-inside: avoid;
-  }
-}
-
-/* ============================================ */
-/* LOADING & ERROR */
-/* ============================================ */
-
-.loadingContainer,
-.errorContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  gap: 16px;
-  padding: 20px;
-  text-align: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-.loadingSpinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.errorIcon {
-  font-size: 64px;
-}
-
-.errorContainer h2 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.errorContainer .btnPrimary {
-  margin-top: 16px;
-  background: white;
-  color: #667eea;
-}
-
-/* ============================================ */
-/* RESPONSIVE */
-/* ============================================ */
-
-@media (max-width: 640px) {
-  .container {
-    padding: 16px;
-    padding-bottom: 80px;
-  }
-
-  .successTitle {
-    font-size: 24px;
-  }
-
-  .successSubtitle {
-    font-size: 14px;
-  }
-
-  .summaryCard {
-    padding: 20px;
-  }
-
-  .statsGrid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .actions {
-    grid-template-columns: 1fr;
-  }
-
-  .quickActions {
-    grid-template-columns: 1fr;
+  function handleExportPDF() {
+    // Open print dialog (browser will convert to PDF)
+    window.print();
   }
 }

@@ -22,7 +22,7 @@ export const Modal: React.FC<ModalProps> = ({
   title,
   children,
   footer,
-  size = 'md'
+  size = 'md',
 }) => {
   useEffect(() => {
     if (isOpen) {
@@ -51,10 +51,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div
-        className={`${styles.modal} ${styles[size]}`}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className={`${styles.modal} ${styles[size]}`} onClick={(e) => e.stopPropagation()}>
         {title && (
           <div className={styles.header}>
             <h2 className={styles.title}>{title}</h2>

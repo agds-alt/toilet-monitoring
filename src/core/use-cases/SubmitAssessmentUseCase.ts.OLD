@@ -1,0 +1,44 @@
+// src/core/use-cases/SubmitAssessmentUseCase.ts
+import { AssessmentRepository } from '../../infrastructure/database/repositories/AssessmentRepository';
+import { AssessmentSubmission, Assessments } from '../types/assessment.types';
+
+export class SubmitAssessmentUseCase {
+  constructor(private assessmentRepository: AssessmentRepository) {}
+
+  async execute(submission: AssessmentSubmission): Promise<string> {
+    // Validate assessments
+    this.validateAssessments(submission.assessments);
+
+    // Calculate overall score
+    const overallScore = this.calculateOverallScore(submission.assessments);
+
+    // Determine status based on score
+    const status = overallScore >= 3 ? 'completed' : 'requires_attention';
+
+    // Create inspection record
+    const inspectionId = await this.assessmentRepository.createInspection({
+      ...submission,
+      status,
+      overallScore,
+    });
+
+    return inspectionId;
+  }
+
+  private validateAssessments(assessments: Assessments): void {
+    if (Object.keys(assessments).length === 0) {
+      throw new Error('Minimal satu assessment harus diisi');
+    }
+
+    for (const [category, assessment] of Object.entries(assessments)) {
+      if (assessment.value < 1 || assessment.value > 5) {
+        throw new Error(`Nilai assessment ${category} harus antara 1-5`);
+      }
+    }
+  }
+
+  private calculateOverallScore(assessments: Assessments): number {
+    const total = Object.values(assessments).reduce((sum, assessment) => sum + assessment.value, 0);
+    return total / Object.keys(assessments).length;
+  }
+}

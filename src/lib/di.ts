@@ -62,13 +62,13 @@ export const locationUseCases = {
   getByBuilding: getLocationsByBuildingUseCase,
   getByFloor: getLocationsByFloorUseCase,
   search: searchLocationsUseCase,
-  
+
   // Write
   create: createLocationUseCase,
   update: updateLocationUseCase,
   delete: deleteLocationUseCase,
   bulkCreate: bulkCreateLocationsUseCase,
-  
+
   // Real-time
   subscribe: subscribeToLocationsUseCase,
 };

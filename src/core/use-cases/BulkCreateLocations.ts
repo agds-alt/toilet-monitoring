@@ -34,7 +34,7 @@ export class BulkCreateLocations {
       // Get existing locations to check for duplicates
       console.log('🔍 Checking existing locations...');
       const existingLocations = await this.locationRepository.findAll();
-      const existingCodes = new Set(existingLocations.map(loc => loc.code));
+      const existingCodes = new Set(existingLocations.map((loc) => loc.code));
       console.log(`Found ${existingCodes.size} existing location codes`);
 
       const locationsToCreate: LocationFormData[] = [];
@@ -45,8 +45,9 @@ export class BulkCreateLocations {
           for (const section of config.sections) {
             const genderPrefix = gender === 'male' ? 'M' : gender === 'female' ? 'F' : 'D';
             const baseCode = `${config.building.substring(0, 3).toUpperCase()}-${genderPrefix}${floor}-${section.toUpperCase()}`;
-            const genderText = gender === 'male' ? 'Pria' : gender === 'female' ? 'Wanita' : 'Disabled';
-            
+            const genderText =
+              gender === 'male' ? 'Pria' : gender === 'female' ? 'Wanita' : 'Disabled';
+
             // Skip if code already exists
             if (existingCodes.has(baseCode)) {
               console.log(`⏭️ Skipping duplicate code: ${baseCode}`);
@@ -95,7 +96,7 @@ export class BulkCreateLocations {
       }
 
       console.log(`✅ Bulk create completed: ${successCount} success, ${errorCount} errors`);
-      
+
       if (errorCount > 0) {
         console.warn('⚠️ Errors during bulk create:', errors);
         // Don't throw error, just warn - some might have succeeded

@@ -36,14 +36,15 @@ export default function LocationsPage() {
     }
   };
 
-  const filteredLocations = locations.filter(loc => {
-    const matchesSearch = loc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         loc.code?.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredLocations = locations.filter((loc) => {
+    const matchesSearch =
+      loc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      loc.code?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesBuilding = filterBuilding === 'all' || loc.building === filterBuilding;
     return matchesSearch && matchesBuilding;
   });
 
-  const buildings = Array.from(new Set(locations.map(l => l.building).filter(Boolean)));
+  const buildings = Array.from(new Set(locations.map((l) => l.building).filter(Boolean)));
 
   return (
     <div className={styles.container}>
@@ -56,23 +57,23 @@ export default function LocationsPage() {
               <p className={styles.subtitle}>Kelola lokasi toilet monitoring</p>
             </div>
           </div>
-          
+
           <div className={styles.headerActions}>
-            <button 
+            <button
               onClick={() => router.push('/dashboard/locations/print-qr')}
               className={styles.btnSecondary}
             >
               <Printer size={18} />
               Bulk Print QR
             </button>
-            <button 
+            <button
               onClick={() => router.push('/dashboard/locations/create')}
               className={styles.btnPrimary}
             >
               <Plus size={18} />
               Tambah Lokasi
             </button>
-            <button 
+            <button
               onClick={() => router.push('/dashboard/locations/bulk')}
               className={styles.btnSecondary}
             >
@@ -97,14 +98,16 @@ export default function LocationsPage() {
             />
           </div>
 
-          <select 
+          <select
             value={filterBuilding}
             onChange={(e) => setFilterBuilding(e.target.value)}
             className={styles.filterSelect}
           >
             <option value="all">Semua Gedung</option>
-            {buildings.map(building => (
-              <option key={building} value={building}>{building}</option>
+            {buildings.map((building) => (
+              <option key={building} value={building || ""}>
+                {building}
+              </option>
             ))}
           </select>
         </div>
@@ -115,7 +118,7 @@ export default function LocationsPage() {
           <div className={styles.empty}>
             <MapPin size={48} />
             <p>Belum ada lokasi</p>
-            <button 
+            <button
               onClick={() => router.push('/dashboard/locations/create')}
               className={styles.btnPrimary}
             >
@@ -124,12 +127,8 @@ export default function LocationsPage() {
           </div>
         ) : (
           <div className={styles.grid}>
-            {filteredLocations.map(location => (
-              <LocationCard 
-                key={location.id} 
-                location={location}
-                onRefresh={loadLocations}
-              />
+            {filteredLocations.map((location) => (
+              <LocationCard key={location.id} location={location} onRefresh={loadLocations} />
             ))}
           </div>
         )}

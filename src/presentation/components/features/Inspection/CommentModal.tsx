@@ -1,4 +1,3 @@
-
 // src/presentation/components/features/inspection/CommentModal.tsx
 // ============================================
 // COMMENT MODAL - Comment Popup
@@ -79,12 +78,7 @@ export function CommentModal({
             <span className={styles.icon}>💬</span>
             <h3 className={styles.title}>Tambah Komentar</h3>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className={styles.closeButton}
-            aria-label="Close"
-          >
+          <button type="button" onClick={onClose} className={styles.closeButton} aria-label="Close">
             ✕
           </button>
         </div>
@@ -125,11 +119,7 @@ export function CommentModal({
           </button>
 
           <div className={styles.mainActions}>
-            <button
-              type="button"
-              onClick={onClose}
-              className={styles.cancelButton}
-            >
+            <button type="button" onClick={onClose} className={styles.cancelButton}>
               Batal
             </button>
 

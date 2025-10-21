@@ -32,8 +32,10 @@ export const Card: React.FC<CardProps> = ({
     styles[`padding-${padding}`],
     onClick && styles.clickable,
     isActive && styles.active,
-    className
-  ].filter(Boolean).join(' ');
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div className={classes} onClick={onClick} style={style}>

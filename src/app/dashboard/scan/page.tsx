@@ -17,7 +17,9 @@ export default function QRScanPage() {
   const [scanning, setScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [scannedLocation, setScannedLocation] = useState<LocationData | null>(null);
-  const [cameraPermission, setCameraPermission] = useState<'granted' | 'denied' | 'prompt'>('prompt');
+  const [cameraPermission, setCameraPermission] = useState<'granted' | 'denied' | 'prompt'>(
+    'prompt'
+  );
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const mountedRef = useRef(true);
 
@@ -35,7 +37,7 @@ export default function QRScanPage() {
     try {
       const result = await navigator.permissions.query({ name: 'camera' as PermissionName });
       setCameraPermission(result.state);
-      
+
       result.addEventListener('change', () => {
         setCameraPermission(result.state);
       });
@@ -74,7 +76,7 @@ export default function QRScanPage() {
     try {
       if (scannerRef.current && scanning) {
         await scannerRef.current.stop();
-        await scannerRef.current.clear();
+        await scannerRef.current.stop();
         scannerRef.current = null;
       }
       setScanning(false);
@@ -92,12 +94,12 @@ export default function QRScanPage() {
     // Fetch location data
     try {
       const location = await locationService.getLocationByQR(decodedText);
-      
+
       if (!mountedRef.current) return;
 
       if (location) {
         setScannedLocation(location);
-        
+
         // Auto redirect after 2 seconds
         setTimeout(() => {
           if (mountedRef.current) {
@@ -151,9 +153,7 @@ export default function QRScanPage() {
             {cameraPermission === 'denied' && (
               <div className={styles.permissionError}>
                 <span className={styles.errorIcon}>⚠️</span>
-                <p>
-                  Izin kamera ditolak. Aktifkan izin kamera di pengaturan browser Anda.
-                </p>
+                <p>Izin kamera ditolak. Aktifkan izin kamera di pengaturan browser Anda.</p>
               </div>
             )}
 
@@ -166,10 +166,7 @@ export default function QRScanPage() {
               <span>Mulai Scan</span>
             </button>
 
-            <button
-              onClick={handleManualInput}
-              className={styles.manualButton}
-            >
+            <button onClick={handleManualInput} className={styles.manualButton}>
               atau Pilih Lokasi Manual
             </button>
           </div>
@@ -198,10 +195,7 @@ export default function QRScanPage() {
               </div>
             </div>
 
-            <button
-              onClick={stopScanning}
-              className={styles.stopButton}
-            >
+            <button onClick={stopScanning} className={styles.stopButton}>
               Batal
             </button>
           </div>
@@ -212,9 +206,9 @@ export default function QRScanPage() {
             <div className={styles.successAnimation}>
               <div className={styles.checkmark}>✓</div>
             </div>
-            
+
             <h2 className={styles.successTitle}>Lokasi Ditemukan!</h2>
-            
+
             <div className={styles.locationCard}>
               <div className={styles.locationIcon}>📍</div>
               <div className={styles.locationInfo}>
@@ -248,18 +242,12 @@ export default function QRScanPage() {
             <div className={styles.errorIcon}>❌</div>
             <h2 className={styles.errorTitle}>Oops!</h2>
             <p className={styles.errorMessage}>{error}</p>
-            
+
             <div className={styles.errorActions}>
-              <button
-                onClick={startScanning}
-                className={styles.retryButton}
-              >
+              <button onClick={startScanning} className={styles.retryButton}>
                 🔄 Coba Lagi
               </button>
-              <button
-                onClick={handleManualInput}
-                className={styles.manualButton}
-              >
+              <button onClick={handleManualInput} className={styles.manualButton}>
                 Pilih Manual
               </button>
             </div>

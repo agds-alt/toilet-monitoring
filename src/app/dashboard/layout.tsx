@@ -11,11 +11,7 @@ import { useEffect, useState } from 'react';
 import { BottomNav } from '@/presentation/components/layout/BottomNav';
 import styles from './layout.module.css';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -50,7 +46,12 @@ export default function DashboardLayout({
           aria-label="Menu"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <path
+              d="M2 5h16M2 10h16M2 15h16"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
           </svg>
         </button>
 
@@ -59,18 +60,13 @@ export default function DashboardLayout({
           <span className={styles.logoText}>ToiletCheck</span>
         </div>
 
-        <div className={styles.userAvatar}>
-          {user.fullName?.charAt(0).toUpperCase() || 'U'}
-        </div>
+        <div className={styles.userAvatar}>{user.fullName?.charAt(0).toUpperCase() || 'U'}</div>
       </header>
 
       {/* Sidebar Overlay */}
       {sidebarOpen && (
         <>
-          <div
-            className={styles.overlay}
-            onClick={() => setSidebarOpen(false)}
-          />
+          <div className={styles.overlay} onClick={() => setSidebarOpen(false)} />
           <aside className={styles.sidebar}>
             <div className={styles.sidebarHeader}>
               <div className={styles.userInfo}>
@@ -88,7 +84,12 @@ export default function DashboardLayout({
                 aria-label="Close"
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path
+                    d="M15 5L5 15M5 5l10 10"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </button>
             </div>

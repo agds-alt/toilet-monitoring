@@ -9,12 +9,12 @@ export type LocationMode = 'gps' | 'qr';
 export type RatingValue = 1 | 2 | 3 | 4 | 5;
 
 // Overall Status Enum
-export type InspectionStatus = 
-  | 'Excellent'  // 4.5 - 5.0
-  | 'Good'       // 3.5 - 4.4
-  | 'Fair'       // 2.5 - 3.4
-  | 'Poor'       // 1.5 - 2.4
-  | 'Critical';  // 1.0 - 1.4
+export type InspectionStatus =
+  | 'Excellent' // 4.5 - 5.0
+  | 'Good' // 3.5 - 4.4
+  | 'Fair' // 2.5 - 3.4
+  | 'Poor' // 1.5 - 2.4
+  | 'Critical'; // 1.0 - 1.4
 
 // ============================================
 // COMPONENT TYPES
@@ -234,7 +234,7 @@ export interface UseInspectionReturn {
   // State
   state: InspectionFormState;
   isLoading: boolean;
-  
+
   // Actions
   setUIMode: (mode: UIMode) => void;
   setPhotoMode: (mode: PhotoMode) => void;
@@ -243,20 +243,20 @@ export interface UseInspectionReturn {
   addPhoto: (photo: PhotoUploadItem) => void;
   removePhoto: (photoId: string) => void;
   setNotes: (notes: string) => void;
-  
+
   // Location
   fetchLocationFromQR: (qrData: string) => Promise<void>;
   getCurrentGeolocation: () => Promise<void>;
-  
+
   // Submit
   saveDraft: () => void;
   loadDraft: (draftId: string) => void;
   deleteDraft: (draftId: string) => void;
   submit: () => Promise<InspectionSubmitResponse>;
-  
+
   // Validation
   validate: () => ValidationResult;
-  
+
   // Computed
   progress: number;
   duration: number;
@@ -282,3 +282,6 @@ export const RATING_LABEL_MAP: Record<RatingValue, { en: string; id: string }> =
   4: { en: 'Good', id: 'Bagus' },
   5: { en: 'Excellent', id: 'Sangat Bagus' },
 };
+
+// Re-export Json type for convenience
+export type { Json } from '@/core/types/database.types';

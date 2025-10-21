@@ -1,4 +1,3 @@
-
 // ===================================
 // 📁 src/app/scan/[code]/page.tsx
 // ROUTE: Handle QR scan redirect
@@ -27,15 +26,15 @@ export default function ScanCodePage() {
 
         // Get all locations
         const locations = await getLocationsUseCase.execute();
-        
+
         // Strategy 1: Find by code
-        let location = locations.find(l => l.code === code);
-        
+        let location = locations.find((l) => l.code === code);
+
         // Strategy 2: If not found, try as UUID
         if (!location) {
           const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
           if (uuidRegex.test(code)) {
-            location = locations.find(l => l.id === code);
+            location = locations.find((l) => l.id === code);
           }
         }
 
@@ -43,7 +42,7 @@ export default function ScanCodePage() {
           console.log('✅ Location found:', location.name);
           setStatus('success');
           setMessage(`Lokasi ditemukan: ${location.name}`);
-          
+
           // Redirect to inspection page after 1 second
           setTimeout(() => {
             router.replace(`/dashboard/inspect/${location.id}`);
@@ -94,13 +93,10 @@ export default function ScanCodePage() {
             <h2 className={styles.title}>QR Code Tidak Valid</h2>
             <p className={styles.message}>{message}</p>
             <div className={styles.actions}>
-              <button 
-                onClick={() => router.push('/dashboard/scan')}
-                className={styles.btnPrimary}
-              >
+              <button onClick={() => router.push('/dashboard/scan')} className={styles.btnPrimary}>
                 Scan Ulang
               </button>
-              <button 
+              <button
                 onClick={() => router.push('/dashboard/locations')}
                 className={styles.btnSecondary}
               >

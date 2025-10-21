@@ -33,10 +33,10 @@ export class CloudinaryService {
       formData.append('file', file);
       formData.append('upload_preset', this.uploadPreset);
       formData.append('folder', `${this.baseFolder}/${locationId}`);
-      
+
       // Add context for easier searching
       formData.append('context', `field=${fieldReference}|location=${locationId}`);
-      
+
       // Add tags
       formData.append('tags', `inspection,${fieldReference},${locationId}`);
 
@@ -71,15 +71,11 @@ export class CloudinaryService {
   // UPLOAD MULTIPLE PHOTOS (BATCH)
   // ============================================
 
-  async uploadBatch(
-    items: PhotoUploadItem[]
-  ): Promise<CloudinaryUploadResponse[]> {
+  async uploadBatch(items: PhotoUploadItem[]): Promise<CloudinaryUploadResponse[]> {
     console.log(`📤 Uploading ${items.length} photos...`);
 
     const results = await Promise.allSettled(
-      items.map((item) =>
-        this.uploadPhoto(item.file, item.fieldReference, item.locationId)
-      )
+      items.map((item) => this.uploadPhoto(item.file, item.fieldReference, item.locationId))
     );
 
     const successful: CloudinaryUploadResponse[] = [];

@@ -1,12 +1,18 @@
 // ===================================
-// 📁 src/infrastructure/database/repositories/SupabaseLocationRepository.ts (UPDATE)
+// 📁 src/infrastructure/database/repositories/SupabaseLocationRepository.ts
 // ===================================
 import { supabase } from '@/infrastructure/database/supabase';
 import { ILocationRepository } from '@/core/repositories/ILocationRepository';
 import { Location, LocationFormData, LocationWithDetails } from '@/core/entities/Location';
+import { Json } from '@/core/types/database.types';
 
 export class SupabaseLocationRepository implements ILocationRepository {
   async create(locationData: LocationFormData): Promise<Location> {
+    // Validasi field required
+    if (!locationData.name || !locationData.qr_code) {
+      throw new Error('Name and QR code are required');
+    }
+
     const { data, error } = await supabase
       .from('locations')
       .insert({
@@ -19,8 +25,9 @@ export class SupabaseLocationRepository implements ILocationRepository {
         qr_code: locationData.qr_code,
         description: locationData.description,
         is_active: locationData.is_active ?? true,
-        coordinates: locationData.coordinates,
+        coordinates: locationData.coordinates as Json | null,
         photo_url: locationData.photo_url,
+        created_by: locationData.created_by,
       })
       .select()
       .single();
@@ -45,12 +52,31 @@ export class SupabaseLocationRepository implements ILocationRepository {
   }
 
   async findByIdWithDetails(id: string): Promise<LocationWithDetails | null> {
-    // Implementation with inspection stats
     const location = await this.findById(id);
     if (!location) return null;
 
-    // Add stats logic here
-    return location as LocationWithDetails;
+    // Get inspection statistics for this location
+    const { data: inspectionStats, error: statsError } = await supabase
+      .from('inspection_records')
+      .select('overall_status')
+      .eq('location_id', id);
+
+    if (statsError) throw statsError;
+
+    const totalInspections = inspectionStats?.length || 0;
+    const cleanCount = inspectionStats?.filter(ir => ir.overall_status === 'clean').length || 0;
+    const dirtyCount = inspectionStats?.filter(ir => ir.overall_status === 'dirty').length || 0;
+    const needsWorkCount = inspectionStats?.filter(ir => ir.overall_status === 'needs_work').length || 0;
+
+    return {
+      ...location,
+      inspection_stats: {
+        total_inspections: totalInspections,
+        clean_count: cleanCount,
+        dirty_count: dirtyCount,
+        needs_work_count: needsWorkCount,
+      }
+    };
   }
 
   async findAll(): Promise<Location[]> {
@@ -66,7 +92,33 @@ export class SupabaseLocationRepository implements ILocationRepository {
 
   async findAllWithDetails(): Promise<LocationWithDetails[]> {
     const locations = await this.findAll();
-    return locations as LocationWithDetails[];
+    const locationsWithDetails: LocationWithDetails[] = [];
+
+    for (const location of locations) {
+      const { data: inspectionStats, error: statsError } = await supabase
+        .from('inspection_records')
+        .select('overall_status')
+        .eq('location_id', location.id);
+
+      if (statsError) throw statsError;
+
+      const totalInspections = inspectionStats?.length || 0;
+      const cleanCount = inspectionStats?.filter(ir => ir.overall_status === 'clean').length || 0;
+      const dirtyCount = inspectionStats?.filter(ir => ir.overall_status === 'dirty').length || 0;
+      const needsWorkCount = inspectionStats?.filter(ir => ir.overall_status === 'needs_work').length || 0;
+
+      locationsWithDetails.push({
+        ...location,
+        inspection_stats: {
+          total_inspections: totalInspections,
+          clean_count: cleanCount,
+          dirty_count: dirtyCount,
+          needs_work_count: needsWorkCount,
+        }
+      });
+    }
+
+    return locationsWithDetails;
   }
 
   async update(id: string, locationData: Partial<LocationFormData>): Promise<Location> {
@@ -87,7 +139,10 @@ export class SupabaseLocationRepository implements ILocationRepository {
   async delete(id: string): Promise<void> {
     const { error } = await supabase
       .from('locations')
-      .delete()
+      .update({ 
+        is_active: false,
+        updated_at: new Date().toISOString()
+      })
       .eq('id', id);
 
     if (error) throw error;
@@ -130,7 +185,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
     const { data, error } = await supabase
       .from('locations')
       .select('*')
-      .or(`name.ilike.%${query}%,code.ilike.%${query}%`)
+      .or(`name.ilike.%${query}%,code.ilike.%${query}%,building.ilike.%${query}%,floor.ilike.%${query}%`)
       .eq('is_active', true);
 
     if (error) throw error;
@@ -138,10 +193,8 @@ export class SupabaseLocationRepository implements ILocationRepository {
   }
 
   async getLocationWithStats(id: string): Promise<LocationWithDetails> {
-    const location = await this.findById(id);
-    if (!location) throw new Error('Location not found');
-
-    // Add inspection stats
-    return location as LocationWithDetails;
+    const locationWithDetails = await this.findByIdWithDetails(id);
+    if (!locationWithDetails) throw new Error('Location not found');
+    return locationWithDetails;
   }
 }

@@ -42,19 +42,11 @@ export default function InspectionPage() {
     <div className={styles.page}>
       {/* Header */}
       <div className={styles.pageHeader}>
-        <button
-          onClick={handleCancel}
-          className={styles.backButton}
-          aria-label="Back"
-        >
+        <button onClick={handleCancel} className={styles.backButton} aria-label="Back">
           ← Kembali
         </button>
         <h1 className={styles.pageTitle}>Inspection Form</h1>
-        {locationName && (
-          <div className={styles.locationBadge}>
-            📍 {locationName}
-          </div>
-        )}
+        {locationName && <div className={styles.locationBadge}>📍 {locationName}</div>}
       </div>
 
       {/* Main Form */}

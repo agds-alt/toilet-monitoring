@@ -31,9 +31,9 @@ export default function CreateLocationPage() {
     description: '',
     is_active: true,
     coordinates: null,
-    photo_url: null,
+    photo_url: undefined,
   });
-  const [metadataFields, setMetadataFields] = useState<Array<{key: string, value: string}>>([]);
+  const [metadataFields, setMetadataFields] = useState<Array<{ key: string; value: string }>>([]);
   const [qrPreview, setQrPreview] = useState('');
 
   // Auto-generate code
@@ -41,7 +41,7 @@ export default function CreateLocationPage() {
     if (formData.floor && formData.section) {
       const suggested = `${formData.building?.substring(0, 3).toUpperCase() || 'LOC'}-${formData.floor}-${formData.section.toUpperCase()}`;
       if (!formData.code) {
-        setFormData(prev => ({ ...prev, code: suggested }));
+        setFormData((prev) => ({ ...prev, code: suggested }));
       }
     }
   }, [formData.floor, formData.section, formData.building]);
@@ -50,32 +50,37 @@ export default function CreateLocationPage() {
   useEffect(() => {
     if (formData.code) {
       const qrData = `${window.location.origin}/scan/${formData.code}`;
-      setFormData(prev => ({ ...prev, qr_code: qrData }));
+      setFormData((prev) => ({ ...prev, qr_code: qrData }));
       setQrPreview(qrData);
     }
   }, [formData.code]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       setLoading(true);
-      
+
       // Add metadata to description as JSON
-      const metadata = metadataFields.reduce((acc, field) => {
-        if (field.key && field.value) {
-          acc[field.key] = field.value;
-        }
-        return acc;
-      }, {} as Record<string, string>);
+      const metadata = metadataFields.reduce(
+        (acc, field) => {
+          if (field.key && field.value) {
+            acc[field.key] = field.value;
+          }
+          return acc;
+        },
+        {} as Record<string, string>
+      );
 
       const locationData: LocationFormData = {
         ...formData,
-        description: formData.description + (Object.keys(metadata).length > 0 ? `\nMetadata: ${JSON.stringify(metadata)}` : ''),
+        description:
+          formData.description +
+          (Object.keys(metadata).length > 0 ? `\nMetadata: ${JSON.stringify(metadata)}` : ''),
       };
 
       await createLocationUseCase.execute(locationData);
-      
+
       alert('✅ Lokasi berhasil ditambahkan!');
       router.push('/dashboard/locations');
     } catch (error) {
@@ -114,7 +119,7 @@ export default function CreateLocationPage() {
         <form onSubmit={handleSubmit} className={styles.form}>
           <section className={styles.section}>
             <h2 className={styles.sectionTitle}>Informasi Dasar</h2>
-            
+
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>Gedung *</label>
@@ -125,8 +130,10 @@ export default function CreateLocationPage() {
                   className={styles.input}
                 >
                   <option value="">Pilih Gedung</option>
-                  {BUILDINGS.map(b => (
-                    <option key={b.id} value={b.name}>{b.name}</option>
+                  {BUILDINGS.map((b) => (
+                    <option key={b.id} value={b.name}>
+                      {b.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -211,11 +218,7 @@ export default function CreateLocationPage() {
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Custom Metadata (Optional)</h2>
-              <button
-                type="button"
-                onClick={addMetadataField}
-                className={styles.btnAdd}
-              >
+              <button type="button" onClick={addMetadataField} className={styles.btnAdd}>
                 <Plus size={16} />
                 Add Field
               </button>
@@ -261,19 +264,11 @@ export default function CreateLocationPage() {
           )}
 
           <div className={styles.formActions}>
-            <button
-              type="submit"
-              disabled={loading}
-              className={styles.btnSubmit}
-            >
+            <button type="submit" disabled={loading} className={styles.btnSubmit}>
               <Save size={18} />
               {loading ? 'Menyimpan...' : 'Simpan Lokasi'}
             </button>
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className={styles.btnCancel}
-            >
+            <button type="button" onClick={() => router.back()} className={styles.btnCancel}>
               Batal
             </button>
           </div>

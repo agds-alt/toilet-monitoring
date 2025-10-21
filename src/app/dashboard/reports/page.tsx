@@ -75,9 +75,9 @@ export default function ReportsPage() {
   const calculateStats = () => {
     // Filter by time range
     const now = new Date();
-    const filteredInspections = inspections.filter(inspection => {
+    const filteredInspections = inspections.filter((inspection) => {
       const inspectionDate = new Date(inspection.created_at);
-      
+
       switch (timeRange) {
         case 'week':
           const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -94,15 +94,16 @@ export default function ReportsPage() {
     const statusCounts = {
       all_good: 0,
       need_maintenance: 0,
-      need_cleaning: 0
+      need_cleaning: 0,
     };
 
-    const locationStats: { [key: string]: { name: string; count: number; totalScore: number } } = {};
+    const locationStats: { [key: string]: { name: string; count: number; totalScore: number } } =
+      {};
 
     let totalScore = 0;
     let totalMaxScore = 0;
 
-    filteredInspections.forEach(inspection => {
+    filteredInspections.forEach((inspection) => {
       // Count status
       statusCounts[inspection.status as keyof typeof statusCounts]++;
 
@@ -114,13 +115,14 @@ export default function ReportsPage() {
 
       // Location statistics
       const locationId = inspection.location_id;
-      const locationName = inspection.locations?.name || inspection.assessments?.locationName || 'Unknown';
-      
+      const locationName =
+        inspection.locations?.name || inspection.assessments?.locationName || 'Unknown';
+
       if (!locationStats[locationId]) {
         locationStats[locationId] = {
           name: locationName,
           count: 0,
-          totalScore: 0
+          totalScore: 0,
         };
       }
 
@@ -137,8 +139,8 @@ export default function ReportsPage() {
         {
           name: stat.name,
           count: stat.count,
-          averageScore: Math.round(stat.totalScore / stat.count)
-        }
+          averageScore: Math.round(stat.totalScore / stat.count),
+        },
       ])
     );
 
@@ -148,25 +150,33 @@ export default function ReportsPage() {
       totalInspections: filteredInspections.length,
       averageScore,
       statusCounts,
-      locationStats: locationStatsWithAvg
+      locationStats: locationStatsWithAvg,
     });
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'all_good': return '#10b981';
-      case 'need_maintenance': return '#f59e0b';
-      case 'need_cleaning': return '#ef4444';
-      default: return '#6b7280';
+      case 'all_good':
+        return '#10b981';
+      case 'need_maintenance':
+        return '#f59e0b';
+      case 'need_cleaning':
+        return '#ef4444';
+      default:
+        return '#6b7280';
     }
   };
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'all_good': return 'Baik';
-      case 'need_maintenance': return 'Perawatan';
-      case 'need_cleaning': return 'Pembersihan';
-      default: return status;
+      case 'all_good':
+        return 'Baik';
+      case 'need_maintenance':
+        return 'Perawatan';
+      case 'need_cleaning':
+        return 'Pembersihan';
+      default:
+        return status;
     }
   };
 
@@ -185,11 +195,9 @@ export default function ReportsPage() {
       <div className={styles.header}>
         <div className={styles.headerInfo}>
           <h1 className={styles.title}>Laporan & Analisis</h1>
-          <p className={styles.subtitle}>
-            Dashboard performa dan statistik inspeksi
-          </p>
+          <p className={styles.subtitle}>Dashboard performa dan statistik inspeksi</p>
         </div>
-        
+
         <div className={styles.timeFilters}>
           <button
             className={`${styles.timeFilter} ${timeRange === 'week' ? styles.active : ''}`}
@@ -258,7 +266,7 @@ export default function ReportsPage() {
               {Object.entries(stats.statusCounts).map(([status, count]) => (
                 <div key={status} className={styles.statusItem}>
                   <div className={styles.statusHeader}>
-                    <span 
+                    <span
                       className={styles.statusDot}
                       style={{ backgroundColor: getStatusColor(status) }}
                     />
@@ -266,11 +274,11 @@ export default function ReportsPage() {
                   </div>
                   <div className={styles.statusCount}>{count}</div>
                   <div className={styles.statusBar}>
-                    <div 
+                    <div
                       className={styles.statusBarFill}
-                      style={{ 
+                      style={{
                         width: `${(count / stats.totalInspections) * 100}%`,
-                        backgroundColor: getStatusColor(status)
+                        backgroundColor: getStatusColor(status),
                       }}
                     />
                   </div>
@@ -294,15 +302,14 @@ export default function ReportsPage() {
                     <div className={styles.locationDetails}>
                       <span>{location.count} inspeksi</span>
                       <div className={styles.scoreBar}>
-                        <div 
+                        <div
                           className={styles.scoreBarFill}
                           style={{ width: `${location.averageScore}%` }}
                         />
                       </div>
                     </div>
                   </div>
-                ))
-              }
+                ))}
             </div>
           </div>
 
@@ -313,19 +320,23 @@ export default function ReportsPage() {
               {inspections.slice(0, 5).map((inspection) => (
                 <div key={inspection.id} className={styles.activityItem}>
                   <div className={styles.activityIcon}>
-                    {inspection.status === 'all_good' ? '✅' : 
-                     inspection.status === 'need_maintenance' ? '⚠️' : '🧹'}
+                    {inspection.status === 'all_good'
+                      ? '✅'
+                      : inspection.status === 'need_maintenance'
+                        ? '⚠️'
+                        : '🧹'}
                   </div>
                   <div className={styles.activityInfo}>
                     <div className={styles.activityTitle}>
                       {inspection.locations?.name || inspection.assessments?.locationName}
                     </div>
                     <div className={styles.activitySubtitle}>
-                      {inspection.assessments?.totalScore || 0}/{inspection.assessments?.maxScore || 25} 
-                      • {new Date(inspection.created_at).toLocaleDateString('id-ID')}
+                      {inspection.assessments?.totalScore || 0}/
+                      {inspection.assessments?.maxScore || 25}•{' '}
+                      {new Date(inspection.created_at).toLocaleDateString('id-ID')}
                     </div>
                   </div>
-                  <div 
+                  <div
                     className={styles.activityStatus}
                     style={{ color: getStatusColor(inspection.status) }}
                   >
@@ -342,10 +353,7 @@ export default function ReportsPage() {
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>📊</div>
           <p className={styles.emptyText}>Belum ada data inspeksi untuk dianalisis</p>
-          <button
-            onClick={() => router.push('/dashboard/inspect')}
-            className={styles.emptyButton}
-          >
+          <button onClick={() => router.push('/dashboard/inspect')} className={styles.emptyButton}>
             Mulai Inspeksi Pertama
           </button>
         </div>

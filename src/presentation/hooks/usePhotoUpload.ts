@@ -24,10 +24,7 @@ interface UsePhotoUploadReturn {
     locationId: string,
     userId: string
   ) => Promise<PhotoMetadata | null>;
-  uploadBatch: (
-    items: PhotoUploadItem[],
-    userId: string
-  ) => Promise<PhotoMetadata[]>;
+  uploadBatch: (items: PhotoUploadItem[], userId: string) => Promise<PhotoMetadata[]>;
   compressAndUpload: (
     file: File,
     fieldReference: string,
@@ -112,10 +109,7 @@ export function usePhotoUpload(): UsePhotoUploadReturn {
   // ============================================
 
   const uploadBatch = useCallback(
-    async (
-      items: PhotoUploadItem[],
-      userId: string
-    ): Promise<PhotoMetadata[]> => {
+    async (items: PhotoUploadItem[], userId: string): Promise<PhotoMetadata[]> => {
       try {
         setUploading(true);
         setError(null);
@@ -179,12 +173,7 @@ export function usePhotoUpload(): UsePhotoUploadReturn {
         console.log('🗜️ Compressing image...');
 
         // Compress image before upload
-        const compressedFile = await cloudinaryService.compressImage(
-          file,
-          1920,
-          1920,
-          0.8
-        );
+        const compressedFile = await cloudinaryService.compressImage(file, 1920, 1920, 0.8);
 
         console.log('✅ Compression complete:', {
           original: `${(file.size / 1024).toFixed(0)}KB`,
@@ -192,12 +181,7 @@ export function usePhotoUpload(): UsePhotoUploadReturn {
         });
 
         // Upload compressed file
-        return await uploadPhoto(
-          compressedFile,
-          fieldReference,
-          locationId,
-          userId
-        );
+        return await uploadPhoto(compressedFile, fieldReference, locationId, userId);
       } catch (err: any) {
         console.error('❌ Compress and upload error:', err);
         setError(err.message || 'Compress and upload gagal');

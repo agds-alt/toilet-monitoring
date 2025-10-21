@@ -17,11 +17,7 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">
       <head>
@@ -32,9 +28,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
       </head>
       <body suppressHydrationWarning>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

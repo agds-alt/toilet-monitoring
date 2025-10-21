@@ -47,11 +47,11 @@ export interface InspectionData {
 }
 
 export function mapToInspectionData(
-  inspectionData: CreateInspectionDTO & { 
-    id: string; 
-    created_at: string; 
-    photoUrl?: string; 
-    photoMetadata?: any; 
+  inspectionData: CreateInspectionDTO & {
+    id: string;
+    created_at: string;
+    photoUrl?: string;
+    photoMetadata?: any;
   }
 ): InspectionData {
   return {

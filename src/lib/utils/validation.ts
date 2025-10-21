@@ -6,7 +6,9 @@ export const validateEmail = (email: string): boolean => {
   return emailRegex.test(email);
 };
 
-export const validatePassword = (password: string): {
+export const validatePassword = (
+  password: string
+): {
   valid: boolean;
   errors: string[];
 } => {
@@ -39,4 +41,4 @@ export const sanitizeInput = (input: string): string => {
 };
 // ============================================================================
 // END UTILITIES
-// ============================================================================ 
+// ============================================================================

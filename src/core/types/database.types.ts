@@ -1,131 +1,783 @@
-// src/core/types/database.types.ts
-export interface Database {
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "13.0.5"
+  }
   public: {
     Tables: {
-      users: {
+      audit_logs: {
         Row: {
-          id: string;
-          email: string;
-          password_hash: string;
-          full_name: string;
-          phone: string | null;
-          profile_photo_url: string | null;
-          is_active: boolean;
-          created_at: string;
-          updated_at: string;
-          last_login_at: string | null;
-        };
-        Insert: Omit<Database['public']['Tables']['users']['Row'], 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Database['public']['Tables']['users']['Insert']>;
-      };
-      
-      roles: {
-        Row: {
-          id: string;
-          name: string;
-          display_name: string;
-          level: 'super_admin' | 'admin' | 'user';
-          description: string | null;
-          color: string | null;
-          is_active: boolean;
-          created_by: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-      };
-
-      user_roles: {
-        Row: {
-          id: string;
-          user_id: string;
-          role_id: string;
-          assigned_by: string | null;
-          assigned_at: string;
-        };
-      };
-
-      locations: {
-        Row: {
-          id: string;
-          name: string;
-          area: string | null;
-          floor: string | null;
-          building: string | null;
-          qr_code: string;
-          description: string | null;
-          photo_url: string | null;
-          coordinates: { lat: number; lng: number } | null;
-          is_active: boolean;
-          created_by: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-      };
-
-      inspection_templates: {
-        Row: {
-          id: string;
-          name: string;
-          description: string | null;
-          estimated_time: number | null;
-          is_active: boolean;
-          is_default: boolean;
-          fields: TemplateField[];
-          created_by: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-      };
-
+          action: string
+          changes: Json | null
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          ip_address: unknown | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          changes?: Json | null
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          changes?: Json | null
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inspection_records: {
         Row: {
-          id: string;
-          template_id: string;
-          location_id: string;
-          user_id: string;
-          inspection_date: string;
-          inspection_time: string;
-          overall_status: 'Clean' | 'Needs Work' | 'Dirty';
-          responses: Record<string, any>;
-          photo_urls: string[];
-          notes: string | null;
-          duration_seconds: number | null;
-          submitted_at: string;
-          verified_by: string | null;
-          verified_at: string | null;
-          verification_notes: string | null;
-        };
-      };
-
+          duration_seconds: number | null
+          id: string
+          inspection_date: string
+          inspection_time: string
+          location_id: string
+          notes: string | null
+          overall_status: string
+          photo_urls: string[] | null
+          responses: Json
+          submitted_at: string | null
+          template_id: string
+          user_id: string
+          verification_notes: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          duration_seconds?: number | null
+          id?: string
+          inspection_date: string
+          inspection_time: string
+          location_id: string
+          notes?: string | null
+          overall_status: string
+          photo_urls?: string[] | null
+          responses: Json
+          submitted_at?: string | null
+          template_id: string
+          user_id: string
+          verification_notes?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          duration_seconds?: number | null
+          id?: string
+          inspection_date?: string
+          inspection_time?: string
+          location_id?: string
+          notes?: string | null
+          overall_status?: string
+          photo_urls?: string[] | null
+          responses?: Json
+          submitted_at?: string | null
+          template_id?: string
+          user_id?: string
+          verification_notes?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspection_records_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspection_records_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspection_records_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inspection_records_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inspection_templates: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          estimated_time: number | null
+          fields: Json
+          id: string
+          is_active: boolean | null
+          is_default: boolean | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          estimated_time?: number | null
+          fields: Json
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          estimated_time?: number | null
+          fields?: Json
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspection_templates_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      locations: {
+        Row: {
+          area: string | null
+          building: string | null
+          code: string | null
+          coordinates: Json | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          floor: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          photo_url: string | null
+          qr_code: string
+          section: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          area?: string | null
+          building?: string | null
+          code?: string | null
+          coordinates?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          floor?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          photo_url?: string | null
+          qr_code: string
+          section?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          area?: string | null
+          building?: string | null
+          code?: string | null
+          coordinates?: Json | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          floor?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          photo_url?: string | null
+          qr_code?: string
+          section?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "locations_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          inspection_id: string | null
+          is_read: boolean | null
+          location_id: string | null
+          message: string | null
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          inspection_id?: string | null
+          is_read?: boolean | null
+          location_id?: string | null
+          message?: string | null
+          read_at?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          inspection_id?: string | null
+          is_read?: boolean | null
+          location_id?: string | null
+          message?: string | null
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_inspection_id_fkey"
+            columns: ["inspection_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       photos: {
         Row: {
-          id: string;
-          inspection_id: string | null;
-          location_id: string | null;
-          file_url: string;
-          file_name: string | null;
-          file_size: number | null;
-          mime_type: string | null;
-          caption: string | null;
-          field_reference: string | null;
-          uploaded_by: string | null;
-          uploaded_at: string;
-          is_deleted: boolean;
-          deleted_by: string | null;
-          deleted_at: string | null;
-        };
-      };
-    };
-  };
+          caption: string | null
+          deleted_at: string | null
+          deleted_by: string | null
+          field_reference: string | null
+          file_name: string | null
+          file_size: number | null
+          file_url: string
+          id: string
+          inspection_id: string | null
+          is_deleted: boolean | null
+          location_id: string | null
+          mime_type: string | null
+          uploaded_at: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          caption?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          field_reference?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_url: string
+          id?: string
+          inspection_id?: string | null
+          is_deleted?: boolean | null
+          location_id?: string | null
+          mime_type?: string | null
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          caption?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
+          field_reference?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_url?: string
+          id?: string
+          inspection_id?: string | null
+          is_deleted?: boolean | null
+          location_id?: string | null
+          mime_type?: string | null
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photos_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "photos_inspection_id_fkey"
+            columns: ["inspection_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "photos_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "photos_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roles: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          display_name: string
+          id: string
+          is_active: boolean | null
+          level: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          display_name: string
+          id?: string
+          is_active?: boolean | null
+          level: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          display_name?: string
+          id?: string
+          is_active?: boolean | null
+          level?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roles_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      template_location_assignments: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          id: string
+          location_id: string
+          template_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          location_id: string
+          template_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          location_id?: string
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_location_assignments_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "template_location_assignments_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "template_location_assignments_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      template_role_assignments: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          id: string
+          role_id: string
+          template_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role_id: string
+          template_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role_id?: string
+          template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "template_role_assignments_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "template_role_assignments_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "template_role_assignments_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "inspection_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          id: string
+          role_id: string
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role_id: string
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          is_active: boolean | null
+          last_login_at: string | null
+          password_hash: string
+          phone: string | null
+          profile_photo_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name: string
+          id?: string
+          is_active?: boolean | null
+          last_login_at?: string | null
+          password_hash: string
+          phone?: string | null
+          profile_photo_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          is_active?: boolean | null
+          last_login_at?: string | null
+          password_hash?: string
+          phone?: string | null
+          profile_photo_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      daily_inspection_summary: {
+        Row: {
+          avg_duration_seconds: number | null
+          clean_count: number | null
+          cleaners: string[] | null
+          dirty_count: number | null
+          inspection_date: string | null
+          location_id: string | null
+          location_name: string | null
+          needs_work_count: number | null
+          total_inspections: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inspection_records_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Functions: {
+      user_has_any_role_level: {
+        Args: { required_levels: string[] }
+        Returns: boolean
+      }
+      user_has_role_level: {
+        Args: { required_level: string }
+        Returns: boolean
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
 }
 
-export interface TemplateField {
-  id: string;
-  field_name: string;
-  field_type: 'radio' | 'checkbox' | 'text' | 'rating' | 'photo' | 'datetime';
-  label: string;
-  options?: string[];
-  max_photos?: number;
-  required: boolean;
-  order: number;
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
 }
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const

@@ -1,5 +1,3 @@
-
-
 // ===================================
 // 📁 src/core/use-cases/GetLocationsByFloor.ts
 // ===================================
@@ -12,13 +10,13 @@ export class GetLocationsByFloor {
   async execute(floor: string): Promise<Location[]> {
     try {
       console.log('🔍 Fetching locations for floor:', floor);
-      
+
       if (!floor) {
         throw new Error('Floor is required');
       }
 
       const locations = await this.locationRepository.findByFloor(floor);
-      
+
       console.log(`✅ Found ${locations.length} locations`);
       return locations;
     } catch (error) {

@@ -21,21 +21,21 @@ export class SupabaseAuthService {
   async signIn(email: string, password: string) {
     try {
       console.log('🔐 Starting sign in...');
-      
+
       const { data, error } = await this.withTimeout(
         supabase.auth.signInWithPassword({
           email,
-          password
+          password,
         })
       );
 
       if (error) throw error;
-      
+
       console.log('✅ Sign in successful');
       return data;
     } catch (error: any) {
       console.error('❌ Sign in error:', error);
-      
+
       if (error.message === 'Operation timeout') {
         throw new Error('Login timeout. Silakan coba lagi.');
       }
@@ -46,7 +46,7 @@ export class SupabaseAuthService {
   async signUp(email: string, password: string, fullName: string, role: UserRole) {
     try {
       console.log('📝 Starting sign up...');
-      
+
       const { data, error } = await this.withTimeout(
         supabase.auth.signUp({
           email,
@@ -54,9 +54,9 @@ export class SupabaseAuthService {
           options: {
             data: {
               full_name: fullName,
-              role: role
-            }
-          }
+              role: role,
+            },
+          },
         })
       );
 
@@ -66,7 +66,7 @@ export class SupabaseAuthService {
       return data;
     } catch (error: any) {
       console.error('❌ Sign up error:', error);
-      
+
       if (error.message === 'Operation timeout') {
         throw new Error('Registrasi timeout. Silakan coba lagi.');
       }
@@ -77,37 +77,40 @@ export class SupabaseAuthService {
   async signOut() {
     try {
       console.log('🚪 Starting sign out...');
-      
+
       // Clear session with local scope
       await supabase.auth.signOut({ scope: 'local' });
-      
+
       // Clear browser cache
       if (typeof window !== 'undefined') {
         window.sessionStorage.clear();
         window.localStorage.removeItem('toilet-monitoring-auth');
       }
-      
+
       console.log('✅ Sign out successful');
     } catch (error: any) {
       console.error('❌ Sign out error:', error);
-      
+
       // Force clear even if signOut fails
       if (typeof window !== 'undefined') {
         window.sessionStorage.clear();
         window.localStorage.removeItem('toilet-monitoring-auth');
       }
-      
+
       throw new Error('Logout gagal');
     }
   }
 
   async getCurrentUser() {
     try {
-      const { data: { user }, error } = await this.withTimeout(
+      const {
+        data: { user },
+        error,
+      } = await this.withTimeout(
         supabase.auth.getUser(),
         10000 // 10s timeout for user check
       );
-      
+
       if (error) throw error;
       return user;
     } catch (error: any) {
@@ -121,11 +124,14 @@ export class SupabaseAuthService {
 
   async getSession() {
     try {
-      const { data: { session }, error } = await this.withTimeout(
+      const {
+        data: { session },
+        error,
+      } = await this.withTimeout(
         supabase.auth.getSession(),
         8000 // 8s timeout for session check
       );
-      
+
       if (error) throw error;
       return session;
     } catch (error: any) {
@@ -139,11 +145,8 @@ export class SupabaseAuthService {
 
   async refreshSession() {
     try {
-      const { data, error } = await this.withTimeout(
-        supabase.auth.refreshSession(),
-        10000
-      );
-      
+      const { data, error } = await this.withTimeout(supabase.auth.refreshSession(), 10000);
+
       if (error) throw error;
       return data.session;
     } catch (error: any) {

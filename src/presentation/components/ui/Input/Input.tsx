@@ -19,12 +19,9 @@ export const Input: React.FC<InputProps> = ({
   className = '',
   ...props
 }) => {
-  const classes = [
-    styles.input,
-    fullWidth && styles.fullWidth,
-    error && styles.error,
-    className
-  ].filter(Boolean).join(' ');
+  const classes = [styles.input, fullWidth && styles.fullWidth, error && styles.error, className]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div className={styles.container}>

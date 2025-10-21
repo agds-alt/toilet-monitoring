@@ -6,7 +6,7 @@ import { SupabaseLocationRepository } from '@/infrastructure/database/repositori
 export async function GET(request: NextRequest) {
   try {
     console.log('📍 GET /api/locations - Fetching all locations');
-    
+
     const { searchParams } = new URL(request.url);
     const floor = searchParams.get('floor');
     const section = searchParams.get('section');
@@ -17,15 +17,15 @@ export async function GET(request: NextRequest) {
 
     // Apply filters if provided
     if (floor) {
-      locations = locations.filter(loc => loc.floor === floor);
+      locations = locations.filter((loc) => loc.floor === floor);
     }
-    
+
     if (section) {
-      locations = locations.filter(loc => loc.section === section);
+      locations = locations.filter((loc) => loc.section === section);
     }
 
     console.log(`✅ Returning ${locations.length} locations`);
-    
+
     return NextResponse.json({
       success: true,
       data: locations,
@@ -34,16 +34,16 @@ export async function GET(request: NextRequest) {
         filters: {
           floor: floor || 'all',
           section: section || 'all',
-          includeStats
-        }
-      }
+          includeStats,
+        },
+      },
     });
   } catch (error: any) {
     console.error('❌ Error fetching locations:', error);
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: error.message || 'Internal server error'
+        error: error.message || 'Internal server error',
       },
       { status: 500 }
     );
@@ -54,25 +54,27 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     console.log('📍 POST /api/locations - Creating location:', body);
 
     const repository = new SupabaseLocationRepository();
     const newLocation = await repository.create(body);
-    
-    console.log('✅ Location created successfully:', newLocation.id);
-    
-    return NextResponse.json({
-      success: true,
-      data: newLocation
-    }, { status: 201 });
 
+    console.log('✅ Location created successfully:', newLocation.id);
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: newLocation,
+      },
+      { status: 201 }
+    );
   } catch (error: any) {
     console.error('❌ Error creating location:', error);
     return NextResponse.json(
-      { 
+      {
         success: false,
-        error: error.message || 'Internal server error'
+        error: error.message || 'Internal server error',
       },
       { status: 500 }
     );

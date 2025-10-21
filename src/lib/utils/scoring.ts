@@ -14,7 +14,7 @@ export const calculateInspectionScore = (assessments: Assessments): number => {
     closet: 15,
     tissue_roll: 10,
     urinoir: 5,
-    hand_dryer: 5
+    hand_dryer: 5,
   };
 
   let totalScore = 0;
@@ -28,13 +28,17 @@ export const calculateInspectionScore = (assessments: Assessments): number => {
     const value = assessment.value;
 
     // Scoring logic
-    if (value === CleanlinessValue.CLEAN || 
-        value === AromaValue.FRAGRANT || 
-        value === AvailabilityValue.AVAILABLE) {
+    if (
+      value === CleanlinessValue.CLEAN ||
+      value === AromaValue.FRAGRANT ||
+      value === AvailabilityValue.AVAILABLE
+    ) {
       itemScore = 100;
-    } else if (value === CleanlinessValue.DIRTY || 
-               value === AromaValue.SMELLY || 
-               value === AvailabilityValue.EMPTY) {
+    } else if (
+      value === CleanlinessValue.DIRTY ||
+      value === AromaValue.SMELLY ||
+      value === AvailabilityValue.EMPTY
+    ) {
       itemScore = 40;
     } else if (value === 'other') {
       itemScore = 60; // Partial score for "other"
@@ -46,7 +50,9 @@ export const calculateInspectionScore = (assessments: Assessments): number => {
   return Math.round(totalScore / totalWeight);
 };
 
-export const getScoreGrade = (score: number): {
+export const getScoreGrade = (
+  score: number
+): {
   grade: string;
   label: string;
   color: string;

@@ -75,13 +75,13 @@ export function InspectionForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     setSubmitError(null);
     setIsSubmitting(true);
 
     try {
       const result = await submit();
-      
+
       if (result.success && result.data) {
         if (onSuccess) {
           onSuccess(result.data.id);
@@ -113,9 +113,7 @@ export function InspectionForm({
       <div className={styles.header}>
         <div className={styles.headerTop}>
           <h1 className={styles.title}>{state.template.name}</h1>
-          <div className={styles.timer}>
-            ⏱️ {formatDuration(duration)}
-          </div>
+          <div className={styles.timer}>⏱️ {formatDuration(duration)}</div>
         </div>
 
         {state.template.description && (
@@ -131,15 +129,9 @@ export function InspectionForm({
 
       {/* Settings Section */}
       <div className={styles.settings}>
-        <UIModeSwitcher
-          mode={state.uiState.uiMode}
-          onChange={setUIMode}
-        />
+        <UIModeSwitcher mode={state.uiState.uiMode} onChange={setUIMode} />
 
-        <PhotoModeSwitcher
-          mode={state.uiState.photoMode}
-          onChange={setPhotoMode}
-        />
+        <PhotoModeSwitcher mode={state.uiState.photoMode} onChange={setPhotoMode} />
 
         <LocationModeSwitcher
           mode={state.uiState.locationMode}
@@ -169,9 +161,7 @@ export function InspectionForm({
                 label={component.label}
                 icon={component.icon}
                 value={response?.rating}
-                onChange={(rating) =>
-                  updateResponse(component.id, { rating })
-                }
+                onChange={(rating) => updateResponse(component.id, { rating })}
                 uiMode={state.uiState.uiMode}
                 required={component.required}
               />
@@ -181,9 +171,7 @@ export function InspectionForm({
                 <button
                   type="button"
                   onClick={() => handleOpenComment(component.id)}
-                  className={`${styles.actionButton} ${
-                    response?.comment ? styles.hasContent : ''
-                  }`}
+                  className={`${styles.actionButton} ${response?.comment ? styles.hasContent : ''}`}
                 >
                   💬 {response?.comment ? 'Edit Komentar' : 'Tambah Komentar'}
                 </button>
@@ -200,10 +188,7 @@ export function InspectionForm({
 
               {/* Photo Preview */}
               {componentPhotos.length > 0 && (
-                <PhotoPreview
-                  photos={componentPhotos}
-                  onRemove={removePhoto}
-                />
+                <PhotoPreview photos={componentPhotos} onRemove={removePhoto} />
               )}
 
               {/* Comment Preview */}
@@ -222,18 +207,13 @@ export function InspectionForm({
       {state.uiState.photoMode === 'batch' && state.pendingPhotos.length > 0 && (
         <div className={styles.batchPhotos}>
           <h3 className={styles.sectionTitle}>📷 Semua Foto</h3>
-          <PhotoPreview
-            photos={state.pendingPhotos}
-            onRemove={removePhoto}
-          />
+          <PhotoPreview photos={state.pendingPhotos} onRemove={removePhoto} />
         </div>
       )}
 
       {/* Notes Section */}
       <div className={styles.notes}>
-        <label className={styles.notesLabel}>
-          📝 Catatan Tambahan (Opsional)
-        </label>
+        <label className={styles.notesLabel}>📝 Catatan Tambahan (Opsional)</label>
         <textarea
           value={state.notes}
           onChange={(e) => setNotes(e.target.value)}
@@ -242,9 +222,7 @@ export function InspectionForm({
           rows={4}
           maxLength={1000}
         />
-        <div className={styles.notesCount}>
-          {state.notes.length}/1000 karakter
-        </div>
+        <div className={styles.notesCount}>{state.notes.length}/1000 karakter</div>
       </div>
 
       {/* Validation Warnings */}
@@ -259,11 +237,7 @@ export function InspectionForm({
       )}
 
       {/* Submit Error */}
-      {submitError && (
-        <div className={styles.error}>
-          ❌ {submitError}
-        </div>
-      )}
+      {submitError && <div className={styles.error}>❌ {submitError}</div>}
 
       {/* Actions */}
       <div className={styles.actions}>
@@ -278,11 +252,7 @@ export function InspectionForm({
           </button>
         )}
 
-        <button
-          type="submit"
-          disabled={!canSubmit || isSubmitting}
-          className={styles.submitButton}
-        >
+        <button type="submit" disabled={!canSubmit || isSubmitting} className={styles.submitButton}>
           {isSubmitting ? (
             <>
               <span className={styles.spinner} />

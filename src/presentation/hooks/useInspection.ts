@@ -391,7 +391,9 @@ export function useInspection(
     if (!state.template || !state.location || !userId) {
       return {
         isValid: false,
-        errors: [{ field: 'general', message: 'Missing required data', severity: 'error' as const }],
+        errors: [
+          { field: 'general', message: 'Missing required data', severity: 'error' as const },
+        ],
         warnings: [],
       };
     }
@@ -453,5 +455,6 @@ export function useInspection(
     progress,
     duration: timer.duration,
     canSubmit,
+    isLoading: state.uiState.isSubmitting,
   };
 }

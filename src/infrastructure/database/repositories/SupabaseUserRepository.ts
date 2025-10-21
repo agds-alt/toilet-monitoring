@@ -1,214 +1,130 @@
-// ===================================
-// FIXED: SUPABASE USER REPOSITORY
-// src/infrastructure/database/repositories/SupabaseUserRepository.ts
-// ===================================
-
-import { supabase } from '../supabase';
+// 📁 src/infrastructure/database/repositories/SupabaseUserRepository.ts
+import { supabase } from '@/infrastructure/database/supabase';
 import { IUserRepository } from '@/core/repositories/IUserRepository';
-import { User } from '@/core/types/interfaces';
-import { UserEntity } from '@/core/entities/User';
-import { UserRole } from '@/core/types/enums';
+import { User, UserWithRoles } from '@/core/entities/User';
 
 export class SupabaseUserRepository implements IUserRepository {
-  async findById(id: string): Promise<UserEntity | null> {
-    console.log('🔍 Finding user by ID:', id);
+  async findById(id: string): Promise<User | null> {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', id)
+      .single();
 
-    try {
-      // ✅ FIXED: Query 'users' table with roles join
-      const { data, error } = await supabase
-        .from('users')  // ← CHANGED FROM 'profiles'
-        .select(`
-          *,
-          user_roles (
-            role_id,
-            roles (
-              id,
-              name,
-              display_name,
-              level
-            )
-          )
-        `)
-        .eq('id', id)
-        .single();
-
-      if (error) {
-        if (error.code === 'PGRST116') {
-          console.log('ℹ️ User not found:', id);
-          return null;
-        }
-        console.error('❌ FIND USER ERROR:', error);
-        throw new Error(`Failed to find user: ${error.message}`);
-      }
-
-      console.log('✅ User found:', data.full_name);
-      return this.mapToEntity(data);
-    } catch (error: any) {
-      console.error('❌ FIND BY ID ERROR:', error);
+    if (error) {
+      if (error.code === 'PGRST116') return null;
       throw error;
     }
+
+    return data;
   }
 
-  async findByEmail(email: string): Promise<UserEntity | null> {
-    console.log('🔍 Finding user by email:', email);
+  async findByEmail(email: string): Promise<User | null> {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .single();
 
-    try {
-      // ✅ FIXED: Query 'users' table
-      const { data, error } = await supabase
-        .from('users')  // ← CHANGED FROM 'profiles'
-        .select(`
-          *,
-          user_roles (
-            role_id,
-            roles (
-              id,
-              name,
-              display_name,
-              level
-            )
-          )
-        `)
-        .eq('email', email)
-        .single();
-
-      if (error) {
-        if (error.code === 'PGRST116') {
-          console.log('ℹ️ User not found with email:', email);
-          return null;
-        }
-        console.error('❌ FIND BY EMAIL ERROR:', error);
-        throw new Error(`Failed to find user by email: ${error.message}`);
-      }
-
-      console.log('✅ User found by email:', data.full_name);
-      return this.mapToEntity(data);
-    } catch (error: any) {
-      console.error('❌ FIND BY EMAIL ERROR:', error);
+    if (error) {
+      if (error.code === 'PGRST116') return null;
       throw error;
     }
+
+    return data;
   }
 
-  async create(user: User): Promise<UserEntity> {
-    console.log('💾 Creating new user...');
-    console.log('User data:', {
-      id: user.id,
-      email: user.email,
-      fullName: user.fullName,
-      role: user.role
-    });
+  async findAll(): Promise<User[]> {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
 
-    try {
-      // ✅ FIXED: Insert into 'users' table
-      const { data, error } = await supabase
-        .from('users')  // ← CHANGED FROM 'profiles'
-        .insert({
-          id: user.id,
-          email: user.email,
-          password_hash: 'managed_by_auth',
-          full_name: user.fullName,
-          phone: null,
-          is_active: true
-        })
-        .select()
-        .single();
-
-      if (error) {
-        console.error('❌ CREATE USER ERROR!');
-        console.error('Error Code:', error.code);
-        console.error('Error Message:', error.message);
-        
-        // Handle specific errors
-        if (error.code === '23505') {
-          throw new Error('User already exists (duplicate ID or email)');
-        }
-        if (error.code === 'PGRST301') {
-          throw new Error('Permission denied: Check RLS policies');
-        }
-        
-        throw new Error(`Failed to create user: ${error.message}`);
-      }
-
-      // Assign default role if provided
-      if (user.role) {
-        const { data: roleData } = await supabase
-          .from('roles')
-          .select('id')
-          .eq('name', user.role.toLowerCase())
-          .single();
-
-        if (roleData) {
-          await supabase
-            .from('user_roles')
-            .insert({
-              user_id: data.id,
-              role_id: roleData.id
-            });
-        }
-      }
-
-      console.log('✅ User created successfully!');
-      console.log('User ID:', data.id);
-      return this.mapToEntity(data);
-    } catch (error: any) {
-      console.error('❌ CREATE USER ERROR:', error);
-      throw error;
-    }
+    if (error) throw error;
+    return data || [];
   }
 
-  async update(id: string, userData: Partial<User>): Promise<UserEntity> {
-    console.log('✏️ Updating user:', id);
+  async create(userData: Omit<User, 'id' | 'created_at' | 'updated_at'>): Promise<User> {
+    const { data, error } = await supabase
+      .from('users')
+      .insert({
+        email: userData.email,
+        full_name: userData.full_name,
+        password_hash: userData.password_hash,
+        phone: userData.phone,
+        profile_photo_url: userData.profile_photo_url,
+        is_active: userData.is_active ?? true,
+      })
+      .select()
+      .single();
 
-    try {
-      // ✅ FIXED: Update 'users' table
-      const { data, error } = await supabase
-        .from('users')  // ← CHANGED FROM 'profiles'
-        .update({
-          full_name: userData.fullName,
-          phone: userData.phone,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', id)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('❌ UPDATE USER ERROR:', error);
-        throw new Error(`Failed to update user: ${error.message}`);
-      }
-
-      console.log('✅ User updated successfully');
-      return this.mapToEntity(data);
-    } catch (error: any) {
-      console.error('❌ UPDATE USER ERROR:', error);
-      throw error;
-    }
+    if (error) throw error;
+    return data;
   }
 
-  private mapToEntity(data: any): UserEntity {
-    // Extract primary role from user_roles join
-    let userRole: UserRole = UserRole.STAFF; // Default role
+  async update(id: string, userData: Partial<User>): Promise<User> {
+    const { data, error } = await supabase
+      .from('users')
+      .update({
+        ...userData,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select()
+      .single();
 
-    if (data.user_roles && data.user_roles.length > 0) {
-      const rolesByPriority = {
-        'super_admin': UserRole.ADMIN,
-        'gm': UserRole.ADMIN,
-        'admin': UserRole.ADMIN,
-        'supervisor': UserRole.SUPERVISOR,
-        'team_leader': UserRole.TEAM_LEADER,
-        'cleaner': UserRole.STAFF
-      };
+    if (error) throw error;
+    return data;
+  }
 
-      // Get highest priority role
-      const primaryRoleName = data.user_roles[0]?.roles?.name;
-      userRole = rolesByPriority[primaryRoleName] || UserRole.STAFF;
-    }
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('users')
+      .update({ 
+        is_active: false,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id);
 
-    return new UserEntity(
-      data.id,
-      data.email,
-      data.full_name,
-      userRole,
-      new Date(data.created_at)
-    );
+    if (error) throw error;
+  }
+
+  async getUserWithRoles(userId: string): Promise<UserWithRoles | null> {
+    const user = await this.findById(userId);
+    if (!user) return null;
+
+    const { data: userRoles, error } = await supabase
+      .from('user_roles')
+      .select(`
+        role:roles (
+          id,
+          name,
+          display_name,
+          level,
+          color
+        )
+      `)
+      .eq('user_id', userId);
+
+    if (error) throw error;
+
+    const roles = userRoles?.map(ur => ur.role) || [];
+
+    return {
+      ...user,
+      roles
+    };
+  }
+
+  async updateLastLogin(userId: string): Promise<void> {
+    const { error } = await supabase
+      .from('users')
+      .update({ 
+        last_login_at: new Date().toISOString() 
+      })
+      .eq('id', userId);
+
+    if (error) throw error;
   }
 }

@@ -29,7 +29,7 @@ export const ReportFilters: React.FC<ReportFiltersProps> = ({
   onMonthChange,
   onWeekChange,
   onUserChange,
-  onExport
+  onExport,
 }) => {
   const months = getMonthsIn2025();
   const weeks = getWeeksInMonth(2025, selectedMonth);
@@ -58,9 +58,9 @@ export const ReportFilters: React.FC<ReportFiltersProps> = ({
           <div className={styles.filterIcon}>📊</div>
           <select
             value={selectedWeek}
-            onChange={(e) => onWeekChange(
-              e.target.value === 'all' ? 'all' : Number(e.target.value)
-            )}
+            onChange={(e) =>
+              onWeekChange(e.target.value === 'all' ? 'all' : Number(e.target.value))
+            }
             className={styles.select}
           >
             <option value="all">Semua Minggu</option>

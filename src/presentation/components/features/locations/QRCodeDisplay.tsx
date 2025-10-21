@@ -19,14 +19,14 @@ interface QRCodeDisplayProps {
   showActions?: boolean;
 }
 
-export default function QRCodeDisplay({ 
-  locationId, 
-  locationCode, 
+export default function QRCodeDisplay({
+  locationId,
+  locationCode,
   locationName,
   building = '',
   floor = '',
   size = 256,
-  showActions = true
+  showActions = true,
 }: QRCodeDisplayProps) {
   const [copied, setCopied] = useState(false);
 
@@ -42,35 +42,35 @@ export default function QRCodeDisplay({
     const ctx = canvas.getContext('2d');
     const svgData = new XMLSerializer().serializeToString(svg);
     const img = new Image();
-    
+
     canvas.width = size + 100; // Extra padding
     canvas.height = size + 180; // Extra for text
-    
+
     img.onload = () => {
       if (!ctx) return;
-      
+
       // White background
       ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
+
       // Draw QR code
       ctx.drawImage(img, 50, 40, size, size);
-      
+
       // Add text below QR
       ctx.fillStyle = '#1F2937';
       ctx.font = 'bold 20px Arial';
       ctx.textAlign = 'center';
       ctx.fillText(locationName, canvas.width / 2, size + 80);
-      
+
       ctx.font = '16px Arial';
       ctx.fillText(`Kode: ${locationCode}`, canvas.width / 2, size + 110);
-      
+
       if (building) {
         ctx.font = '14px Arial';
         ctx.fillStyle = '#6B7280';
         ctx.fillText(building, canvas.width / 2, size + 135);
       }
-      
+
       // Download
       const pngUrl = canvas.toDataURL('image/png');
       const link = document.createElement('a');
@@ -78,7 +78,7 @@ export default function QRCodeDisplay({
       link.href = pngUrl;
       link.click();
     };
-    
+
     img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
   };
 
@@ -94,7 +94,7 @@ export default function QRCodeDisplay({
         await navigator.share({
           title: locationName,
           text: `QR Code untuk ${locationName}`,
-          url: qrUrl
+          url: qrUrl,
         });
       } catch (err) {
         console.log('Share cancelled');
@@ -127,12 +127,8 @@ export default function QRCodeDisplay({
         <div className={styles.locationCode}>
           <code>{locationCode}</code>
         </div>
-        {building && (
-          <div className={styles.building}>{building}</div>
-        )}
-        {floor && (
-          <div className={styles.floor}>Lantai {floor}</div>
-        )}
+        {building && <div className={styles.building}>{building}</div>}
+        {floor && <div className={styles.floor}>Lantai {floor}</div>}
         <div className={styles.qrUrl}>{qrUrl}</div>
       </div>
 

@@ -1,4 +1,3 @@
-
 const authCache = new Map();
 
 export const getCachedUser = (userId: string) => {

@@ -16,7 +16,7 @@ export default function LoginPage() {
     email: 'agdscid@gmail.com', // Pre-filled demo email
     password: '',
     confirmPassword: '',
-    fullName: ''
+    fullName: '',
   });
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -49,12 +49,11 @@ export default function LoginPage() {
         if (error) throw error;
 
         setMessage({ type: 'success', text: 'Login successful!' });
-        
+
         // Redirect after short delay
         setTimeout(() => {
           router.push('/dashboard');
         }, 1000);
-
       } else {
         // Signup logic
         const { data, error } = await supabase.auth.signUp({
@@ -63,30 +62,30 @@ export default function LoginPage() {
           options: {
             data: {
               full_name: formData.fullName,
-            }
-          }
+            },
+          },
         });
 
         if (error) throw error;
 
         if (data.user) {
-          setMessage({ 
-            type: 'success', 
-            text: 'Signup successful! Please check your email for verification.' 
+          setMessage({
+            type: 'success',
+            text: 'Signup successful! Please check your email for verification.',
           });
-          
+
           // Auto-switch to login after signup
           setTimeout(() => {
             setMode('login');
-            setFormData(prev => ({ ...prev, password: '', confirmPassword: '', fullName: '' }));
+            setFormData((prev) => ({ ...prev, password: '', confirmPassword: '', fullName: '' }));
           }, 2000);
         }
       }
     } catch (error: any) {
       console.error('Auth error:', error);
-      setMessage({ 
-        type: 'error', 
-        text: error.message || `Failed to ${mode}` 
+      setMessage({
+        type: 'error',
+        text: error.message || `Failed to ${mode}`,
       });
     } finally {
       setIsLoading(false);
@@ -94,28 +93,28 @@ export default function LoginPage() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
   const switchMode = () => {
     setMode(mode === 'login' ? 'signup' : 'login');
     setMessage(null);
-    setFormData(prev => ({ 
-      ...prev, 
-      password: '', 
+    setFormData((prev) => ({
+      ...prev,
+      password: '',
       confirmPassword: '',
-      fullName: '' 
+      fullName: '',
     }));
   };
 
   const useDemoCredentials = () => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       email: 'agdscid@gmail.com',
-      password: 'demopass123'
+      password: 'demopass123',
     }));
     setMode('login');
   };
@@ -123,37 +122,23 @@ export default function LoginPage() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        
         {/* Header dengan Toggle */}
         <div className={styles.header}>
-          <div className={styles.logo}>
-            🚀
-          </div>
-          <h1 className={styles.title}>
-            {mode === 'login' ? 'Welcome Back' : 'Create Account'}
-          </h1>
+          <div className={styles.logo}>🚀</div>
+          <h1 className={styles.title}>{mode === 'login' ? 'Welcome Back' : 'Create Account'}</h1>
           <p className={styles.subtitle}>
-            {mode === 'login' 
-              ? 'Sign in to your account' 
-              : 'Sign up to get started'
-            }
+            {mode === 'login' ? 'Sign in to your account' : 'Sign up to get started'}
           </p>
         </div>
 
         {/* Demo Credentials Quick Access */}
-        <button 
-          onClick={useDemoCredentials}
-          className={styles.demoButton}
-          type="button"
-        >
+        <button onClick={useDemoCredentials} className={styles.demoButton} type="button">
           🎯 Use Demo Credentials
         </button>
 
         {/* Message Alert */}
         {message && (
-          <div className={`${styles.message} ${styles[message.type]}`}>
-            {message.text}
-          </div>
+          <div className={`${styles.message} ${styles[message.type]}`}>{message.text}</div>
         )}
 
         {/* Form */}
@@ -214,17 +199,15 @@ export default function LoginPage() {
             </div>
           )}
 
-          <button 
-            type="submit" 
-            disabled={isLoading}
-            className={styles.submitButton}
-          >
+          <button type="submit" disabled={isLoading} className={styles.submitButton}>
             {isLoading ? (
               <span className={styles.loadingText}>
                 {mode === 'login' ? 'Signing in...' : 'Creating account...'}
               </span>
+            ) : mode === 'login' ? (
+              'Sign In'
             ) : (
-              mode === 'login' ? 'Sign In' : 'Create Account'
+              'Create Account'
             )}
           </button>
         </form>
@@ -232,9 +215,9 @@ export default function LoginPage() {
         {/* Mode Toggle */}
         <div className={styles.modeToggle}>
           <p className={styles.toggleText}>
-            {mode === 'login' ? "Don't have an account?" : "Already have an account?"}
+            {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
           </p>
-          <button 
+          <button
             onClick={switchMode}
             className={styles.toggleButton}
             type="button"
@@ -247,8 +230,10 @@ export default function LoginPage() {
         {/* Demo Info */}
         <div className={styles.demoSection}>
           <p className={styles.demoText}>
-            <strong>Demo Account:</strong><br />
-            Email: agdscid@gmail.com<br />
+            <strong>Demo Account:</strong>
+            <br />
+            Email: agdscid@gmail.com
+            <br />
             Password: demopass123
           </p>
         </div>

@@ -19,16 +19,18 @@ export function BottomNav() {
   console.log('🔍 BottomNav pathname:', pathname);
 
   return (
-    <nav style={{
-      display: 'flex',
-      justifyContent: 'space-around',
-      padding: '0.5rem 0',
-      background: 'white'
-    }}>
+    <nav
+      style={{
+        display: 'flex',
+        justifyContent: 'space-around',
+        padding: '0.5rem 0',
+        background: 'white',
+      }}
+    >
       {navItems.map((item) => {
-        const isActive = pathname === item.href || 
-                        (item.href !== '/dashboard' && pathname.startsWith(item.href));
-        
+        const isActive =
+          pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+
         return (
           <Link
             key={item.href}
@@ -42,15 +44,11 @@ export function BottomNav() {
               color: isActive ? 'black' : '#666',
               background: isActive ? '#f3f4f6' : 'transparent',
               borderRadius: '8px',
-              minWidth: '60px'
+              minWidth: '60px',
             }}
           >
-            <span style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>
-              {item.icon}
-            </span>
-            <span style={{ fontSize: '0.75rem', fontWeight: 500 }}>
-              {item.label}
-            </span>
+            <span style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>{item.icon}</span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 500 }}>{item.label}</span>
           </Link>
         );
       })}

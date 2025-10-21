@@ -16,7 +16,7 @@ export default function LocationQRPage() {
   const params = useParams();
   const router = useRouter();
   const locationId = params.id as string;
-  
+
   const [location, setLocation] = useState<Location | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -24,7 +24,7 @@ export default function LocationQRPage() {
     const loadLocation = async () => {
       try {
         const locations = await getLocationsUseCase.execute();
-        const found = locations.find(l => l.id === locationId);
+        const found = locations.find((l) => l.id === locationId);
         setLocation(found || null);
       } catch (error) {
         console.error('Failed to load location:', error);

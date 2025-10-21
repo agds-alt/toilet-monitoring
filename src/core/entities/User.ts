@@ -1,45 +1,23 @@
-// ===================================
-// 📁 3. src/core/entities/User.ts
-// ===================================
+// 📁 src/core/entities/User.ts
+export interface User {
+  id: string;
+  email: string;
+  full_name: string;
+  password_hash: string;
+  phone: string | null;
+  profile_photo_url: string | null;
+  is_active: boolean | null;
+  last_login_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
 
-import { UserRole } from '../types/enums';
-
-export class UserEntity {
-  constructor(
-    public readonly id: string,
-    public readonly email: string,
-    public readonly fullName: string,
-    public readonly role: UserRole,
-    public readonly createdAt: Date
-  ) {}
-
-  isStaff(): boolean {
-    return this.role === UserRole.STAFF;
-  }
-
-  isMedical(): boolean {
-    return this.role === UserRole.MEDICAL;
-  }
-
-  isCleaner(): boolean {
-    return this.role === UserRole.CLEANER;
-  }
-
-  canCreateInspection(): boolean {
-    return true; // All roles can create inspections
-  }
-
-  canViewReports(): boolean {
-    return this.role === UserRole.CLEANER || this.role === UserRole.MEDICAL;
-  }
-
-  toJSON() {
-    return {
-      id: this.id,
-      email: this.email,
-      fullName: this.fullName,
-      role: this.role,
-      createdAt: this.createdAt
-    };
-  }
+export interface UserWithRoles extends User {
+  roles: {
+    id: string;
+    name: string;
+    display_name: string;
+    level: string;
+    color: string | null;
+  }[];
 }

@@ -1,31 +1,20 @@
-// src/core/repositories/IPhotoRepository.ts
-
-export interface GPSData {
-  latitude: number;
-  longitude: number;
-  accuracy?: number;
-}
-
-export interface PhotoMetadata {
-  userId: string;
-  locationId: string;
-  timestamp: string;
-  gps?: GPSData;
-  deviceInfo?: string;
-}
+// 📁 src/core/repositories/IPhotoRepository.ts
+import { Photo } from '@/core/entities/Photo';
 
 export interface IPhotoRepository {
-  /**
-   * Upload photo to cloud storage
-   * @param photoData Base64 encoded image data
-   * @param metadata Photo metadata including GPS and user info
-   * @returns Promise resolving to photo URL
-   */
-  upload(photoData: string, metadata: PhotoMetadata): Promise<string>;
-
-  /**
-   * Delete photo from cloud storage
-   * @param photoUrl URL of the photo to delete
-   */
-  delete(photoUrl: string): Promise<void>;
+  upload(photoData: {
+    file_url: string;
+    file_name?: string | null;
+    file_size?: number | null;
+    mime_type?: string | null;
+    caption?: string | null;
+    inspection_id?: string | null;
+    location_id?: string | null;
+    uploaded_by?: string | null;
+    field_reference?: string | null;
+  }): Promise<Photo>;
+  
+  findByInspection(inspectionId: string): Promise<Photo[]>;
+  findByLocation(locationId: string): Promise<Photo[]>;
+  delete(id: string, deletedBy: string): Promise<void>;
 }

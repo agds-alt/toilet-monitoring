@@ -6,13 +6,10 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
-    const folder = formData.get('folder') as string || 'inspections';
+    const folder = (formData.get('folder') as string) || 'inspections';
 
     if (!file) {
-      return NextResponse.json(
-        { error: 'No file provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
     // Convert File to buffer
@@ -26,7 +23,7 @@ export async function POST(request: NextRequest) {
       folder,
       originalName: file.name,
       size: file.size,
-      type: file.type
+      type: file.type,
     });
 
     // Upload to Cloudinary
@@ -38,8 +35,8 @@ export async function POST(request: NextRequest) {
           resource_type: 'auto',
           transformation: [
             { quality: 'auto:good' }, // Optimize quality
-            { fetch_format: 'auto' } // Auto format (webp jika supported)
-          ]
+            { fetch_format: 'auto' }, // Auto format (webp jika supported)
+          ],
         },
         (error, result) => {
           if (error) reject(error);
@@ -51,7 +48,7 @@ export async function POST(request: NextRequest) {
     console.log('✅ Upload successful:', {
       public_id: (result as any).public_id,
       url: (result as any).secure_url,
-      format: (result as any).format
+      format: (result as any).format,
     });
 
     return NextResponse.json({
@@ -62,16 +59,15 @@ export async function POST(request: NextRequest) {
         format: (result as any).format,
         bytes: (result as any).bytes,
         width: (result as any).width,
-        height: (result as any).height
-      }
+        height: (result as any).height,
+      },
     });
-
   } catch (error: any) {
     console.error('❌ Cloudinary upload error:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Upload failed',
-        details: error.message 
+        details: error.message,
       },
       { status: 500 }
     );

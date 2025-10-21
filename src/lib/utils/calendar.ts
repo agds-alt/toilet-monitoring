@@ -11,14 +11,14 @@ export const getWeeksInMonth = (year: number, month: number): WeekData[] => {
   const weeks: WeekData[] = [];
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
-  
+
   let weekStart = new Date(firstDay);
   let weekNumber = 1;
 
   while (weekStart <= lastDay) {
     const weekEnd = new Date(weekStart);
     weekEnd.setDate(weekEnd.getDate() + 6);
-    
+
     if (weekEnd > lastDay) {
       weekEnd.setTime(lastDay.getTime());
     }
@@ -28,7 +28,7 @@ export const getWeeksInMonth = (year: number, month: number): WeekData[] => {
       label: `Minggu ke-${weekNumber}`,
       startDate: new Date(weekStart),
       endDate: new Date(weekEnd),
-      dateRange: `${weekStart.getDate()} - ${weekEnd.getDate()}`
+      dateRange: `${weekStart.getDate()} - ${weekEnd.getDate()}`,
     });
 
     weekStart.setDate(weekStart.getDate() + 7);
@@ -51,7 +51,7 @@ export const getMonthsIn2025 = () => {
     { value: 8, label: 'September 2025' },
     { value: 9, label: 'Oktober 2025' },
     { value: 10, label: 'November 2025' },
-    { value: 11, label: 'Desember 2025' }
+    { value: 11, label: 'Desember 2025' },
   ];
 };
 

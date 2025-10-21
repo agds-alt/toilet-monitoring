@@ -89,9 +89,7 @@ export function PhotoCapture({
   if (!canAddMore) {
     return (
       <div className={`${styles.maxReached} ${className}`}>
-        <span className={styles.maxText}>
-          📸 Maksimal {maxPhotos} foto
-        </span>
+        <span className={styles.maxText}>📸 Maksimal {maxPhotos} foto</span>
       </div>
     );
   }
@@ -115,11 +113,7 @@ export function PhotoCapture({
       {/* Options Menu */}
       {showOptions && (
         <div className={styles.optionsMenu}>
-          <button
-            type="button"
-            onClick={openCamera}
-            className={styles.option}
-          >
+          <button type="button" onClick={openCamera} className={styles.option}>
             <span className={styles.optionIcon}>📷</span>
             <div className={styles.optionContent}>
               <span className={styles.optionTitle}>Kamera</span>
@@ -127,11 +121,7 @@ export function PhotoCapture({
             </div>
           </button>
 
-          <button
-            type="button"
-            onClick={openGallery}
-            className={styles.option}
-          >
+          <button type="button" onClick={openGallery} className={styles.option}>
             <span className={styles.optionIcon}>🖼️</span>
             <div className={styles.optionContent}>
               <span className={styles.optionTitle}>Galeri</span>

@@ -9,7 +9,7 @@ export const toLocalDateString = (date: Date): string => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
-  
+
   return `${year}-${month}-${day}`;
 };
 
@@ -39,12 +39,12 @@ export const isSameLocalDate = (date1: Date, date2: Date): boolean => {
 export const getWeekDateRange = (weekStart: Date, weekEnd: Date): string[] => {
   const dates: string[] = [];
   const current = new Date(weekStart);
-  
+
   while (current <= weekEnd) {
     dates.push(toLocalDateString(current));
     current.setDate(current.getDate() + 1);
   }
-  
+
   return dates;
 };
 
@@ -59,7 +59,7 @@ export const formatIndonesianDateTime = (date: Date): string => {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    timeZone: 'Asia/Jakarta' // ✅ Explicitly set Jakarta timezone
+    timeZone: 'Asia/Jakarta', // ✅ Explicitly set Jakarta timezone
   }).format(date);
 };
 
@@ -70,6 +70,6 @@ export const getWeekOfMonth = (date: Date): number => {
   const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
   const dayOfMonth = date.getDate();
   const dayOfWeek = firstDay.getDay();
-  
+
   return Math.ceil((dayOfMonth + dayOfWeek) / 7);
 };

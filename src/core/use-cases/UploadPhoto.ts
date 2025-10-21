@@ -28,10 +28,7 @@ export class UploadPhotoUseCase {
     }
 
     // Upload photo
-    const photoUrl = await this.photoRepository.upload(
-      dto.photoData,
-      dto.metadata
-    );
+    const photoUrl = await this.photoRepository.upload(dto.photoData, dto.metadata);
 
     return photoUrl;
   }

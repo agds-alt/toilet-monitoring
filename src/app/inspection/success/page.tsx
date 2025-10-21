@@ -63,8 +63,9 @@ function SuccessContent() {
   }
 
   const statusColor = getStatusColor(inspection.overall_status);
-  const avgRating = Object.values(inspection.responses)
-    .reduce((sum, r) => sum + r.rating, 0) / Object.values(inspection.responses).length;
+  const avgRating =
+    Object.values(inspection.responses).reduce((sum, r) => sum + r.rating, 0) /
+    Object.values(inspection.responses).length;
 
   return (
     <div className={styles.container}>
@@ -104,9 +105,7 @@ function SuccessContent() {
           {/* Rating */}
           <div className={styles.summaryItem}>
             <span className={styles.summaryLabel}>Rating Rata-rata</span>
-            <span className={styles.summaryValue}>
-              ⭐ {formatRating(avgRating)} / 5.0
-            </span>
+            <span className={styles.summaryValue}>⭐ {formatRating(avgRating)} / 5.0</span>
           </div>
 
           {/* Duration */}
@@ -137,7 +136,8 @@ function SuccessContent() {
           <div className={styles.summaryItem}>
             <span className={styles.summaryLabel}>Tanggal & Waktu</span>
             <span className={styles.summaryValue}>
-              📅 {new Date(inspection.inspection_date).toLocaleDateString('id-ID')} - {inspection.inspection_time}
+              📅 {new Date(inspection.inspection_date).toLocaleDateString('id-ID')} -{' '}
+              {inspection.inspection_time}
             </span>
           </div>
         </div>
@@ -160,17 +160,11 @@ function SuccessContent() {
           👁️ Lihat Detail
         </button>
 
-        <button
-          onClick={() => router.push('/inspection')}
-          className={styles.buttonPrimary}
-        >
+        <button onClick={() => router.push('/inspection')} className={styles.buttonPrimary}>
           ➕ Inspeksi Baru
         </button>
 
-        <button
-          onClick={() => router.push('/dashboard')}
-          className={styles.buttonOutline}
-        >
+        <button onClick={() => router.push('/dashboard')} className={styles.buttonOutline}>
           🏠 Dashboard
         </button>
       </div>
@@ -227,12 +221,14 @@ function SuccessContent() {
 
 export default function InspectionSuccessPage() {
   return (
-    <Suspense fallback={
-      <div className={styles.loading}>
-        <div className={styles.spinner} />
-        <p>Loading...</p>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className={styles.loading}>
+          <div className={styles.spinner} />
+          <p>Loading...</p>
+        </div>
+      }
+    >
       <SuccessContent />
     </Suspense>
   );

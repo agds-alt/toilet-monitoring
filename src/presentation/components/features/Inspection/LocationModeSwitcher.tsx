@@ -34,11 +34,7 @@ export function LocationModeSwitcher({
     <div className={`${styles.container} ${className}`}>
       <div className={styles.header}>
         <span className={styles.label}>📍 Location Method</span>
-        {locationName && (
-          <span className={styles.locationBadge}>
-            ✓ {locationName}
-          </span>
-        )}
+        {locationName && <span className={styles.locationBadge}>✓ {locationName}</span>}
       </div>
 
       <div className={styles.tabs}>
@@ -121,9 +117,7 @@ export function LocationModeSwitcher({
 
       <div className={styles.info}>
         {isGPS ? (
-          <p className={styles.infoText}>
-            ℹ️ GPS memerlukan izin akses lokasi dari browser Anda
-          </p>
+          <p className={styles.infoText}>ℹ️ GPS memerlukan izin akses lokasi dari browser Anda</p>
         ) : (
           <p className={styles.infoText}>
             ℹ️ Pastikan QR code terlihat jelas untuk hasil scan terbaik

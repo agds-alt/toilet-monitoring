@@ -34,7 +34,7 @@ export default function LocationCard({ location, onRefresh }: LocationCardProps)
 
   const handleDelete = async () => {
     if (!confirm(`Hapus lokasi "${location.name}"?`)) return;
-    
+
     try {
       setDeleting(true);
       await deleteLocationUseCase.execute(location.id);
@@ -55,18 +55,10 @@ export default function LocationCard({ location, onRefresh }: LocationCardProps)
           <span>{location.building || 'No building'}</span>
         </div>
         <div className={styles.actions}>
-          <button
-            onClick={viewQR}
-            className={styles.btnAction}
-            title="View QR Code"
-          >
+          <button onClick={viewQR} className={styles.btnAction} title="View QR Code">
             <QrCode size={16} />
           </button>
-          <button
-            onClick={copyQRUrl}
-            className={styles.btnAction}
-            title="Copy QR URL"
-          >
+          <button onClick={copyQRUrl} className={styles.btnAction} title="Copy QR URL">
             {copied ? <Check size={16} color="#10B981" /> : <Copy size={16} />}
           </button>
           <button

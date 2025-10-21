@@ -13,8 +13,8 @@ interface LocationStatsProps {
 
 export default function LocationStats({ locations }: LocationStatsProps) {
   const totalLocations = locations.length;
-  const uniqueBuildings = new Set(locations.map(l => l.building).filter(Boolean)).size;
-  const uniqueFloors = new Set(locations.map(l => l.floor).filter(Boolean)).size;
+  const uniqueBuildings = new Set(locations.map((l) => l.building).filter(Boolean)).size;
+  const uniqueFloors = new Set(locations.map((l) => l.floor).filter(Boolean)).size;
 
   return (
     <div className={styles.stats}>

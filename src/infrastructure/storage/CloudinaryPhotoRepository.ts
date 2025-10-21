@@ -1,5 +1,5 @@
 // Dari: src/infrastructure/storage/CloudinaryPhotoRepository.ts
-import { IPhotoRepository, PhotoMetadata } from '../../../../core/repositories/IPhotoRepository';
+import { IPhotoRepository, PhotoMetadata } from '@/core/repositories/IPhotoRepository';
 
 export class CloudinaryPhotoRepository implements IPhotoRepository {
   private cloudName: string;
@@ -15,26 +15,26 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
   }
 
   private async uploadWithRetry(
-    photoData: string, 
+    photoData: string,
     metadata: PhotoMetadata,
     maxRetries = 3
   ): Promise<string> {
     let lastError: Error;
-    
+
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         console.log(`📤 Upload attempt ${attempt}/${maxRetries}...`);
         return await this.uploadSingle(photoData, metadata);
       } catch (error) {
         lastError = error as Error;
-        
+
         if (attempt < maxRetries) {
           console.log(`⏳ Upload attempt ${attempt} failed, retrying in ${attempt}s...`);
-          await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+          await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
         }
       }
     }
-    
+
     throw lastError!;
   }
 
@@ -42,34 +42,34 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
     try {
       // Create form data
       const formData = new FormData();
-      
+
       // Convert base64 to blob efficiently
       const blob = await this.base64ToBlob(photoData);
       formData.append('file', blob);
       formData.append('upload_preset', this.uploadPreset);
-      
+
       // Custom filename with timestamp
       const filename = `toilet_${metadata.locationId}_${Date.now()}`;
       formData.append('public_id', filename);
-      
+
       // Optimize: Use webp format for smaller size
       formData.append('format', 'webp');
       formData.append('quality', 'auto:good');
-      
+
       // Combine all context metadata
       let context = `timestamp=${metadata.timestamp}`;
       if (metadata.gps) {
         context += `|lat=${metadata.gps.latitude}|lon=${metadata.gps.longitude}`;
       }
       formData.append('context', context);
-      
+
       // Add tags for easy searching
       formData.append('tags', `toilet,${metadata.locationId},${metadata.userId}`);
 
       console.log('📤 Uploading to Cloudinary...', {
         size: Math.round(blob.size / 1024) + 'KB',
         format: 'webp',
-        attempt: 'single'
+        attempt: 'single',
       });
 
       // Upload with timeout
@@ -81,7 +81,7 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
         {
           method: 'POST',
           body: formData,
-          signal: controller.signal
+          signal: controller.signal,
         }
       );
 
@@ -94,11 +94,11 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
       }
 
       const data = await uploadResponse.json();
-      
+
       console.log('✅ Upload success:', {
         url: data.secure_url,
         format: data.format,
-        size: Math.round(data.bytes / 1024) + 'KB'
+        size: Math.round(data.bytes / 1024) + 'KB',
       });
 
       return data.secure_url;
@@ -115,11 +115,11 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
 
   async delete(photoUrl: string): Promise<void> {
     const publicId = this.extractPublicId(photoUrl);
-    
+
     const response = await fetch('/api/photos/delete', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ publicId })
+      body: JSON.stringify({ publicId }),
     });
 
     if (!response.ok) {
@@ -130,14 +130,14 @@ export class CloudinaryPhotoRepository implements IPhotoRepository {
   private async base64ToBlob(base64: string): Promise<Blob> {
     const base64Data = base64.split(',')[1];
     const mimeType = base64.match(/data:([^;]+)/)?.[1] || 'image/jpeg';
-    
+
     const binaryString = atob(base64Data);
     const bytes = new Uint8Array(binaryString.length);
-    
+
     for (let i = 0; i < binaryString.length; i++) {
       bytes[i] = binaryString.charCodeAt(i);
     }
-    
+
     return new Blob([bytes], { type: mimeType });
   }
 

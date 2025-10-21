@@ -38,7 +38,7 @@ export const ROLE_PERMISSIONS = {
 
 export const hasPermission = (
   role: UserRole,
-  permission: keyof typeof ROLE_PERMISSIONS[UserRole.STAFF]
+  permission: keyof (typeof ROLE_PERMISSIONS)[UserRole.STAFF]
 ): boolean => {
   return ROLE_PERMISSIONS[role]?.[permission] || false;
 };

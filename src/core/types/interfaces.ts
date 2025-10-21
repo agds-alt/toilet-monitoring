@@ -1,20 +1,14 @@
 // src/core/types/interfaces.ts
-import { 
-  UserRole, 
-  InspectionStatus, 
-  CleanlinessValue, 
-  AromaValue, 
-  AvailabilityValue 
+import {
+  UserRole,
+  InspectionStatus,
+  CleanlinessValue,
+  AromaValue,
+  AvailabilityValue,
 } from './enums';
 
 // ✅ Re-export enums agar bisa di-import dari interfaces
-export { 
-  UserRole, 
-  InspectionStatus, 
-  CleanlinessValue, 
-  AromaValue, 
-  AvailabilityValue 
-};
+export { UserRole, InspectionStatus, CleanlinessValue, AromaValue, AvailabilityValue };
 
 export interface User {
   id: string;

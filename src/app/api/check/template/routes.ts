@@ -41,27 +41,31 @@ export async function GET(request: NextRequest) {
         hasDefault: !!defaultTemplate,
         activeTemplates: activeTemplates?.length || 0,
       },
-      defaultTemplate: defaultTemplate ? {
-        id: defaultTemplate.id,
-        name: defaultTemplate.name,
-        is_active: defaultTemplate.is_active,
-        is_default: defaultTemplate.is_default,
-        componentsCount: defaultTemplate.fields?.components?.length || 0,
-        hasComponents: defaultTemplate.fields?.components?.length > 0,
-      } : null,
-      allTemplates: allTemplates?.map((t) => ({
-        id: t.id,
-        name: t.name,
-        is_active: t.is_active,
-        is_default: t.is_default,
-        componentsCount: t.fields?.components?.length || 0,
-      })) || [],
-      activeTemplates: activeTemplates?.map((t) => ({
-        id: t.id,
-        name: t.name,
-        is_default: t.is_default,
-        componentsCount: t.fields?.components?.length || 0,
-      })) || [],
+      defaultTemplate: defaultTemplate
+        ? {
+            id: defaultTemplate.id,
+            name: defaultTemplate.name,
+            is_active: defaultTemplate.is_active,
+            is_default: defaultTemplate.is_default,
+            componentsCount: defaultTemplate.fields?.["components"]?.length || 0,
+            hasComponents: defaultTemplate.fields?.["components"]?.length > 0,
+          }
+        : null,
+      allTemplates:
+        allTemplates?.map((t) => ({
+          id: t.id,
+          name: t.name,
+          is_active: t.is_active,
+          is_default: t.is_default,
+          componentsCount: t.fields?.["components"]?.length || 0,
+        })) || [],
+      activeTemplates:
+        activeTemplates?.map((t) => ({
+          id: t.id,
+          name: t.name,
+          is_default: t.is_default,
+          componentsCount: t.fields?.["components"]?.length || 0,
+        })) || [],
     };
 
     // Diagnosis
@@ -80,9 +84,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       ...results,
       diagnosis,
-      hint: diagnosis[0].includes('❌') || diagnosis[0].includes('⚠️')
-        ? 'Run: npm run seed'
-        : 'Everything looks good!',
+      hint:
+        diagnosis[0].includes('❌') || diagnosis[0].includes('⚠️')
+          ? 'Run: npm run seed'
+          : 'Everything looks good!',
     });
   } catch (error: any) {
     console.error('❌ Check error:', error);

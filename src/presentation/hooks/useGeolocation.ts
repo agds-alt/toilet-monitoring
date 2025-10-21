@@ -7,10 +7,7 @@
 
 import { useState, useCallback } from 'react';
 import { GeolocationData } from '@/core/types/inspection.types';
-import {
-  getCurrentPosition,
-  checkGeolocationPermission,
-} from '@/lib/utils/geolocation.utils';
+import { getCurrentPosition, checkGeolocationPermission } from '@/lib/utils/geolocation.utils';
 
 interface UseGeolocationReturn {
   geolocation: GeolocationData | null;

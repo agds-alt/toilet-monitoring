@@ -1,4 +1,3 @@
-
 // ===================================
 // 📁 src/core/use-cases/SearchLocations.ts
 // ===================================
@@ -11,14 +10,14 @@ export class SearchLocations {
   async execute(query: string): Promise<Location[]> {
     try {
       console.log('🔍 Searching locations with query:', query);
-      
+
       if (!query || query.trim().length === 0) {
         // Return all if no query
         return await this.locationRepository.findAll();
       }
 
       const locations = await this.locationRepository.search(query.trim());
-      
+
       console.log(`✅ Found ${locations.length} locations matching "${query}"`);
       return locations;
     } catch (error) {

@@ -3,4 +3,5 @@ ignoredBuiltDependencies:
   - esbuild
   - node
   - sharp
+  - supabase
   - unrs-resolver

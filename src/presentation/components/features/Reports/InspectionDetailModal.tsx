@@ -13,8 +13,8 @@ import styles from './InspectionDetailModal.module.css';
 
 interface InspectionDetailModalProps {
   inspection: InspectionEntity;
-  userName?: string;  // ✅ TAMBAH INI
-  userRole?: string;  // ✅ TAMBAH INI
+  userName?: string; // ✅ TAMBAH INI
+  userRole?: string; // ✅ TAMBAH INI
   onClose: () => void;
   onNext?: () => void;
   onPrev?: () => void;
@@ -24,13 +24,13 @@ interface InspectionDetailModalProps {
 
 export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
   inspection,
-  userName = 'Unknown User',  // ✅ DEFAULT VALUE
-  userRole = 'Staff',  // ✅ DEFAULT VALUE
+  userName = 'Unknown User', // ✅ DEFAULT VALUE
+  userRole = 'Staff', // ✅ DEFAULT VALUE
   onClose,
   onNext,
   onPrev,
   currentIndex = 0,
-  totalInspections = 1
+  totalInspections = 1,
 }) => {
   const location = getLocationById(inspection.locationId);
   const score = calculateInspectionScore(inspection.assessments);
@@ -38,17 +38,17 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
 
   const getValueDisplay = (value: string) => {
     const valueMap: Record<string, { text: string; icon: string; color: string }> = {
-      'good': { text: 'Baik', icon: '✅', color: 'var(--color-success)' },
-      'bad': { text: 'Buruk', icon: '❌', color: 'var(--color-danger)' },
-      'missing': { text: 'Tidak Ada', icon: '⚠️', color: 'var(--color-warning)' },
-      'working': { text: 'Berfungsi', icon: '✅', color: 'var(--color-success)' },
-      'broken': { text: 'Rusak', icon: '❌', color: 'var(--color-danger)' },
-      'low_stock': { text: 'Stok Menipis', icon: '⚠️', color: 'var(--color-warning)' },
-      'out_of_stock': { text: 'Habis', icon: '❌', color: 'var(--color-danger)' },
-      'none': { text: 'Tidak Ada', icon: '✅', color: 'var(--color-success)' },
-      'mild': { text: 'Sedikit', icon: '⚠️', color: 'var(--color-warning)' },
-      'strong': { text: 'Menyengat', icon: '❌', color: 'var(--color-danger)' },
-      'other': { text: 'Lainnya', icon: '⚠️', color: 'var(--color-warning)' }
+      good: { text: 'Baik', icon: '✅', color: 'var(--color-success)' },
+      bad: { text: 'Buruk', icon: '❌', color: 'var(--color-danger)' },
+      missing: { text: 'Tidak Ada', icon: '⚠️', color: 'var(--color-warning)' },
+      working: { text: 'Berfungsi', icon: '✅', color: 'var(--color-success)' },
+      broken: { text: 'Rusak', icon: '❌', color: 'var(--color-danger)' },
+      low_stock: { text: 'Stok Menipis', icon: '⚠️', color: 'var(--color-warning)' },
+      out_of_stock: { text: 'Habis', icon: '❌', color: 'var(--color-danger)' },
+      none: { text: 'Tidak Ada', icon: '✅', color: 'var(--color-success)' },
+      mild: { text: 'Sedikit', icon: '⚠️', color: 'var(--color-warning)' },
+      strong: { text: 'Menyengat', icon: '❌', color: 'var(--color-danger)' },
+      other: { text: 'Lainnya', icon: '⚠️', color: 'var(--color-warning)' },
     };
 
     return valueMap[value] || { text: value, icon: '❓', color: 'var(--color-gray-500)' };
@@ -66,7 +66,7 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     }).format(date);
   };
 
@@ -74,7 +74,7 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
     return new Intl.DateTimeFormat('id-ID', {
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
+      second: '2-digit',
     }).format(date);
   };
 
@@ -102,17 +102,17 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
         {/* Navigation Buttons */}
         {totalInspections > 1 && (
           <div className={styles.navButtons}>
-            <Button 
-              variant="secondary" 
-              size="sm" 
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={onPrev}
               disabled={!onPrev || currentIndex === 0}
             >
               ← Sebelumnya
             </Button>
-            <Button 
-              variant="secondary" 
-              size="sm" 
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={onNext}
               disabled={!onNext || currentIndex === totalInspections - 1}
             >
@@ -126,17 +126,16 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
           {/* Score Card */}
           <Card variant="elevated" padding="md" className={styles.scoreCard}>
             <div className={styles.scoreDisplay}>
-              <div 
-                className={styles.scoreBadge}
-                style={{ background: grade.color }}
-              >
+              <div className={styles.scoreBadge} style={{ background: grade.color }}>
                 <div className={styles.scoreIcon}>{grade.icon}</div>
                 <div className={styles.scoreValue}>{score}</div>
               </div>
               <div className={styles.scoreInfo}>
                 <div className={styles.scoreGrade}>{grade.label}</div>
                 <div className={styles.scoreStatus}>
-                  {inspection.status === 'all_good' ? '✅ Semua Baik' : `⚠️ ${inspection.getIssueCount()} Masalah`}
+                  {inspection.status === 'all_good'
+                    ? '✅ Semua Baik'
+                    : `⚠️ ${inspection.getIssueCount()} Masalah`}
                 </div>
               </div>
             </div>
@@ -145,20 +144,14 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
           {/* User Info Card */}
           <Card variant="default" padding="md" className={styles.userCard}>
             <div className={styles.userInfo}>
-              <div className={styles.userAvatar}>
-                {userName.charAt(0).toUpperCase()}
-              </div>
+              <div className={styles.userAvatar}>{userName.charAt(0).toUpperCase()}</div>
               <div className={styles.userDetails}>
                 <div className={styles.userName}>{userName}</div>
                 <div className={styles.userRole}>{userRole}</div>
               </div>
               <div className={styles.timestamp}>
-                <div className={styles.timestampDate}>
-                  {formatDate(inspection.createdAt)}
-                </div>
-                <div className={styles.timestampTime}>
-                  {formatTime(inspection.createdAt)}
-                </div>
+                <div className={styles.timestampDate}>{formatDate(inspection.createdAt)}</div>
+                <div className={styles.timestampTime}>{formatTime(inspection.createdAt)}</div>
               </div>
             </div>
           </Card>
@@ -178,7 +171,8 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
                 />
                 {inspection.photoMetadata?.gps && (
                   <div className={styles.photoMeta}>
-                    📍 GPS: {inspection.photoMetadata.gps.latitude.toFixed(6)}, {inspection.photoMetadata.gps.longitude.toFixed(6)}
+                    📍 GPS: {inspection.photoMetadata.gps.latitude.toFixed(6)},{' '}
+                    {inspection.photoMetadata.gps.longitude.toFixed(6)}
                   </div>
                 )}
               </div>
@@ -186,7 +180,7 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
           )}
 
           {/* Location Info */}
-          {(inspection.latitude && inspection.longitude) && (
+          {inspection.latitude && inspection.longitude && (
             <Card variant="default" padding="md">
               <h3 className={styles.sectionTitle}>📍 Lokasi GPS</h3>
               <div className={styles.locationInfo}>
@@ -227,17 +221,12 @@ export const InspectionDetailModal: React.FC<InspectionDetailModalProps> = ({
                       <span className={styles.assessmentLabel}>{config.label}</span>
                     </div>
                     <div className={styles.assessmentRight}>
-                      <span 
-                        className={styles.assessmentValue}
-                        style={{ color: display.color }}
-                      >
+                      <span className={styles.assessmentValue} style={{ color: display.color }}>
                         {display.icon} {display.text}
                       </span>
                     </div>
                     {assessment.comment && (
-                      <div className={styles.assessmentComment}>
-                        💬 {assessment.comment}
-                      </div>
+                      <div className={styles.assessmentComment}>💬 {assessment.comment}</div>
                     )}
                   </div>
                 );

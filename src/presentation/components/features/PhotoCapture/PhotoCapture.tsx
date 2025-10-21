@@ -9,7 +9,7 @@ import { Camera, X, RotateCcw, Check, MapPin } from 'lucide-react';
 import styles from './PhotoCapture.module.css';
 
 interface Props {
-  onCapture: (photo: string, geoData: {lat: number, lng: number} | null) => void;
+  onCapture: (photo: string, geoData: { lat: number; lng: number } | null) => void;
   onClose: () => void;
 }
 
@@ -18,14 +18,14 @@ export default function PhotoCapture({ onCapture, onClose }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
-  const [geoData, setGeoData] = useState<{lat: number, lng: number} | null>(null);
+  const [geoData, setGeoData] = useState<{ lat: number; lng: number } | null>(null);
   const [geoStatus, setGeoStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [error, setError] = useState('');
 
   useEffect(() => {
     startCamera();
     getGeolocation();
-    
+
     return () => {
       stopCamera();
     };
@@ -38,11 +38,11 @@ export default function PhotoCapture({ onCapture, onClose }: Props) {
           facingMode: 'environment', // Back camera on mobile
           width: { ideal: 1920 },
           height: { ideal: 1080 },
-        }
+        },
       });
-      
+
       setStream(mediaStream);
-      
+
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
       }
@@ -54,7 +54,7 @@ export default function PhotoCapture({ onCapture, onClose }: Props) {
 
   const stopCamera = () => {
     if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach((track) => track.stop());
     }
   };
 
@@ -89,35 +89,39 @@ export default function PhotoCapture({ onCapture, onClose }: Props) {
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    
+
     // Set canvas size to match video
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     // Draw video frame to canvas
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
+
     // Add timestamp overlay
     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
     ctx.fillRect(10, canvas.height - 60, 300, 50);
-    
+
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'bold 16px Arial';
     ctx.fillText(new Date().toLocaleString(), 20, canvas.height - 30);
-    
+
     // Add GPS overlay if available
     if (geoData) {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
       ctx.fillRect(canvas.width - 310, canvas.height - 60, 300, 50);
-      
+
       ctx.fillStyle = '#10B981';
       ctx.font = '14px Arial';
-      ctx.fillText(`📍 ${geoData.lat.toFixed(6)}, ${geoData.lng.toFixed(6)}`, canvas.width - 300, canvas.height - 30);
+      ctx.fillText(
+        `📍 ${geoData.lat.toFixed(6)}, ${geoData.lng.toFixed(6)}`,
+        canvas.width - 300,
+        canvas.height - 30
+      );
     }
-    
+
     // Convert to base64
     const photoData = canvas.toDataURL('image/jpeg', 0.9);
     setPhoto(photoData);
@@ -153,15 +157,12 @@ export default function PhotoCapture({ onCapture, onClose }: Props) {
           <div className={styles.geoStatus} data-status={geoStatus}>
             <MapPin size={16} />
             {geoStatus === 'loading' && 'Getting location...'}
-            {geoStatus === 'success' && `Location: ${geoData?.lat.toFixed(4)}, ${geoData?.lng.toFixed(4)}`}
+            {geoStatus === 'success' &&
+              `Location: ${geoData?.lat.toFixed(4)}, ${geoData?.lng.toFixed(4)}`}
             {geoStatus === 'error' && 'Location unavailable'}
           </div>
 
-          {error && (
-            <div className={styles.error}>
-              ⚠️ {error}
-            </div>
-          )}
+          {error && <div className={styles.error}>⚠️ {error}</div>}
 
           {/* Camera/Photo View */}
           <div className={styles.cameraContainer}>
@@ -169,13 +170,7 @@ export default function PhotoCapture({ onCapture, onClose }: Props) {
               <img src={photo} alt="Captured" className={styles.photo} />
             ) : (
               <>
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className={styles.video}
-                />
+                <video ref={videoRef} autoPlay playsInline muted className={styles.video} />
                 <div className={styles.cameraOverlay}>
                   <div className={styles.frame} />
                 </div>

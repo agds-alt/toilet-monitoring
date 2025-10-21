@@ -32,7 +32,7 @@ export function ComponentRating({
   className = '',
 }: ComponentRatingProps) {
   const [hoverValue, setHoverValue] = useState<RatingValue | null>(null);
-  
+
   const isProfessional = uiMode === 'professional';
   const displayValue = hoverValue || value;
 
@@ -59,17 +59,13 @@ export function ComponentRating({
             {required && <span className={styles.required}>*</span>}
           </h3>
         </div>
-        
+
         {displayValue && (
           <span className={styles.ratingBadge}>
             {isProfessional ? (
-              <span className={styles.ratingText}>
-                {displayValue}/5
-              </span>
+              <span className={styles.ratingText}>{displayValue}/5</span>
             ) : (
-              <span className={styles.ratingEmoji}>
-                {getRatingEmoji(displayValue)}
-              </span>
+              <span className={styles.ratingEmoji}>{getRatingEmoji(displayValue)}</span>
             )}
           </span>
         )}
@@ -99,7 +95,9 @@ export function ComponentRating({
       {/* Label */}
       {displayValue && (
         <div className={styles.ratingLabel}>
-          <span className={`${styles.labelText} ${isProfessional ? styles.professional : styles.genz}`}>
+          <span
+            className={`${styles.labelText} ${isProfessional ? styles.professional : styles.genz}`}
+          >
             {getRatingLabel(displayValue, 'id')}
           </span>
         </div>
@@ -127,7 +125,7 @@ function StarRating({ value, hoverValue, onRate, onHoverEnter, onHoverLeave }: S
     <div className={styles.starRating}>
       {ratings.map((rating) => {
         const isFilled = rating <= (hoverValue || value || 0);
-        
+
         return (
           <button
             key={rating}
@@ -166,7 +164,7 @@ function EmojiRating({ value, hoverValue, onRate, onHoverEnter, onHoverLeave }: 
       {ratings.map((rating) => {
         const isSelected = rating === value;
         const isHovered = rating === hoverValue;
-        
+
         return (
           <button
             key={rating}

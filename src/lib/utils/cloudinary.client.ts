@@ -43,17 +43,17 @@ export const uploadToCloudinary = async (file: File): Promise<CloudinaryUploadRe
       fileSize: file.size,
       fileType: file.type,
       cloudName: CLOUDINARY_CLOUD_NAME,
-      uploadPreset: CLOUDINARY_UPLOAD_PRESET
+      uploadPreset: CLOUDINARY_UPLOAD_PRESET,
     });
 
     // Create form data untuk unsigned upload
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    
+
     // Optional: Tambahkan tags untuk organisasi
     formData.append('tags', 'toilet_monitoring,inspection');
-    
+
     // Optional: Tambahkan context untuk metadata
     formData.append('context', `filename=${file.name}|uploaded_from=web_app`);
 
@@ -71,24 +71,23 @@ export const uploadToCloudinary = async (file: File): Promise<CloudinaryUploadRe
       console.error('❌ Cloudinary upload failed:', {
         status: response.status,
         statusText: response.statusText,
-        error: errorText
+        error: errorText,
       });
       throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
     }
 
     const result: CloudinaryUploadResult = await response.json();
-    
+
     console.log('✅ Cloudinary upload successful:', {
       public_id: result.public_id,
       secure_url: result.secure_url,
       bytes: result.bytes,
       format: result.format,
       faces: result.faces,
-      colors: result.colors
+      colors: result.colors,
     });
 
     return result;
-
   } catch (error) {
     console.error('❌ Cloudinary upload error:', error);
     throw error;
@@ -96,17 +95,12 @@ export const uploadToCloudinary = async (file: File): Promise<CloudinaryUploadRe
 };
 
 // Utility function untuk generate Cloudinary URL dengan transformations
-export const getCloudinaryUrl = (
-  publicId: string,
-  transformations: string[] = []
-): string => {
+export const getCloudinaryUrl = (publicId: string, transformations: string[] = []): string => {
   if (!CLOUDINARY_CLOUD_NAME) {
     throw new Error('CLOUDINARY_CLOUD_NAME is not defined');
   }
 
-  const transformationString = transformations.length > 0 
-    ? transformations.join(',') + '/' 
-    : '';
+  const transformationString = transformations.length > 0 ? transformations.join(',') + '/' : '';
 
   return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${transformationString}${publicId}`;
 };

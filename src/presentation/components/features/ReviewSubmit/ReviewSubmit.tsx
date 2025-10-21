@@ -34,33 +34,34 @@ export const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
   geoData,
   onBack,
   onSubmit,
-  loading = false
+  loading = false,
 }) => {
   // Calculate total issues
   const getTotalIssues = () => {
     if (status === InspectionStatus.ALL_GOOD) return 0;
-    
+
     return Object.values(assessments).filter(
-      item => item.value === 'kotor' || 
-              item.value === 'bau' || 
-              item.value === 'kosong' ||
-              item.value === 'other'
+      (item) =>
+        item.value === 'kotor' ||
+        item.value === 'bau' ||
+        item.value === 'kosong' ||
+        item.value === 'other'
     ).length;
   };
 
   // Get status display info
   const getStatusDisplay = (statusValue: InspectionStatus) => {
     const statusMap: Record<InspectionStatus, { text: string; icon: string; color: string }> = {
-      [InspectionStatus.ALL_GOOD]: { 
-        text: 'Semua Baik', 
-        icon: '✅', 
-        color: 'var(--color-success)' 
+      [InspectionStatus.ALL_GOOD]: {
+        text: 'Semua Baik',
+        icon: '✅',
+        color: 'var(--color-success)',
       },
-      [InspectionStatus.HAS_ISSUES]: { 
-        text: 'Ada Masalah', 
-        icon: '⚠️', 
-        color: 'var(--color-warning)' 
-      }
+      [InspectionStatus.HAS_ISSUES]: {
+        text: 'Ada Masalah',
+        icon: '⚠️',
+        color: 'var(--color-warning)',
+      },
     };
     return statusMap[statusValue];
   };
@@ -68,13 +69,13 @@ export const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
   // Get value display for each assessment
   const getValueDisplay = (value: string) => {
     const valueMap: Record<string, { text: string; icon: string; color: string }> = {
-      'bersih': { text: 'Bersih', icon: '✅', color: 'var(--color-success)' },
-      'kotor': { text: 'Kotor', icon: '❌', color: 'var(--color-danger)' },
-      'wangi': { text: 'Wangi', icon: '✨', color: 'var(--color-success)' },
-      'bau': { text: 'Bau', icon: '🤢', color: 'var(--color-danger)' },
-      'terisi': { text: 'Tersedia', icon: '✅', color: 'var(--color-success)' },
-      'kosong': { text: 'Kosong', icon: '❌', color: 'var(--color-danger)' },
-      'other': { text: 'Lainnya', icon: '❓', color: 'var(--color-warning)' }
+      bersih: { text: 'Bersih', icon: '✅', color: 'var(--color-success)' },
+      kotor: { text: 'Kotor', icon: '❌', color: 'var(--color-danger)' },
+      wangi: { text: 'Wangi', icon: '✨', color: 'var(--color-success)' },
+      bau: { text: 'Bau', icon: '🤢', color: 'var(--color-danger)' },
+      terisi: { text: 'Tersedia', icon: '✅', color: 'var(--color-success)' },
+      kosong: { text: 'Kosong', icon: '❌', color: 'var(--color-danger)' },
+      other: { text: 'Lainnya', icon: '❓', color: 'var(--color-warning)' },
     };
     return valueMap[value] || { text: value, icon: '•', color: 'var(--color-text-secondary)' };
   };
@@ -104,9 +105,9 @@ export const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
       </Card>
 
       {/* Status Summary */}
-      <Card 
-        variant="outlined" 
-        padding="md" 
+      <Card
+        variant="outlined"
+        padding="md"
         className={styles.statusCard}
         style={{ borderColor: statusInfo.color }}
       >
@@ -117,9 +118,7 @@ export const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
               {statusInfo.text}
             </h3>
             {totalIssues > 0 && (
-              <p className={styles.issueCount}>
-                {totalIssues} item perlu perhatian
-              </p>
+              <p className={styles.issueCount}>{totalIssues} item perlu perhatian</p>
             )}
           </div>
         </div>
@@ -130,8 +129,8 @@ export const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
         <Card variant="outlined" padding="md" className={styles.photoCard}>
           <h3 className={styles.sectionTitle}>📸 Foto Dokumentasi</h3>
           <div className={styles.photoPreview}>
-            <Image 
-              src={photoPreview} 
+            <Image
+              src={photoPreview}
               alt="Preview foto toilet"
               width={400}
               height={300}
@@ -153,8 +152,8 @@ export const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
               const hasIssue = ['kotor', 'bau', 'kosong', 'other'].includes(assessment.value);
 
               return (
-                <div 
-                  key={config.id} 
+                <div
+                  key={config.id}
                   className={`${styles.assessmentItem} ${hasIssue ? styles.hasIssue : ''}`}
                 >
                   <div className={styles.assessmentLeft}>
@@ -162,17 +161,12 @@ export const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
                     <span className={styles.assessmentLabel}>{config.label}</span>
                   </div>
                   <div className={styles.assessmentRight}>
-                    <span 
-                      className={styles.assessmentValue}
-                      style={{ color: valueInfo.color }}
-                    >
+                    <span className={styles.assessmentValue} style={{ color: valueInfo.color }}>
                       {valueInfo.icon} {valueInfo.text}
                     </span>
                   </div>
                   {assessment.comment && (
-                    <div className={styles.assessmentComment}>
-                      💬 {assessment.comment}
-                    </div>
+                    <div className={styles.assessmentComment}>💬 {assessment.comment}</div>
                   )}
                 </div>
               );
@@ -191,31 +185,17 @@ export const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
 
       {/* Action Buttons */}
       <div className={styles.actions}>
-        <Button
-          variant="secondary"
-          size="lg"
-          onClick={onBack}
-          disabled={loading}
-          fullWidth
-        >
+        <Button variant="secondary" size="lg" onClick={onBack} disabled={loading} fullWidth>
           ← Kembali
         </Button>
-        <Button
-          variant="primary"
-          size="lg"
-          onClick={onSubmit}
-          disabled={loading}
-          fullWidth
-        >
+        <Button variant="primary" size="lg" onClick={onSubmit} disabled={loading} fullWidth>
           {loading ? 'Menyimpan...' : '✓ Submit Inspeksi'}
         </Button>
       </div>
 
       {/* Info Message */}
       <div className={styles.infoMessage}>
-        <p>
-          ℹ️ Data akan disimpan ke database dan tidak dapat diubah setelah submit
-        </p>
+        <p>ℹ️ Data akan disimpan ke database dan tidak dapat diubah setelah submit</p>
       </div>
     </div>
   );

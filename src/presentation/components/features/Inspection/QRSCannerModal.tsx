@@ -16,16 +16,12 @@ interface QRScannerModalProps {
   onLocationFound: (locationId: string, locationName: string) => void;
 }
 
-export function QRScannerModal({
-  isOpen,
-  onClose,
-  onLocationFound,
-}: QRScannerModalProps) {
+export function QRScannerModal({ isOpen, onClose, onLocationFound }: QRScannerModalProps) {
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [detectedCode, setDetectedCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -39,7 +35,7 @@ export function QRScannerModal({
     }
 
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
 
@@ -49,7 +45,7 @@ export function QRScannerModal({
   // Start camera
   const startCamera = async () => {
     setError(null);
-    
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'environment' },
@@ -66,7 +62,7 @@ export function QRScannerModal({
       }
     } catch (err: any) {
       console.error('❌ Camera error:', err);
-      
+
       if (err.name === 'NotAllowedError') {
         setError('Izin kamera ditolak. Silakan izinkan akses kamera.');
       } else if (err.name === 'NotFoundError') {
@@ -124,7 +120,7 @@ export function QRScannerModal({
     try {
       // Extract code from QR data
       let code = qrData.trim();
-      
+
       // If URL, extract code from path
       if (qrData.includes('/scan/')) {
         const match = qrData.match(/\/scan\/([^/?]+)/);
@@ -203,28 +199,15 @@ export function QRScannerModal({
         {/* Header */}
         <div className={styles.header}>
           <h2 className={styles.title}>📷 Scan QR Code</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className={styles.closeButton}
-            aria-label="Close"
-          >
+          <button type="button" onClick={onClose} className={styles.closeButton} aria-label="Close">
             ✕
           </button>
         </div>
 
         {/* Scanner Area */}
         <div className={styles.scannerContainer}>
-          <video
-            ref={videoRef}
-            className={styles.video}
-            playsInline
-            muted
-          />
-          <canvas
-            ref={canvasRef}
-            className={styles.canvas}
-          />
+          <video ref={videoRef} className={styles.video} playsInline muted />
+          <canvas ref={canvasRef} className={styles.canvas} />
 
           {/* Scan Frame */}
           {isScanning && !detectedCode && (
@@ -240,9 +223,7 @@ export function QRScannerModal({
           {/* Scanning Indicator */}
           {isScanning && !detectedCode && !error && (
             <div className={styles.scanningIndicator}>
-              <p className={styles.scanningText}>
-                Arahkan kamera ke QR code
-              </p>
+              <p className={styles.scanningText}>Arahkan kamera ke QR code</p>
             </div>
           )}
 
@@ -284,9 +265,7 @@ export function QRScannerModal({
         {/* Instructions */}
         {!error && (
           <div className={styles.instructions}>
-            <p className={styles.instructionText}>
-              💡 Pastikan QR code terlihat jelas dalam frame
-            </p>
+            <p className={styles.instructionText}>💡 Pastikan QR code terlihat jelas dalam frame</p>
           </div>
         )}
       </div>

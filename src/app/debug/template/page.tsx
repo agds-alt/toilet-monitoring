@@ -26,7 +26,7 @@ export default function DebugTemplatePage() {
       console.log('🧪 Test 1: Checking /api/templates...');
       const apiResponse = await fetch('/api/templates');
       const apiData = await apiResponse.json();
-      
+
       results.tests.push({
         name: 'API /api/templates',
         status: apiResponse.ok ? 'PASS' : 'FAIL',
@@ -67,12 +67,14 @@ export default function DebugTemplatePage() {
         results.tests.push({
           name: 'Template Service - getDefaultTemplate()',
           status: defaultTemplate ? 'PASS' : 'FAIL',
-          data: defaultTemplate ? {
-            id: defaultTemplate.id,
-            name: defaultTemplate.name,
-            is_default: defaultTemplate.is_default,
-            components_count: defaultTemplate.fields?.components?.length,
-          } : null,
+          data: defaultTemplate
+            ? {
+                id: defaultTemplate.id,
+                name: defaultTemplate.name,
+                is_default: defaultTemplate.is_default,
+                components_count: defaultTemplate.fields?.components?.length,
+              }
+            : null,
         });
       } catch (err: any) {
         results.tests.push({
@@ -105,19 +107,21 @@ export default function DebugTemplatePage() {
   return (
     <div style={{ padding: 40, fontFamily: 'monospace', maxWidth: 1200, margin: '0 auto' }}>
       <h1>🧪 Template Loading Debug</h1>
-      
-      <div style={{ 
-        padding: 20, 
-        background: allPassed ? '#d1fae5' : '#fee2e2',
-        borderRadius: 8,
-        marginBottom: 20,
-      }}>
+
+      <div
+        style={{
+          padding: 20,
+          background: allPassed ? '#d1fae5' : '#fee2e2',
+          borderRadius: 8,
+          marginBottom: 20,
+        }}
+      >
         <h2>{allPassed ? '✅ All Tests Passed!' : '❌ Some Tests Failed'}</h2>
         <p>Timestamp: {result.timestamp}</p>
       </div>
 
       {result.tests?.map((test: any, idx: number) => (
-        <div 
+        <div
           key={idx}
           style={{
             padding: 20,
@@ -130,44 +134,54 @@ export default function DebugTemplatePage() {
           <h3>
             {test.status === 'PASS' ? '✅' : '❌'} {test.name}
           </h3>
-          
-          <p><strong>Status:</strong> {test.status}</p>
-          
+
+          <p>
+            <strong>Status:</strong> {test.status}
+          </p>
+
           {test.response_status && (
-            <p><strong>HTTP Status:</strong> {test.response_status}</p>
+            <p>
+              <strong>HTTP Status:</strong> {test.response_status}
+            </p>
           )}
-          
+
           {test.content_type && (
-            <p><strong>Content-Type:</strong> {test.content_type}</p>
+            <p>
+              <strong>Content-Type:</strong> {test.content_type}
+            </p>
           )}
-          
+
           {test.count !== undefined && (
-            <p><strong>Count:</strong> {test.count}</p>
+            <p>
+              <strong>Count:</strong> {test.count}
+            </p>
           )}
-          
+
           {test.error && (
-            <div style={{ 
-              padding: 10, 
-              background: '#fee2e2', 
-              borderRadius: 4,
-              marginTop: 10,
-            }}>
+            <div
+              style={{
+                padding: 10,
+                background: '#fee2e2',
+                borderRadius: 4,
+                marginTop: 10,
+              }}
+            >
               <strong>Error:</strong> {test.error}
             </div>
           )}
-          
+
           {test.data && (
             <details style={{ marginTop: 10 }}>
-              <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>
-                View Data
-              </summary>
-              <pre style={{ 
-                background: '#f8f9fa', 
-                padding: 10, 
-                borderRadius: 4,
-                overflow: 'auto',
-                fontSize: 11,
-              }}>
+              <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>View Data</summary>
+              <pre
+                style={{
+                  background: '#f8f9fa',
+                  padding: 10,
+                  borderRadius: 4,
+                  overflow: 'auto',
+                  fontSize: 11,
+                }}
+              >
                 {JSON.stringify(test.data, null, 2)}
               </pre>
             </details>
@@ -177,19 +191,23 @@ export default function DebugTemplatePage() {
 
       <div style={{ marginTop: 40, padding: 20, background: '#f8f9fa', borderRadius: 8 }}>
         <h3>🔧 Quick Fixes</h3>
-        
+
         {!allPassed && (
           <>
             <h4>If API route fails:</h4>
             <ol>
-              <li>Check file exists: <code>src/app/api/templates/route.ts</code></li>
+              <li>
+                Check file exists: <code>src/app/api/templates/route.ts</code>
+              </li>
               <li>Check Supabase connection</li>
               <li>Check RLS policies</li>
             </ol>
 
             <h4>If Template Service fails:</h4>
             <ol>
-              <li>Clear cache: Delete <code>.next</code> folder</li>
+              <li>
+                Clear cache: Delete <code>.next</code> folder
+              </li>
               <li>Restart dev server</li>
               <li>Check template exists in DB</li>
             </ol>

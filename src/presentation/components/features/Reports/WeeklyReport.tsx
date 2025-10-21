@@ -21,7 +21,7 @@ interface WeeklyReportProps {
     inspections: any[];
     locationData: Array<{
       location: any;
-      dates: Record<string, any[]>;  // ← Changed: now array of inspections
+      dates: Record<string, any[]>; // ← Changed: now array of inspections
     }>;
   };
 }
@@ -40,8 +40,6 @@ export const WeeklyReport: React.FC<WeeklyReportProps> = ({ weekData }) => {
       setCurrentInspectionIndex(0);
     }
   };
-
-  
 
   const handleCloseModal = () => {
     setSelectedInspections([]);
@@ -71,19 +69,12 @@ export const WeeklyReport: React.FC<WeeklyReportProps> = ({ weekData }) => {
     <>
       <Card variant="elevated" padding="none" className={styles.container}>
         {/* Week Header */}
-        <div
-          className={styles.header}
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
+        <div className={styles.header} onClick={() => setIsExpanded(!isExpanded)}>
           <div className={styles.headerLeft}>
-            <button className={styles.expandBtn}>
-              {isExpanded ? '▼' : '▶'}
-            </button>
+            <button className={styles.expandBtn}>{isExpanded ? '▼' : '▶'}</button>
             <div>
               <div className={styles.weekTitle}>📍 {weekData.label}</div>
-              <div className={styles.weekRange}>
-                {weekData.dateRange} • Monitoring Period
-              </div>
+              <div className={styles.weekRange}>{weekData.dateRange} • Monitoring Period</div>
             </div>
           </div>
 
@@ -111,7 +102,7 @@ export const WeeklyReport: React.FC<WeeklyReportProps> = ({ weekData }) => {
                 <thead>
                   <tr>
                     <th className={styles.locationColumn}>LOKASI</th>
-                    {dates.map(date => {
+                    {dates.map((date) => {
                       const d = new Date(date + 'T00:00:00'); // Parse as local
                       return (
                         <th key={date} className={styles.dateColumn}>
@@ -130,17 +121,17 @@ export const WeeklyReport: React.FC<WeeklyReportProps> = ({ weekData }) => {
                       <td className={styles.locationCell}>
                         <div className={styles.locationName}>{location.name}</div>
                       </td>
-                      {dates.map(date => {
+                      {dates.map((date) => {
                         const inspections = locationDates[date];
                         const hasInspections = inspections && inspections.length > 0;
                         const avgScore = hasInspections ? calculateAvgScore(inspections) : 0;
-                        const hasPhoto = hasInspections && inspections.some(ins => ins.photoUrl);
+                        const hasPhoto = hasInspections && inspections.some((ins) => ins.photoUrl);
                         const count = hasInspections ? inspections.length : 0;
 
                         return (
                           <td key={date} className={styles.scoreCell}>
                             {hasInspections ? (
-                              <div 
+                              <div
                                 className={styles.scoreBox}
                                 onClick={() => handleScoreClick(inspections)}
                                 style={{ cursor: 'pointer' }}
@@ -150,16 +141,14 @@ export const WeeklyReport: React.FC<WeeklyReportProps> = ({ weekData }) => {
                                   className={styles.score}
                                   style={{
                                     background: getScoreGrade(avgScore).color,
-                                    boxShadow: `0 2px 8px ${getScoreGrade(avgScore).color}40`
+                                    boxShadow: `0 2px 8px ${getScoreGrade(avgScore).color}40`,
                                   }}
                                 >
                                   {avgScore}
                                 </div>
                                 <div className={styles.scoreFooter}>
                                   {hasPhoto && <span className={styles.photoIndicator}>📷</span>}
-                                  {count > 1 && (
-                                    <span className={styles.countBadge}>×{count}</span>
-                                  )}
+                                  {count > 1 && <span className={styles.countBadge}>×{count}</span>}
                                 </div>
                               </div>
                             ) : (

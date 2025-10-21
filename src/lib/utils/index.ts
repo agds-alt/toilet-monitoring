@@ -5,9 +5,8 @@ export * from './rating.utils';
 export * from './geolocation.utils';
 export * from './validation.utils';
 export * from './cloudinary.client';
-export  * from './scoring';
+export * from './scoring';
 export * from './validation.utils';
-export * from './calendar'
-export * from './date'
-export * from './formatting'
-
+export * from './calendar';
+export * from './date';
+export * from './formatting';

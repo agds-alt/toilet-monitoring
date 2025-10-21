@@ -9,10 +9,11 @@ import { supabase } from '@/infrastructure/database/supabase';
 export async function GET() {
   try {
     console.log('📋 GET /api/inspections called');
-    
+
     const { data: inspections, error } = await supabase
       .from('inspection_records') // ✅ FIXED
-      .select(`
+      .select(
+        `
         *,
         locations:location_id (
           id,
@@ -26,7 +27,8 @@ export async function GET() {
           full_name,
           email
         )
-      `)
+      `
+      )
       .order('submitted_at', { ascending: false }) // ✅ FIXED
       .limit(20);
 
@@ -61,7 +63,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await supabase
       .from('inspection_records') // ✅ FIXED
       .insert({
-        template_id: template?.id,
+        template_id: template?.id ?? "",
         location_id: body.locationId,
         user_id: body.userId,
         inspection_date: now.toISOString().split('T')[0],
@@ -69,7 +71,7 @@ export async function POST(request: NextRequest) {
         overall_status: body.status || 'Clean',
         responses: body.assessments || {}, // ✅ FIXED
         photo_urls: body.photoUrl ? [body.photoUrl] : [], // ✅ FIXED
-        notes: body.notes || null // ✅ FIXED
+        notes: body.notes || null, // ✅ FIXED
       })
       .select()
       .single();

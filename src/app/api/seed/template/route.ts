@@ -32,7 +32,8 @@ export async function POST() {
       .from('inspection_templates')
       .insert({
         name: 'Standard Toilet Inspection',
-        description: 'Template standar untuk inspeksi kebersihan toilet dengan 11 komponen penilaian',
+        description:
+          'Template standar untuk inspeksi kebersihan toilet dengan 11 komponen penilaian',
         estimated_time: 10,
         is_active: true,
         is_default: true,

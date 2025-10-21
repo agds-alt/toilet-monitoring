@@ -208,11 +208,7 @@ export class NotificationService {
   // IN-APP NOTIFICATION (Fallback)
   // ============================================
 
-  showInAppNotification(
-    type: NotificationType,
-    message: string,
-    duration: number = 3000
-  ) {
+  showInAppNotification(type: NotificationType, message: string, duration: number = 3000) {
     // Create notification element
     const notification = document.createElement('div');
     notification.className = `in-app-notification ${type}`;

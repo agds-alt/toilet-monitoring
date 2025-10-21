@@ -13,12 +13,7 @@ export { CommentModal } from './CommentModal';
 export { PhotoCapture } from './PhotoCapture';
 export { PhotoPreview } from './PhotoPreview';
 export { QRScannerModal } from './QRSCannerModal';
-export { SeedTemplateButton } from './SeedTemplateButton'
-
-
-
-
-
+export { SeedTemplateButton } from './SeedTemplateButton';
 
 // ============================================
 // UPDATED IMPORTS IN InspectionForm.tsx

@@ -44,12 +44,12 @@ export default function SeedPage() {
         data = JSON.parse(text);
       } catch (parseError) {
         console.error('❌ JSON parse error:', parseError);
-        
+
         // Check if it's HTML (404 page)
         if (text.includes('<!DOCTYPE') || text.includes('<html')) {
           throw new Error('API route not found. Did you create /api/seed/templates/route.ts?');
         }
-        
+
         throw new Error(`Invalid JSON response: ${text.substring(0, 100)}...`);
       }
 
@@ -101,7 +101,8 @@ export default function SeedPage() {
         .from('inspection_templates')
         .insert({
           name: 'Standard Toilet Inspection',
-          description: 'Template standar untuk inspeksi kebersihan toilet dengan 11 komponen penilaian',
+          description:
+            'Template standar untuk inspeksi kebersihan toilet dengan 11 komponen penilaian',
           estimated_time: 10,
           is_active: true,
           is_default: true,
@@ -165,40 +166,44 @@ export default function SeedPage() {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '20px',
-    }}>
-      <div style={{
-        maxWidth: '700px',
-        width: '100%',
-        background: 'white',
-        borderRadius: '24px',
-        padding: '40px',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-      }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        padding: '20px',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '700px',
+          width: '100%',
+          background: 'white',
+          borderRadius: '24px',
+          padding: '40px',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+        }}
+      >
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{ fontSize: '64px', marginBottom: '16px' }}>🌱</div>
-          <h1 style={{ margin: '0 0 12px', fontSize: '28px', fontWeight: 700 }}>
-            Database Seed
-          </h1>
+          <h1 style={{ margin: '0 0 12px', fontSize: '28px', fontWeight: 700 }}>Database Seed</h1>
           <p style={{ margin: 0, color: '#6b7280', fontSize: '14px' }}>
             Initialize inspection templates
           </p>
         </div>
 
         {/* Actions */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '12px',
-          marginBottom: '24px',
-        }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '12px',
+            marginBottom: '24px',
+          }}
+        >
           <button
             onClick={handleSeed}
             disabled={loading}
@@ -268,14 +273,16 @@ export default function SeedPage() {
         >
           {loading ? (
             <>
-              <span style={{
-                width: '16px',
-                height: '16px',
-                border: '2px solid rgba(59, 130, 246, 0.3)',
-                borderTopColor: '#3b82f6',
-                borderRadius: '50%',
-                animation: 'spin 0.8s linear infinite',
-              }} />
+              <span
+                style={{
+                  width: '16px',
+                  height: '16px',
+                  border: '2px solid rgba(59, 130, 246, 0.3)',
+                  borderTopColor: '#3b82f6',
+                  borderRadius: '50%',
+                  animation: 'spin 0.8s linear infinite',
+                }}
+              />
               <span>Loading...</span>
             </>
           ) : (
@@ -288,22 +295,24 @@ export default function SeedPage() {
 
         {/* Result */}
         {result && (
-          <div style={{
-            padding: '20px',
-            background: result.success ? '#dcfce7' : '#dbeafe',
-            borderRadius: '12px',
-            marginBottom: '16px',
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              marginBottom: '12px',
-            }}>
+          <div
+            style={{
+              padding: '20px',
+              background: result.success ? '#dcfce7' : '#dbeafe',
+              borderRadius: '12px',
+              marginBottom: '16px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginBottom: '12px',
+              }}
+            >
               <span style={{ fontSize: '24px' }}>✅</span>
-              <strong style={{ fontSize: '16px' }}>
-                {result.message || 'Success'}
-              </strong>
+              <strong style={{ fontSize: '16px' }}>{result.message || 'Success'}</strong>
             </div>
 
             {result.count !== undefined && (
@@ -313,15 +322,17 @@ export default function SeedPage() {
             )}
 
             {result.data && (
-              <pre style={{
-                margin: 0,
-                padding: '12px',
-                background: 'rgba(0,0,0,0.05)',
-                borderRadius: '8px',
-                fontSize: '11px',
-                overflow: 'auto',
-                maxHeight: '200px',
-              }}>
+              <pre
+                style={{
+                  margin: 0,
+                  padding: '12px',
+                  background: 'rgba(0,0,0,0.05)',
+                  borderRadius: '8px',
+                  fontSize: '11px',
+                  overflow: 'auto',
+                  maxHeight: '200px',
+                }}
+              >
                 {JSON.stringify(result.data, null, 2)}
               </pre>
             )}
@@ -330,38 +341,40 @@ export default function SeedPage() {
 
         {/* Error */}
         {error && (
-          <div style={{
-            padding: '16px',
-            background: '#fee2e2',
-            borderRadius: '12px',
-            marginBottom: '16px',
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '12px',
-            }}>
+          <div
+            style={{
+              padding: '16px',
+              background: '#fee2e2',
+              borderRadius: '12px',
+              marginBottom: '16px',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px',
+              }}
+            >
               <span style={{ fontSize: '24px' }}>❌</span>
               <div style={{ flex: 1 }}>
-                <strong style={{ display: 'block', marginBottom: '8px' }}>
-                  Error
-                </strong>
-                <p style={{ margin: '0 0 12px', fontSize: '13px', color: '#991b1b' }}>
-                  {error}
-                </p>
+                <strong style={{ display: 'block', marginBottom: '8px' }}>Error</strong>
+                <p style={{ margin: '0 0 12px', fontSize: '13px', color: '#991b1b' }}>{error}</p>
                 {rawResponse && (
                   <details style={{ fontSize: '11px', marginTop: '8px' }}>
                     <summary style={{ cursor: 'pointer', marginBottom: '8px' }}>
                       View Raw Response
                     </summary>
-                    <pre style={{
-                      margin: 0,
-                      padding: '8px',
-                      background: 'rgba(0,0,0,0.05)',
-                      borderRadius: '4px',
-                      overflow: 'auto',
-                      maxHeight: '150px',
-                    }}>
+                    <pre
+                      style={{
+                        margin: 0,
+                        padding: '8px',
+                        background: 'rgba(0,0,0,0.05)',
+                        borderRadius: '4px',
+                        overflow: 'auto',
+                        maxHeight: '150px',
+                      }}
+                    >
                       {rawResponse}
                     </pre>
                   </details>
@@ -372,21 +385,29 @@ export default function SeedPage() {
         )}
 
         {/* Instructions */}
-        <div style={{
-          padding: '16px',
-          background: '#f3f4f6',
-          borderRadius: '12px',
-          fontSize: '13px',
-          color: '#4b5563',
-          lineHeight: 1.6,
-        }}>
-          <strong style={{ display: 'block', marginBottom: '8px' }}>
-            💡 Options:
-          </strong>
+        <div
+          style={{
+            padding: '16px',
+            background: '#f3f4f6',
+            borderRadius: '12px',
+            fontSize: '13px',
+            color: '#4b5563',
+            lineHeight: 1.6,
+          }}
+        >
+          <strong style={{ display: 'block', marginBottom: '8px' }}>💡 Options:</strong>
           <ul style={{ margin: 0, paddingLeft: '20px' }}>
-            <li><strong>Via API Route:</strong> Uses /api/seed/templates (need to create route.ts first)</li>
-            <li><strong>Direct Seed:</strong> Bypasses API, seeds directly from browser ⚡ (RECOMMENDED)</li>
-            <li><strong>Verify:</strong> Check if templates exist</li>
+            <li>
+              <strong>Via API Route:</strong> Uses /api/seed/templates (need to create route.ts
+              first)
+            </li>
+            <li>
+              <strong>Direct Seed:</strong> Bypasses API, seeds directly from browser ⚡
+              (RECOMMENDED)
+            </li>
+            <li>
+              <strong>Verify:</strong> Check if templates exist
+            </li>
           </ul>
         </div>
 
@@ -414,7 +435,9 @@ export default function SeedPage() {
 
       <style jsx>{`
         @keyframes spin {
-          to { transform: rotate(360deg); }
+          to {
+            transform: rotate(360deg);
+          }
         }
       `}</style>
     </div>

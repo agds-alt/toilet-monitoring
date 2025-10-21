@@ -1,4 +1,3 @@
-
 // ===================================
 // 📁 src/core/use-cases/GetLocationsByBuilding.ts
 // ===================================
@@ -11,13 +10,13 @@ export class GetLocationsByBuilding {
   async execute(building: string): Promise<Location[]> {
     try {
       console.log('🔍 Fetching locations for building:', building);
-      
+
       if (!building) {
         throw new Error('Building name is required');
       }
 
       const locations = await this.locationRepository.findByBuilding(building);
-      
+
       console.log(`✅ Found ${locations.length} locations`);
       return locations;
     } catch (error) {

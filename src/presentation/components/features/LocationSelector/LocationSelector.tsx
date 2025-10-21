@@ -17,7 +17,7 @@ interface LocationSelectorProps {
 export const LocationSelector: React.FC<LocationSelectorProps> = ({
   onSelect,
   onBack,
-  selectedLocationId
+  selectedLocationId,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredLocations, setFilteredLocations] = useState<Location[]>(LOCATIONS);
@@ -38,7 +38,7 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
 
   const handleLocationSelect = async (location: Location) => {
     if (isLoading) return;
-    
+
     setIsLoading(true);
     try {
       await onSelect(location);
@@ -60,7 +60,7 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
     <div className={styles.container}>
       <Card variant="elevated" padding="lg">
         <h2 className={styles.title}>📍 Pilih Lokasi Toilet</h2>
-        
+
         {/* Search Input */}
         <div className={styles.searchContainer}>
           <input
@@ -84,15 +84,11 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
         </div>
 
         {/* Location List */}
-        <div 
-          className={styles.locationList}
-          role="listbox"
-          aria-label="Daftar lokasi toilet"
-        >
+        <div className={styles.locationList} role="listbox" aria-label="Daftar lokasi toilet">
           {filteredLocations.map((location) => (
             <Card
               key={location.id}
-              variant={selectedLocationId === location.id ? "selected" : "default"}
+              variant={selectedLocationId === location.id ? 'selected' : 'default'}
               padding="md"
               onClick={() => handleLocationSelect(location)}
               onKeyDown={(e) => handleKeyPress(e, location)}
@@ -147,12 +143,7 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
         {/* Back Button */}
         {onBack && (
           <div className={styles.footer}>
-            <Button
-              variant="secondary"
-              fullWidth
-              onClick={onBack}
-              disabled={isLoading}
-            >
+            <Button variant="secondary" fullWidth onClick={onBack} disabled={isLoading}>
               ↩ Kembali ke Scanner
             </Button>
           </div>

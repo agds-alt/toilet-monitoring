@@ -151,12 +151,7 @@ function formatIndonesianAddress(data: NominatimResponse): {
 
   // Get city/town
   const city =
-    addr.city ||
-    addr.town ||
-    addr.village ||
-    addr.suburb ||
-    addr.neighbourhood ||
-    'Unknown City';
+    addr.city || addr.town || addr.village || addr.suburb || addr.neighbourhood || 'Unknown City';
 
   // Get state/province
   const state = addr.state || 'Unknown State';
@@ -227,12 +222,7 @@ function getGeolocationErrorMessage(code: number): string {
 // CALCULATE DISTANCE (Haversine Formula)
 // ============================================
 
-export function calculateDistance(
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-): number {
+export function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371e3; // Earth radius in meters
   const φ1 = (lat1 * Math.PI) / 180;
   const φ2 = (lat2 * Math.PI) / 180;

@@ -6,7 +6,10 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { notificationService, NotificationType } from '@/infrastructure/services/notification.service';
+import {
+  notificationService,
+  NotificationType,
+} from '@/infrastructure/services/notification.service';
 
 interface UseNotificationReturn {
   permission: NotificationPermission;
@@ -36,15 +39,12 @@ export function useNotification(): UseNotificationReturn {
     return result;
   }, []);
 
-  const showNotification = useCallback(
-    async (title: string, body: string): Promise<boolean> => {
-      return await notificationService.showNotification({
-        title,
-        body,
-      });
-    },
-    []
-  );
+  const showNotification = useCallback(async (title: string, body: string): Promise<boolean> => {
+    return await notificationService.showNotification({
+      title,
+      body,
+    });
+  }, []);
 
   const showInApp = useCallback(
     (type: NotificationType, message: string, duration: number = 3000) => {

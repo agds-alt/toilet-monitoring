@@ -1,26 +1,15 @@
-// src/lib/constants/inspection.constants.ts - FIXED VERSION
+// src/lib/constants/inspection.constants.ts
 // ============================================
-// INSPECTION CONSTANTS
+// INSPECTION CONSTANTS - UPDATED
 // ============================================
 
-// FIX: Define local interface
-interface ToiletComponent {
-  id: string;
-  label: string;
-  label_id: string;
-  description: string;
-  type: 'binary' | 'rating' | 'text' | 'photo';
-  required: boolean;
-  order: number;
-  icon: string;
-  options?: any[];
-}
+import { InspectionComponent } from '@/core/types/inspection.types';
 
 // ============================================
 // DEFAULT 11 TOILET COMPONENTS
 // ============================================
 
-export const DEFAULT_TOILET_COMPONENTS: ToiletComponent[] = [
+export const DEFAULT_TOILET_COMPONENTS: InspectionComponent[] = [
   {
     id: 'toilet_bowl',
     label: 'Toilet Bowl / Kloset',
@@ -134,26 +123,6 @@ export const DEFAULT_TOILET_COMPONENTS: ToiletComponent[] = [
 ];
 
 // ============================================
-// RATING EMOJI & LABELS
-// ============================================
-
-export const RATING_EMOJI_MAP = {
-  1: '😢',
-  2: '😕',
-  3: '😐',
-  4: '😊',
-  5: '🤩',
-} as const;
-
-export const RATING_LABEL_MAP = {
-  1: { en: 'Very Poor', id: 'Sangat Buruk' },
-  2: { en: 'Poor', id: 'Kurang' },
-  3: { en: 'Fair', id: 'Cukup' },
-  4: { en: 'Good', id: 'Bagus' },
-  5: { en: 'Excellent', id: 'Sangat Bagus' },
-} as const;
-
-// ============================================
 // STATUS THRESHOLDS
 // ============================================
 
@@ -215,13 +184,16 @@ export const UI_MODE_CONFIG = {
 } as const;
 
 // ============================================
-// PHOTO SETTINGS
+// PHOTO SETTINGS - UPDATED! 📸
 // ============================================
 
 export const PHOTO_CONFIG = {
   maxFileSize: 10 * 1024 * 1024, // 10MB
   acceptedFormats: ['image/jpeg', 'image/png', 'image/webp'],
-  maxPhotosPerComponent: 3,
+  // ✅ UPDATED: Minimum 0 (optional), Maximum 3 per component
+  minPhotosPerComponent: 0,                 // Optional - ga wajib
+  maxPhotosPerComponent: 3,                 // Max 3 per component
+  recommendedPhotosPerComponent: 1,         // Recommended 1 for documentation
   compressionQuality: 0.8,
   maxWidth: 1920,
   maxHeight: 1920,
@@ -239,14 +211,25 @@ export const DRAFT_CONFIG = {
 } as const;
 
 // ============================================
-// VALIDATION RULES
+// VALIDATION RULES - UPDATED! ✅
 // ============================================
 
 export const VALIDATION_RULES = {
-  minRatedComponents: 8, // Warning if less than 8 components rated
-  requirePhotos: false, // Soft validation - just warning
-  requireComments: false, // No mandatory comments
+  // Soft warning if less than 8 components rated
+  minRatedComponents: 8,
+  
+  // ✅ UPDATED: Photos are OPTIONAL (not required)
+  requirePhotos: false,
+  
+  // Comments are optional
+  requireComments: false,
+  
+  // Max note length
   maxNoteLength: 1000,
+  
+  // ✅ NEW: Photo limits per component
+  minPhotosPerComponent: 0,  // No minimum (optional)
+  maxPhotosPerComponent: 3,  // Maximum 3 photos
 } as const;
 
 // ============================================
@@ -263,18 +246,38 @@ export const GEOLOCATION_CONFIG = {
 } as const;
 
 // ============================================
-// CLOUDINARY SETTINGS (from .env) - FIXED
+// CLOUDINARY SETTINGS (from .env)
 // ============================================
 
 export const CLOUDINARY_CONFIG = {
-  cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'demo',
-  uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'default',
+  cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
+  uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
   folder: 'toilet-monitoring/inspections',
   transformation: {
     quality: 'auto:good',
     fetch_format: 'auto',
   },
 } as const;
+
+// ============================================
+// RATING MAPS (moved from types to constants)
+// ============================================
+
+export const RATING_EMOJI_MAP: Record<1 | 2 | 3 | 4 | 5, string> = {
+  1: '😢',
+  2: '😕',
+  3: '😐',
+  4: '😊',
+  5: '🤩',
+};
+
+export const RATING_LABEL_MAP: Record<1 | 2 | 3 | 4 | 5, { en: string; id: string }> = {
+  1: { en: 'Very Poor', id: 'Sangat Buruk' },
+  2: { en: 'Poor', id: 'Kurang' },
+  3: { en: 'Fair', id: 'Cukup' },
+  4: { en: 'Good', id: 'Bagus' },
+  5: { en: 'Excellent', id: 'Sangat Bagus' },
+};
 
 // ============================================
 // TIME FORMAT
@@ -323,6 +326,8 @@ export const ERROR_MESSAGES = {
   validation: 'Data belum lengkap. Periksa kembali.',
   submit: 'Gagal mengirim data. Coba lagi.',
   generic: 'Terjadi kesalahan. Coba lagi nanti.',
+  photoLimit: `Maksimal ${PHOTO_CONFIG.maxPhotosPerComponent} foto per komponen`,
+  photoSize: `Ukuran foto maksimal ${PHOTO_CONFIG.maxFileSize / 1024 / 1024}MB`,
 } as const;
 
 // ============================================

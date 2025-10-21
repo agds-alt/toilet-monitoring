@@ -11,14 +11,11 @@ interface QRScannerV2Props {
   onManualSelect: () => void;
 }
 
-export const QRScannerV2: React.FC<QRScannerV2Props> = ({
-  onScan,
-  onManualSelect
-}) => {
+export const QRScannerV2: React.FC<QRScannerV2Props> = ({ onScan, onManualSelect }) => {
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [detectedCode, setDetectedCode] = useState<string | null>(null);
-  
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -33,7 +30,7 @@ export const QRScannerV2: React.FC<QRScannerV2Props> = ({
 
     // Stop video stream
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
 
@@ -75,7 +72,7 @@ export const QRScannerV2: React.FC<QRScannerV2Props> = ({
     if (code && code.data) {
       console.log('✅ QR Code detected:', code.data);
       setDetectedCode(code.data);
-      
+
       // Stop scanning and return result
       stopScanning();
       onScan(code.data);
@@ -92,13 +89,13 @@ export const QRScannerV2: React.FC<QRScannerV2Props> = ({
 
     try {
       console.log('📷 Starting camera...');
-      
+
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { 
+        video: {
           facingMode: 'environment', // Use back camera on mobile
           width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }
+          height: { ideal: 720 },
+        },
       });
 
       streamRef.current = stream;
@@ -108,7 +105,7 @@ export const QRScannerV2: React.FC<QRScannerV2Props> = ({
         await videoRef.current.play();
         setIsScanning(true);
         console.log('✅ Camera started, scanning...');
-        
+
         // Start scanning loop
         scan();
       }
@@ -130,9 +127,7 @@ export const QRScannerV2: React.FC<QRScannerV2Props> = ({
     <div className={styles.container}>
       <Card variant="elevated" padding="lg">
         <h2 className={styles.title}>🧹 Smart Toilet Check</h2>
-        <p className={styles.description}>
-          Scan QR code di toilet atau pilih lokasi manual
-        </p>
+        <p className={styles.description}>Scan QR code di toilet atau pilih lokasi manual</p>
 
         <div className={styles.scannerArea}>
           {/* Video element */}
@@ -141,19 +136,16 @@ export const QRScannerV2: React.FC<QRScannerV2Props> = ({
             className={styles.video}
             playsInline
             muted
-            style={{ 
+            style={{
               display: isScanning ? 'block' : 'none',
               width: '100%',
               maxWidth: '400px',
-              borderRadius: '12px'
+              borderRadius: '12px',
             }}
           />
 
           {/* Hidden canvas for processing */}
-          <canvas
-            ref={canvasRef}
-            style={{ display: 'none' }}
-          />
+          <canvas ref={canvasRef} style={{ display: 'none' }} />
 
           {/* Placeholder when not scanning */}
           {!isScanning && (
@@ -167,55 +159,33 @@ export const QRScannerV2: React.FC<QRScannerV2Props> = ({
           {isScanning && (
             <div className={styles.scanningOverlay}>
               <div className={styles.scanLine} />
-              <p style={{ color: 'white', marginTop: '10px' }}>
-                Arahkan kamera ke QR code...
-              </p>
+              <p style={{ color: 'white', marginTop: '10px' }}>Arahkan kamera ke QR code...</p>
             </div>
           )}
         </div>
 
         {/* Error message */}
-        {error && (
-          <div className={styles.error}>
-            ⚠️ {error}
-          </div>
-        )}
+        {error && <div className={styles.error}>⚠️ {error}</div>}
 
         {/* Success message */}
         {detectedCode && (
-          <div className={styles.success}>
-            ✅ QR Code terdeteksi: {detectedCode}
-          </div>
+          <div className={styles.success}>✅ QR Code terdeteksi: {detectedCode}</div>
         )}
 
         {/* Action buttons */}
         <div className={styles.actions}>
           {!isScanning ? (
             <>
-              <Button
-                variant="primary"
-                fullWidth
-                onClick={startScanning}
-                icon="📷"
-              >
+              <Button variant="primary" fullWidth onClick={startScanning} icon="📷">
                 Scan QR Code
               </Button>
               <div className={styles.divider}>atau</div>
-              <Button
-                variant="secondary"
-                fullWidth
-                onClick={onManualSelect}
-                icon="📍"
-              >
+              <Button variant="secondary" fullWidth onClick={onManualSelect} icon="📍">
                 Pilih Lokasi Manual
               </Button>
             </>
           ) : (
-            <Button
-              variant="danger"
-              fullWidth
-              onClick={stopScanning}
-            >
+            <Button variant="danger" fullWidth onClick={stopScanning}>
               Berhenti Scan
             </Button>
           )}

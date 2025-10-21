@@ -15,7 +15,7 @@ import styles from './print-qr.module.css';
 export default function BulkQRPrintPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const [locations, setLocations] = useState<Location[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -29,7 +29,7 @@ export default function BulkQRPrintPage() {
       try {
         const data = await getLocationsUseCase.execute();
         setLocations(data);
-        
+
         const ids = searchParams.get('ids');
         if (ids) {
           setSelectedIds(new Set(ids.split(',')));
@@ -76,7 +76,7 @@ export default function BulkQRPrintPage() {
     return () => document.head.removeChild(style);
   }, []);
 
-  const filteredLocations = locations.filter(loc => {
+  const filteredLocations = locations.filter((loc) => {
     const matchBuilding = filter.building === 'all' || loc.building === filter.building;
     const matchFloor = filter.floor === 'all' || loc.floor === filter.floor;
     return matchBuilding && matchFloor;
@@ -93,7 +93,7 @@ export default function BulkQRPrintPage() {
   };
 
   const selectAll = () => {
-    setSelectedIds(new Set(filteredLocations.map(l => l.id)));
+    setSelectedIds(new Set(filteredLocations.map((l) => l.id)));
   };
 
   const deselectAll = () => {
@@ -107,13 +107,13 @@ export default function BulkQRPrintPage() {
       printArea.style.display = 'block';
       printArea.style.visibility = 'visible';
     }
-    
+
     setTimeout(() => window.print(), 200);
   };
 
-  const selectedLocations = locations.filter(loc => selectedIds.has(loc.id));
-  const buildings = Array.from(new Set(locations.map(l => l.building).filter(Boolean)));
-  const floors = Array.from(new Set(locations.map(l => l.floor).filter(Boolean))).sort();
+  const selectedLocations = locations.filter((loc) => selectedIds.has(loc.id));
+  const buildings = Array.from(new Set(locations.map((l) => l.building).filter(Boolean)));
+  const floors = Array.from(new Set(locations.map((l) => l.floor).filter(Boolean))).sort();
 
   if (loading) {
     return (
@@ -138,25 +138,29 @@ export default function BulkQRPrintPage() {
 
         <div className={styles.headerActions}>
           <div className={styles.filters}>
-            <select 
+            <select
               value={filter.building}
               onChange={(e) => setFilter({ ...filter, building: e.target.value })}
               className={styles.select}
             >
               <option value="all">Semua Gedung</option>
-              {buildings.map(b => (
-                <option key={b} value={b}>{b}</option>
+              {buildings.map((b) => (
+                <option key={b} value={b || ""}>
+                  {b}
+                </option>
               ))}
             </select>
 
-            <select 
+            <select
               value={filter.floor}
               onChange={(e) => setFilter({ ...filter, floor: e.target.value })}
               className={styles.select}
             >
               <option value="all">Semua Lantai</option>
-              {floors.map(f => (
-                <option key={f} value={f}>Lantai {f}</option>
+              {floors.map((f) => (
+                <option key={f} value={f || ""}>
+                  Lantai {f}
+                </option>
               ))}
             </select>
           </div>
@@ -172,10 +176,8 @@ export default function BulkQRPrintPage() {
           </div>
 
           <div className={styles.printActions}>
-            <div className={styles.selectedCount}>
-              {selectedIds.size} lokasi dipilih
-            </div>
-            <button 
+            <div className={styles.selectedCount}>{selectedIds.size} lokasi dipilih</div>
+            <button
               onClick={handlePrint}
               disabled={selectedIds.size === 0}
               className={styles.btnPrint}
@@ -189,8 +191,8 @@ export default function BulkQRPrintPage() {
 
       {/* Selection Grid - Hide on print */}
       <div className={styles.selectionGrid} data-print-hide>
-        {filteredLocations.map(location => (
-          <div 
+        {filteredLocations.map((location) => (
+          <div
             key={location.id}
             className={`${styles.selectionCard} ${selectedIds.has(location.id) ? styles.selected : ''}`}
             onClick={() => toggleLocation(location.id)}
@@ -221,7 +223,7 @@ export default function BulkQRPrintPage() {
           </div>
         ) : (
           <div className={styles.qrGrid}>
-            {selectedLocations.map(location => (
+            {selectedLocations.map((location) => (
               <div key={location.id} className={styles.qrPrintCard}>
                 <div style={{ textAlign: 'center', padding: '20px' }}>
                   <QRCodeSVG
@@ -233,42 +235,50 @@ export default function BulkQRPrintPage() {
                     fgColor="#1F2937"
                     style={{ margin: '0 auto', display: 'block' }}
                   />
-                  <h3 style={{ 
-                    marginTop: '20px', 
-                    fontSize: '18px', 
-                    fontWeight: '600',
-                    color: '#1F2937'
-                  }}>
+                  <h3
+                    style={{
+                      marginTop: '20px',
+                      fontSize: '18px',
+                      fontWeight: '600',
+                      color: '#1F2937',
+                    }}
+                  >
                     {location.name}
                   </h3>
-                  <div style={{ 
-                    marginTop: '12px', 
-                    background: '#F7F7F8', 
-                    padding: '6px 16px', 
-                    borderRadius: '6px',
-                    display: 'inline-block',
-                    fontFamily: 'Courier New, monospace',
-                    fontSize: '16px',
-                    fontWeight: '700',
-                    color: '#2563EB',
-                    letterSpacing: '1px'
-                  }}>
+                  <div
+                    style={{
+                      marginTop: '12px',
+                      background: '#F7F7F8',
+                      padding: '6px 16px',
+                      borderRadius: '6px',
+                      display: 'inline-block',
+                      fontFamily: 'Courier New, monospace',
+                      fontSize: '16px',
+                      fontWeight: '700',
+                      color: '#2563EB',
+                      letterSpacing: '1px',
+                    }}
+                  >
                     {location.code || location.id.substring(0, 8)}
                   </div>
                   {location.building && (
-                    <div style={{ 
-                      marginTop: '10px', 
-                      fontSize: '14px', 
-                      color: '#6B7280' 
-                    }}>
+                    <div
+                      style={{
+                        marginTop: '10px',
+                        fontSize: '14px',
+                        color: '#6B7280',
+                      }}
+                    >
                       {location.building}
                     </div>
                   )}
                   {location.floor && (
-                    <div style={{ 
-                      fontSize: '14px', 
-                      color: '#6B7280' 
-                    }}>
+                    <div
+                      style={{
+                        fontSize: '14px',
+                        color: '#6B7280',
+                      }}
+                    >
                       Lantai {location.floor}
                     </div>
                   )}

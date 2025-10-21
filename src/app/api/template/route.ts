@@ -26,7 +26,7 @@ export async function GET() {
           data: [],
           count: 0,
         },
-        { 
+        {
           status: 500,
           headers: {
             'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export async function GET() {
     );
   } catch (error: any) {
     console.error('❌ [API] Templates API error:', error);
-    
+
     return NextResponse.json(
       {
         success: false,
@@ -60,7 +60,7 @@ export async function GET() {
         data: [],
         count: 0,
       },
-      { 
+      {
         status: 500,
         headers: {
           'Content-Type': 'application/json',

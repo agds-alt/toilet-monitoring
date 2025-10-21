@@ -6,7 +6,7 @@
 
 import { Sparkles, Briefcase, ArrowLeft } from 'lucide-react';
 import { Location } from '@/core/entities/Location';
-import { InspectionMode } from '@/app/dashboard/inspect/[locationId]/page';
+import { InspectionMode } from '@/app/dashboard/inspection/[locationId]/page';
 import styles from './InspectionModeSelector.module.css';
 
 interface Props {
@@ -42,17 +42,12 @@ export default function InspectionModeSelector({ location, onSelectMode, onBack 
         </div>
 
         <div className={styles.modeCards}>
-          <div 
-            className={`${styles.modeCard} ${styles.genz}`}
-            onClick={() => onSelectMode('genz')}
-          >
+          <div className={`${styles.modeCard} ${styles.genz}`} onClick={() => onSelectMode('genz')}>
             <div className={styles.modeIcon}>
               <Sparkles size={48} />
             </div>
             <h3 className={styles.modeName}>Gen Z Mode</h3>
-            <p className={styles.modeDesc}>
-              Fun, emoji, colorful vibes 😎
-            </p>
+            <p className={styles.modeDesc}>Fun, emoji, colorful vibes 😎</p>
             <div className={styles.modeFeatures}>
               <span>⭐ Stars & Emoji</span>
               <span>🎨 Colorful</span>
@@ -61,7 +56,7 @@ export default function InspectionModeSelector({ location, onSelectMode, onBack 
             <div className={styles.modeBadge}>RECOMMENDED</div>
           </div>
 
-          <div 
+          <div
             className={`${styles.modeCard} ${styles.professional}`}
             onClick={() => onSelectMode('professional')}
           >
@@ -69,9 +64,7 @@ export default function InspectionModeSelector({ location, onSelectMode, onBack 
               <Briefcase size={48} />
             </div>
             <h3 className={styles.modeName}>Professional Mode</h3>
-            <p className={styles.modeDesc}>
-              Clean, formal, corporate style 📊
-            </p>
+            <p className={styles.modeDesc}>Clean, formal, corporate style 📊</p>
             <div className={styles.modeFeatures}>
               <span>📊 Numbers</span>
               <span>✓ Checkboxes</span>
@@ -81,9 +74,7 @@ export default function InspectionModeSelector({ location, onSelectMode, onBack 
           </div>
         </div>
 
-        <div className={styles.hint}>
-          💡 Don't worry, you can switch modes anytime!
-        </div>
+        <div className={styles.hint}>💡 Don't worry, you can switch modes anytime!</div>
       </main>
     </div>
   );
