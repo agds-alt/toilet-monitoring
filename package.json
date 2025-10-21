@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
+    "gen:types": "npx supabase gen types typescript --project-id zznhsfsvankfewasstel > src/core/types/database.types.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "clean": "rm -rf .next node_modules",
     "fresh-install": "npm run clean && npm install",
@@ -49,8 +50,12 @@
     "supabase": "^2.51.0",
     "tailwindcss": "^4.1.14",
     "tsconfig-paths": "^4.2.0",
+<<<<<<< HEAD
     "tsx": "^4.7.0",
     "typescript": "^5.9.3"
+=======
+    "typescript": "^5.6.3"
+>>>>>>> 9855cde (fallback to location worked QR generated)
   }
   
   

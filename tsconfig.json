@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "es6"],
+    "target": "esnext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es6"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -20,48 +24,110 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      
+      "@/*": [
+        "./src/*"
+      ],
       // APP PATHS
-      "@/app/*": ["./src/app/*"],
-      "@/api/*": ["./src/app/api/*"],
-      "@/dashboard/*": ["./src/app/dashboard/*"],
-      "@/pages/*": ["./src/app/*"],
-      
+      "@/app/*": [
+        "./src/app/*"
+      ],
+      "@/api/*": [
+        "./src/app/api/*"
+      ],
+      "@/dashboard/*": [
+        "./src/app/dashboard/*"
+      ],
+      "@/pages/*": [
+        "./src/app/*"
+      ],
       // CORE LAYER
-      "@/core/*": ["./src/core/*"],
-      "@/entities/*": ["./src/core/entities/*"],
-      "@/dtos/*": ["./src/core/dtos/*"],
-      "@/repositories/*": ["./src/core/repositories/*"],
-      "@/use-cases/*": ["./src/core/use-cases/*"],
-      "@/types/*": ["./src/core/types/*"],
-      
+      "@/core/*": [
+        "./src/core/*"
+      ],
+      "@/entities/*": [
+        "./src/core/entities/*"
+      ],
+      "@/dtos/*": [
+        "./src/core/dtos/*"
+      ],
+      "@/repositories/*": [
+        "./src/core/repositories/*"
+      ],
+      "@/use-cases/*": [
+        "./src/core/use-cases/*"
+      ],
+      "@/types/*": [
+        "./src/core/types/*"
+      ],
       // INFRASTRUCTURE LAYER
-      "@/infrastructure/*": ["./src/infrastructure/*"],
-      "@/database/*": ["./src/infrastructure/database/*"],
-      "@/auth/*": ["./src/infrastructure/auth/*"],
-      "@/storage/*": ["./src/infrastructure/storage/*"],
-      
+      "@/infrastructure/*": [
+        "./src/infrastructure/*"
+      ],
+      "@/database/*": [
+        "./src/infrastructure/database/*"
+      ],
+      "@/auth/*": [
+        "./src/infrastructure/auth/*"
+      ],
+      "@/storage/*": [
+        "./src/infrastructure/storage/*"
+      ],
       // PRESENTATION LAYER
-      "@/presentation/*": ["./src/presentation/*"],
-      "@/components/*": ["./src/presentation/components/*"],
-      "@/features/*": ["./src/presentation/components/features/*"],
-      "@/ui/*": ["./src/presentation/components/ui/*"],
-      "@/layout/*": ["./src/presentation/components/layout/*"],
-      "@/hooks/*": ["./src/presentation/hooks/*"],
-      "@/contexts/*": ["./src/presentation/contexts/*"],
-      "@/styles/*": ["./src/presentation/styles/*"],
-      
+      "@/presentation/*": [
+        "./src/presentation/*"
+      ],
+      "@/components/*": [
+        "./src/presentation/components/*"
+      ],
+      "@/features/*": [
+        "./src/presentation/components/features/*"
+      ],
+      "@/ui/*": [
+        "./src/presentation/components/ui/*"
+      ],
+      "@/layout/*": [
+        "./src/presentation/components/layout/*"
+      ],
+      "@/hooks/*": [
+        "./src/presentation/hooks/*"
+      ],
+      "@/contexts/*": [
+        "./src/presentation/contexts/*"
+      ],
+      "@/styles/*": [
+        "./src/presentation/styles/*"
+      ],
       // LIB & UTILS
-      "@/lib/*": ["./src/lib/*"],
-      "@/constants/*": ["./src/lib/constants/*"],
-      "@/utils/*": ["./src/lib/utils/*"],
-      
+      "@/lib/*": [
+        "./src/lib/*"
+      ],
+      "@/constants/*": [
+        "./src/lib/constants/*"
+      ],
+      "@/utils/*": [
+        "./src/lib/utils/*"
+      ],
       // TYPES
-      "@/global-types/*": ["./src/types/*"]
+      "@/global-types/*": [
+        "./src/types/*"
+      ]
     }
   },
+<<<<<<< HEAD
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/setup/page.modulecss", "src/presentation/hooks/useInspection.ts.backup"],
   "exclude": [
     "backup-*","node_modules"]
 }
+=======
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/core/types/database.types.ts"
+  ]
+}
+>>>>>>> 9855cde (fallback to location worked QR generated)
