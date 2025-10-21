@@ -10,6 +10,7 @@ import {
   InspectionSubmitResponse,
   PhotoMetadata,
 } from '@/core/types/inspection.types';
+import { calculateOverallStatus } from '@/lib/utils/rating.utils';
 
 // ============================================
 // INSPECTION SERVICE CLASS

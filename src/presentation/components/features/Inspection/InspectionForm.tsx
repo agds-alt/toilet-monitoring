@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react';
 import { useInspection } from '@/presentation/hooks/useInspection';
+import { formatDuration } from '@/presentation/hooks/useTimer';
 import { UIModeSwitcher } from './UIModeSwitcher';
 import { PhotoModeSwitcher } from './PhotoModeSwitcher';
 import { LocationModeSwitcher } from './LocationModeSwitcher';
@@ -14,7 +15,6 @@ import { ComponentRating } from './ComponentRating';
 import { CommentModal } from './CommentModal';
 import { PhotoCapture } from './PhotoCapture';
 import { PhotoPreview } from './PhotoPreview';
-import { formatDuration } from '@/presentation/hooks/useTimer';
 import styles from './InspectionForm.module.css';
 
 interface InspectionFormProps {
@@ -23,6 +23,7 @@ interface InspectionFormProps {
   userId: string;
   onSuccess?: (inspectionId: string) => void;
   onCancel?: () => void;
+  onOpenQRScanner?: () => void;
 }
 
 export function InspectionForm({
@@ -31,6 +32,7 @@ export function InspectionForm({
   userId,
   onSuccess,
   onCancel,
+  onOpenQRScanner,
 }: InspectionFormProps) {
   const {
     state,
@@ -101,26 +103,6 @@ export function InspectionForm({
       <div className={styles.loading}>
         <div className={styles.spinner} />
         <p>Memuat template...</p>
-        <p className={styles.loadingHint}>
-          Jika loading terlalu lama, kemungkinan template belum ada di database.
-          <br />
-          Silakan hubungi admin untuk membuat template default.
-        </p>
-      </div>
-    );
-  }
-
-  if (!state.template.fields?.components || state.template.fields.components.length === 0) {
-    return (
-      <div className={styles.error}>
-        <h2>❌ Template Error</h2>
-        <p>Template tidak memiliki komponen inspeksi.</p>
-        <p>Silakan hubungi admin untuk memperbaiki template.</p>
-        {onCancel && (
-          <button onClick={onCancel} className={styles.cancelButton}>
-            Kembali
-          </button>
-        )}
       </div>
     );
   }
@@ -163,10 +145,7 @@ export function InspectionForm({
           mode={state.uiState.locationMode}
           onChange={setLocationMode}
           onGetLocation={getCurrentGeolocation}
-          onScanQR={() => {
-            // QR Scanner integration here
-            alert('QR Scanner akan dibuka');
-          }}
+          onScanQR={onOpenQRScanner}
           locationName={state.location?.name}
         />
       </div>

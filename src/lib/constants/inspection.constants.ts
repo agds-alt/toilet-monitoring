@@ -1,15 +1,26 @@
-// src/lib/constants/inspection.constants.ts
+// src/lib/constants/inspection.constants.ts - FIXED VERSION
 // ============================================
 // INSPECTION CONSTANTS
 // ============================================
 
-import { InspectionComponent } from '@/core/types/inspection.types';
+// FIX: Define local interface
+interface ToiletComponent {
+  id: string;
+  label: string;
+  label_id: string;
+  description: string;
+  type: 'binary' | 'rating' | 'text' | 'photo';
+  required: boolean;
+  order: number;
+  icon: string;
+  options?: any[];
+}
 
 // ============================================
 // DEFAULT 11 TOILET COMPONENTS
 // ============================================
 
-export const DEFAULT_TOILET_COMPONENTS: InspectionComponent[] = [
+export const DEFAULT_TOILET_COMPONENTS: ToiletComponent[] = [
   {
     id: 'toilet_bowl',
     label: 'Toilet Bowl / Kloset',
@@ -252,12 +263,12 @@ export const GEOLOCATION_CONFIG = {
 } as const;
 
 // ============================================
-// CLOUDINARY SETTINGS (from .env)
+// CLOUDINARY SETTINGS (from .env) - FIXED
 // ============================================
 
 export const CLOUDINARY_CONFIG = {
-  cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
-  uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
+  cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'demo',
+  uploadPreset: process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'default',
   folder: 'toilet-monitoring/inspections',
   transformation: {
     quality: 'auto:good',

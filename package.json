@@ -10,7 +10,11 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "clean": "rm -rf .next node_modules",
-    "fresh-install": "npm run clean && npm install"
+    "fresh-install": "npm run clean && npm install",
+    "seed": "tsx scripts/seed.ts",
+    "seed:inspection": "tsx scripts/seed-inspection-template.ts",
+    "fix:template": "tsx scripts/fix-template.ts",
+    "db:reset": "tsx scripts/reset-db.ts"
   },
   "dependencies": {
     "@babel/runtime": "^7.28.4",
@@ -34,12 +38,14 @@
     "@types/react": "^18.3.26",
     "@types/react-dom": "^18.3.7",
     "autoprefixer": "^10.4.21",
+    "dotenv": "^17.2.3",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.0.4",
     "postcss": "^8.5.6",
     "prettier": "^3.1.1",
     "tailwindcss": "^4.1.14",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.7.0",
     "typescript": "^5.9.3"
   }
 }

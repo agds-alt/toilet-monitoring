@@ -1,31 +1,66 @@
-// src/app/api/seed/template/route.ts
+// src/app/api/seed/templates/route.ts
 // ============================================
-// API ROUTE TO SEED DEFAULT TEMPLATE
+// SEED TEMPLATES API ROUTE
 // ============================================
 
-import { NextRequest, NextResponse } from 'next/server';
-import { seedDefaultTemplate } from '@/lib/seed/seedDefaultTemplate';
+import { NextResponse } from 'next/server';
+import { supabase } from '@/infrastructure/database/supabase';
+import { DEFAULT_TOILET_COMPONENTS } from '@/lib/constants/inspection.constants';
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    // Optional: Get userId from request body
-    const body = await request.json().catch(() => ({}));
-    const userId = body.userId;
+    console.log('🌱 API: Seeding templates...');
 
-    const template = await seedDefaultTemplate(userId);
+    // Check if default template already exists
+    const { data: existing } = await supabase
+      .from('inspection_templates')
+      .select('id, name')
+      .eq('is_default', true)
+      .single();
+
+    if (existing) {
+      console.log('✅ Template already exists:', existing.id);
+      return NextResponse.json({
+        success: true,
+        message: 'Template already exists',
+        data: existing,
+      });
+    }
+
+    // Create default template
+    const { data: template, error } = await supabase
+      .from('inspection_templates')
+      .insert({
+        name: 'Standard Toilet Inspection',
+        description: 'Template standar untuk inspeksi kebersihan toilet dengan 11 komponen penilaian',
+        estimated_time: 10,
+        is_active: true,
+        is_default: true,
+        fields: {
+          components: DEFAULT_TOILET_COMPONENTS,
+        },
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('❌ Error creating template:', error);
+      throw error;
+    }
+
+    console.log('✅ Template created:', template.id);
 
     return NextResponse.json({
       success: true,
-      message: 'Default template created successfully',
+      message: 'Template created successfully',
       data: template,
     });
   } catch (error: any) {
-    console.error('❌ Seed template API error:', error);
-    
+    console.error('❌ Seed error:', error);
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to seed template',
+        error: error.message || 'Failed to seed templates',
       },
       { status: 500 }
     );
@@ -33,13 +68,30 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  return NextResponse.json({
-    message: 'Use POST method to seed default template',
-    usage: {
-      method: 'POST',
-      body: {
-        userId: 'optional-user-id',
+  try {
+    // Verify templates
+    const { data: templates, error } = await supabase
+      .from('inspection_templates')
+      .select('id, name, is_active, is_default')
+      .eq('is_active', true);
+
+    if (error) {
+      throw error;
+    }
+
+    return NextResponse.json({
+      success: true,
+      count: templates?.length || 0,
+      data: templates || [],
+    });
+  } catch (error: any) {
+    console.error('❌ Verify templates error:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || 'Failed to verify templates',
       },
-    },
-  });
+      { status: 500 }
+    );
+  }
 }

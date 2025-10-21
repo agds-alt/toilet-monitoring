@@ -73,7 +73,7 @@ export function useInspection(
       try {
         if (templateId) {
           const template = await templateService.getTemplateById(templateId);
-          if (template && template.fields?.components) {
+          if (template) {
             setState((prev) => ({
               ...prev,
               template,
@@ -86,7 +86,7 @@ export function useInspection(
         } else {
           // Load default template
           const defaultTemplate = await templateService.getDefaultTemplate();
-          if (defaultTemplate && defaultTemplate.fields?.components) {
+          if (defaultTemplate) {
             setState((prev) => ({
               ...prev,
               template: defaultTemplate,
@@ -95,12 +95,10 @@ export function useInspection(
                 totalSteps: defaultTemplate.fields.components.length,
               },
             }));
-          } else {
-            console.error('❌ No default template found or template has no components');
           }
         }
       } catch (error) {
-        console.error('❌ Error loading template:', error);
+        console.error('Error loading template:', error);
       }
     };
 
@@ -113,11 +111,15 @@ export function useInspection(
 
   useEffect(() => {
     const loadLocation = async () => {
-      if (locationId) {
-        const location = await locationService.getLocationById(locationId);
-        if (location) {
-          setState((prev) => ({ ...prev, location }));
+      try {
+        if (locationId) {
+          const location = await locationService.getLocationById(locationId);
+          if (location) {
+            setState((prev) => ({ ...prev, location }));
+          }
         }
+      } catch (error) {
+        console.error('Error loading location:', error);
       }
     };
 
@@ -429,7 +431,7 @@ export function useInspection(
   }, [state, userId]);
 
   // ============================================
-  // RETURN
+  // RETURN HOOK VALUES
   // ============================================
 
   return {

@@ -1,41 +1,32 @@
 // src/app/inspection/page.tsx
 // ============================================
-// INSPECTION PAGE - Standalone Quick Access
+// MAIN INSPECTION PAGE - Complete Implementation
 // ============================================
 
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuth } from '@/presentation/contexts/AuthContext';
-import { InspectionForm } from '@/components/features/Inspection/InspectionForm';
-import styles from './page.module.css';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { InspectionForm } from '@/features/Inspection/InspectionForm';
+import { QRScannerModal } from '@/features/Inspection/QRSCannerModal';
+import styles from './inspection.module.css';
 
-export default function StandaloneInspectionPage() {
+export default function InspectionPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const { user, loading } = useAuth();
+  const [qrScannerOpen, setQRScannerOpen] = useState(false);
+  const [locationId, setLocationId] = useState<string | undefined>();
+  const [locationName, setLocationName] = useState<string | undefined>();
+  const [userId] = useState<string>('temp-user-id'); // TODO: Get from auth context
 
-  const locationId = searchParams.get('location_id');
-  const templateId = searchParams.get('template_id');
-
-  // Redirect to dashboard if not logged in
-  useEffect(() => {
-    if (!loading && !user) {
-      // Save intended destination
-      const params = new URLSearchParams();
-      if (locationId) params.set('location_id', locationId);
-      if (templateId) params.set('template_id', templateId);
-      
-      const returnUrl = params.toString() 
-        ? `/inspection?${params.toString()}`
-        : '/inspection';
-      
-      router.replace(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
-    }
-  }, [user, loading, router, locationId, templateId]);
+  const handleLocationFound = (id: string, name: string) => {
+    console.log('✅ Location selected:', name);
+    setLocationId(id);
+    setLocationName(name);
+    setQRScannerOpen(false);
+  };
 
   const handleSuccess = (inspectionId: string) => {
+    console.log('✅ Inspection submitted:', inspectionId);
     router.push(`/inspection/success?id=${inspectionId}`);
   };
 
@@ -43,43 +34,44 @@ export default function StandaloneInspectionPage() {
     router.push('/dashboard');
   };
 
-  if (loading) {
-    return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.loadingSpinner} />
-        <p>Memuat...</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return null;
-  }
+  const openQRScanner = () => {
+    setQRScannerOpen(true);
+  };
 
   return (
-    <div className={styles.container}>
-      {/* Minimal Header */}
-      <header className={styles.header}>
+    <div className={styles.page}>
+      {/* Header */}
+      <div className={styles.pageHeader}>
         <button
-          onClick={() => router.push('/dashboard')}
+          onClick={handleCancel}
           className={styles.backButton}
-          aria-label="Kembali"
+          aria-label="Back"
         >
           ← Kembali
         </button>
-        <h1 className={styles.title}>Quick Inspection</h1>
-      </header>
-
-      {/* Form */}
-      <div className={styles.content}>
-        <InspectionForm
-          templateId={templateId || undefined}
-          locationId={locationId || undefined}
-          userId={user.id}
-          onSuccess={handleSuccess}
-          onCancel={handleCancel}
-        />
+        <h1 className={styles.pageTitle}>Inspection Form</h1>
+        {locationName && (
+          <div className={styles.locationBadge}>
+            📍 {locationName}
+          </div>
+        )}
       </div>
+
+      {/* Main Form */}
+      <InspectionForm
+        locationId={locationId}
+        userId={userId}
+        onSuccess={handleSuccess}
+        onCancel={handleCancel}
+        onOpenQRScanner={openQRScanner}
+      />
+
+      {/* QR Scanner Modal */}
+      <QRScannerModal
+        isOpen={qrScannerOpen}
+        onClose={() => setQRScannerOpen(false)}
+        onLocationFound={handleLocationFound}
+      />
     </div>
   );
 }
