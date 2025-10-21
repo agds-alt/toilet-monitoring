@@ -1,7 +1,7 @@
-// 📁 src/core/entities/Inspection.ts
 import { Json } from '@/core/types/database.types';
 
 export interface Inspection {
+  // Sesuai database.types.ts inspection_records.Row
   id: string;
   inspection_date: string;
   inspection_time: string;
@@ -20,8 +20,9 @@ export interface Inspection {
 }
 
 export interface InspectionWithDetails extends Inspection {
-  location_name: string;
-  user_name: string;
-  template_name: string;
-  verified_by_name: string | null;
+  // Joined data
+  location_name?: string;
+  user_name?: string;
+  template_name?: string;
+  verified_by_name?: string | null;
 }

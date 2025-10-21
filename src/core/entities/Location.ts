@@ -1,7 +1,7 @@
-// 📁 src/core/entities/Location.ts
 import { Json } from '@/core/types/database.types';
 
 export interface Location {
+  // Sesuai database.types.ts locations.Row
   id: string;
   name: string;
   code: string | null;
@@ -35,18 +35,10 @@ export interface LocationFormData {
 }
 
 export interface LocationWithDetails extends Location {
-  inspection_stats: {
+  inspection_stats?: {
     total_inspections: number;
     clean_count: number;
     dirty_count: number;
     needs_work_count: number;
   };
-}
-
-export interface LocationInspectionStats {
-  total_inspections: number;
-  clean_count: number;
-  dirty_count: number;
-  needs_work_count: number;
-  avg_duration_seconds?: number;
 }
