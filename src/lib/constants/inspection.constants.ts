@@ -191,9 +191,9 @@ export const PHOTO_CONFIG = {
   maxFileSize: 10 * 1024 * 1024, // 10MB
   acceptedFormats: ['image/jpeg', 'image/png', 'image/webp'],
   // ✅ UPDATED: Minimum 0 (optional), Maximum 3 per component
-  minPhotosPerComponent: 0,                 // Optional - ga wajib
-  maxPhotosPerComponent: 3,                 // Max 3 per component
-  recommendedPhotosPerComponent: 1,         // Recommended 1 for documentation
+  minPhotosPerComponent: 0, // Optional - ga wajib
+  maxPhotosPerComponent: 3, // Max 3 per component
+  recommendedPhotosPerComponent: 1, // Recommended 1 for documentation
   compressionQuality: 0.8,
   maxWidth: 1920,
   maxHeight: 1920,
@@ -217,19 +217,19 @@ export const DRAFT_CONFIG = {
 export const VALIDATION_RULES = {
   // Soft warning if less than 8 components rated
   minRatedComponents: 8,
-  
+
   // ✅ UPDATED: Photos are OPTIONAL (not required)
   requirePhotos: false,
-  
+
   // Comments are optional
   requireComments: false,
-  
+
   // Max note length
   maxNoteLength: 1000,
-  
+
   // ✅ NEW: Photo limits per component
-  minPhotosPerComponent: 0,  // No minimum (optional)
-  maxPhotosPerComponent: 3,  // Maximum 3 photos
+  minPhotosPerComponent: 0, // No minimum (optional)
+  maxPhotosPerComponent: 3, // Maximum 3 photos
 } as const;
 
 // ============================================

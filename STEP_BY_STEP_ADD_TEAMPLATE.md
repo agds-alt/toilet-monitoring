@@ -3,6 +3,7 @@
 ## 🚀 CARA TERMUDAH - VIA SUPABASE SQL EDITOR
 
 ### **Step 1: Buka Supabase Dashboard**
+
 1. Go to: https://supabase.com/dashboard
 2. Select your project: **toilet-monitoring**
 3. Click **"SQL Editor"** di sidebar kiri
@@ -10,12 +11,14 @@
 ---
 
 ### **Step 2: Copy SQL Script**
+
 1. Buka artifact: **`seed_template.sql`**
 2. Copy **SEMUA** code (Ctrl+A, Ctrl+C)
 
 ---
 
 ### **Step 3: Paste & Run**
+
 1. Di SQL Editor, paste code
 2. Click **"RUN"** button (atau Ctrl+Enter)
 3. Tunggu sebentar (~1-2 detik)
@@ -23,7 +26,9 @@
 ---
 
 ### **Step 4: Verify Success**
+
 You should see output seperti ini:
+
 ```
 ✅ 1 row inserted
 
@@ -40,6 +45,7 @@ Query Results:
 ---
 
 ### **Step 5: Test di App**
+
 1. Buka: `http://localhost:3000/inspection`
 2. Refresh (F5) kalo perlu
 3. **BOOM! Form muncul dengan 11 komponen!** 🎉
@@ -49,9 +55,11 @@ Query Results:
 ## 🔍 TROUBLESHOOTING
 
 ### **Error: "duplicate key value violates unique constraint"**
+
 **Artinya:** Template sudah ada!
 
 **Solution:**
+
 ```sql
 -- Check existing template
 SELECT id, name FROM inspection_templates WHERE is_default = true;
@@ -64,9 +72,11 @@ DELETE FROM inspection_templates WHERE is_default = true;
 ---
 
 ### **Error: "permission denied for table inspection_templates"**
+
 **Artinya:** RLS blocking insert
 
 **Solution (TEMPORARY - for development):**
+
 ```sql
 -- Disable RLS temporarily
 ALTER TABLE inspection_templates DISABLE ROW LEVEL SECURITY;
@@ -78,6 +88,7 @@ ALTER TABLE inspection_templates ENABLE ROW LEVEL SECURITY;
 ```
 
 **Solution (PERMANENT - proper RLS policy):**
+
 ```sql
 -- Create policy to allow insert for authenticated users
 CREATE POLICY "Allow authenticated users to insert templates"
@@ -98,6 +109,7 @@ WITH CHECK (true);
 ---
 
 ### **Error: "relation inspection_templates does not exist"**
+
 **Artinya:** Table belum dibuat
 
 **Solution:**
@@ -108,6 +120,7 @@ If not, run your schema migration first.
 ---
 
 ### **Still shows "Template Belum Tersedia"**
+
 **Possible causes:**
 
 1. **Cache issue**
@@ -116,6 +129,7 @@ If not, run your schema migration first.
    - Open incognito/private window
 
 2. **RLS blocking SELECT**
+
    ```sql
    -- Add read policy
    CREATE POLICY "Allow authenticated to read templates"
@@ -136,45 +150,53 @@ If not, run your schema migration first.
 Run these queries to verify everything:
 
 ### **1. Check template exists:**
+
 ```sql
-SELECT COUNT(*) as template_count 
-FROM inspection_templates 
+SELECT COUNT(*) as template_count
+FROM inspection_templates
 WHERE is_default = true;
 ```
+
 **Expected:** `template_count = 1`
 
 ### **2. Check components:**
+
 ```sql
-SELECT 
+SELECT
   name,
   jsonb_array_length(fields->'components') as components
-FROM inspection_templates 
+FROM inspection_templates
 WHERE is_default = true;
 ```
+
 **Expected:** `components = 11`
 
 ### **3. Check component details:**
+
 ```sql
-SELECT 
+SELECT
   jsonb_array_elements(fields->'components')->>'label' as component_name,
   jsonb_array_elements(fields->'components')->>'icon' as icon
-FROM inspection_templates 
+FROM inspection_templates
 WHERE is_default = true;
 ```
+
 **Expected:** 11 rows with toilet components
 
 ### **4. Check RLS policies:**
+
 ```sql
-SELECT 
+SELECT
   schemaname,
   tablename,
   policyname,
   permissive,
   roles,
   cmd
-FROM pg_policies 
+FROM pg_policies
 WHERE tablename = 'inspection_templates';
 ```
+
 **Expected:** At least SELECT policy for authenticated users
 
 ---
@@ -215,8 +237,8 @@ INSERT INTO inspection_templates (
 );
 
 -- Verify
-SELECT id, name, jsonb_array_length(fields->'components') as components 
-FROM inspection_templates 
+SELECT id, name, jsonb_array_length(fields->'components') as components
+FROM inspection_templates
 WHERE is_default = true;
 ```
 
@@ -234,6 +256,7 @@ Check these:
 4. **RLS policies** - Are they blocking?
 
 **Last resort:**
+
 ```sql
 -- Nuclear option - allow everything temporarily
 ALTER TABLE inspection_templates DISABLE ROW LEVEL SECURITY;

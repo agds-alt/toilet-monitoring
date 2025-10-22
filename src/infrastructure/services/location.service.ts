@@ -24,11 +24,7 @@ export const locationService = {
   },
 
   async getLocationById(id: string): Promise<Location | null> {
-    const { data, error } = await supabase
-      .from('locations')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const { data, error } = await supabase.from('locations').select('*').eq('id', id).single();
 
     if (error) {
       console.error('Error fetching location:', error);

@@ -34,6 +34,10 @@ export function getCloudinaryUrl(publicId: string, transformations?: string): st
   return transformations ? `${baseUrl}/${transformations}/${publicId}` : `${baseUrl}/${publicId}`;
 }
 
-export function getThumbnailUrl(publicId: string, width: number = 200, height: number = 200): string {
+export function getThumbnailUrl(
+  publicId: string,
+  width: number = 200,
+  height: number = 200
+): string {
   return getCloudinaryUrl(publicId, `w_${width},h_${height},c_fill,q_auto,f_auto`);
 }

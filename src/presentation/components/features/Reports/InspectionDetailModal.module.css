@@ -1,4 +1,3 @@
-
 .backdrop {
   position: fixed;
   top: 0;
@@ -23,7 +22,7 @@
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(0, 0, 0, 0.2),
     0 10px 20px rgba(0, 0, 0, 0.15);
   animation: slideUp 0.3s ease-out;
@@ -448,20 +447,20 @@
   .navigationFooter {
     grid-template-columns: 1fr;
   }
-  
+
   .navigationFooter button:nth-child(2) {
     order: 3;
   }
 }
-    .navigationFooter button:nth-child(1) {
-        order: 1;
-    }
-    
-    .navigationFooter button:nth-child(3) {
-        order: 2;
-        margin-bottom: var(--space-3);
-    }
-    
+.navigationFooter button:nth-child(1) {
+  order: 1;
+}
+
+.navigationFooter button:nth-child(3) {
+  order: 2;
+  margin-bottom: var(--space-3);
+}
+
 @media (max-width: 768px) {
   .filters {
     grid-template-columns: 1fr;

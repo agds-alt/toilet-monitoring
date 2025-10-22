@@ -16,13 +16,10 @@ interface RouteParams {
 // GET /api/templates/:id - Get Template by ID
 // ============================================
 
-export async function GET(
-  request: NextRequest,
-  { params }: RouteParams
-) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = params;
-    
+
     // Fetch template
     const { data, error } = await supabase
       .from('inspection_templates')
@@ -30,29 +27,25 @@ export async function GET(
       .eq('id', id)
       .eq('is_active', true)
       .single();
-    
+
     if (error) {
       console.error('Database error:', error);
-      
+
       if (error.code === 'PGRST116') {
-        return NextResponse.json(
-          { error: 'Template not found' },
-          { status: 404 }
-        );
+        return NextResponse.json({ error: 'Template not found' }, { status: 404 });
       }
-      
+
       return NextResponse.json(
         { error: 'Failed to fetch template', details: error.message },
         { status: 500 }
       );
     }
-    
+
     // Return template
     return NextResponse.json({
       success: true,
       data,
     });
-    
   } catch (error: any) {
     console.error('API Error:', error);
     return NextResponse.json(
@@ -74,10 +67,10 @@ export async function getDefaultTemplate() {
     .eq('is_default', true)
     .eq('is_active', true)
     .single();
-  
+
   if (error) {
     throw new Error(`Failed to fetch default template: ${error.message}`);
   }
-  
+
   return data;
 }

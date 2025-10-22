@@ -37,10 +37,7 @@ export class CloudinaryService {
   /**
    * Add watermark to image using canvas
    */
-  async addWatermarkToImage(
-    file: File,
-    watermarkData: WatermarkData
-  ): Promise<Blob> {
+  async addWatermarkToImage(file: File, watermarkData: WatermarkData): Promise<Blob> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
@@ -124,10 +121,7 @@ export class CloudinaryService {
   /**
    * Upload image to Cloudinary
    */
-  async uploadImage(
-    file: File,
-    folder: string = 'inspections'
-  ): Promise<CloudinaryUploadResponse> {
+  async uploadImage(file: File, folder: string = 'inspections'): Promise<CloudinaryUploadResponse> {
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -152,9 +146,7 @@ export class CloudinaryService {
       return data;
     } catch (error) {
       console.error('Cloudinary upload error:', error);
-      throw new Error(
-        error instanceof Error ? error.message : 'Failed to upload image'
-      );
+      throw new Error(error instanceof Error ? error.message : 'Failed to upload image');
     }
   }
 
@@ -171,11 +163,7 @@ export class CloudinaryService {
       const watermarkedBlob = await this.addWatermarkToImage(file, watermarkData);
 
       // Convert blob to file
-      const watermarkedFile = new File(
-        [watermarkedBlob],
-        file.name,
-        { type: file.type }
-      );
+      const watermarkedFile = new File([watermarkedBlob], file.name, { type: file.type });
 
       // Step 2: Upload to Cloudinary
       const uploadResult = await this.uploadImage(watermarkedFile, folder);

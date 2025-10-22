@@ -7,14 +7,14 @@
   /* ========================================== */
   /* BASE COLORS - PROFESSIONAL PALETTE */
   /* ========================================== */
-  
+
   --background: #ffffff;
   --foreground: #111827;
-  
+
   /* ========================================== */
   /* GRAY SCALE - CONSISTENT NEUTRALS */
   /* ========================================== */
-  
+
   --color-white: #ffffff;
   --color-gray-50: #f9fafb;
   --color-gray-100: #f3f4f6;
@@ -27,7 +27,7 @@
   --color-gray-800: #1f2937;
   --color-gray-900: #111827;
   --color-black: #000000;
-  
+
   /* Shorthand aliases */
   --gray-50: var(--color-gray-50);
   --gray-100: var(--color-gray-100);
@@ -39,11 +39,11 @@
   --gray-700: var(--color-gray-700);
   --gray-800: var(--color-gray-800);
   --gray-900: var(--color-gray-900);
-  
+
   /* ========================================== */
   /* BRAND COLORS - PRIMARY */
   /* ========================================== */
-  
+
   --color-primary: #3b82f6;
   --color-primary-hover: #2563eb;
   --color-primary-dark: #1d4ed8;
@@ -53,16 +53,16 @@
   --color-primary-500: #3b82f6;
   --color-primary-600: #2563eb;
   --color-primary-700: #1d4ed8;
-  
+
   /* Aliases */
   --primary: var(--color-primary);
   --primary-hover: var(--color-primary-hover);
   --primary-light: var(--color-primary-light);
-  
+
   /* ========================================== */
   /* SEMANTIC COLORS - SUCCESS */
   /* ========================================== */
-  
+
   --color-success: #10b981;
   --color-success-hover: #059669;
   --color-success-dark: #047857;
@@ -71,15 +71,15 @@
   --color-success-100: #d1fae5;
   --color-success-500: #10b981;
   --color-success-600: #059669;
-  
+
   /* Aliases */
   --success: var(--color-success);
   --success-light: var(--color-success-light);
-  
+
   /* ========================================== */
   /* SEMANTIC COLORS - WARNING */
   /* ========================================== */
-  
+
   --color-warning: #f59e0b;
   --color-warning-hover: #d97706;
   --color-warning-dark: #b45309;
@@ -88,15 +88,15 @@
   --color-warning-100: #fef3c7;
   --color-warning-500: #f59e0b;
   --color-warning-600: #d97706;
-  
+
   /* Aliases */
   --warning: var(--color-warning);
   --warning-light: var(--color-warning-light);
-  
+
   /* ========================================== */
   /* SEMANTIC COLORS - ERROR/DANGER */
   /* ========================================== */
-  
+
   --color-error: #ef4444;
   --color-error-hover: #dc2626;
   --color-error-dark: #b91c1c;
@@ -105,69 +105,69 @@
   --color-error-100: #fee2e2;
   --color-error-500: #ef4444;
   --color-error-600: #dc2626;
-  
+
   --color-danger: var(--color-error);
   --color-danger-hover: var(--color-error-hover);
   --color-danger-dark: var(--color-error-dark);
   --color-danger-light: var(--color-error-light);
-  
+
   /* Aliases */
   --error: var(--color-error);
   --error-light: var(--color-error-light);
   --danger: var(--color-danger);
-  
+
   /* ========================================== */
   /* SEMANTIC COLORS - INFO */
   /* ========================================== */
-  
+
   --color-info: #3b82f6;
   --color-info-hover: #2563eb;
   --color-info-light: #dbeafe;
-  
+
   /* ========================================== */
   /* SHADOWS - SUBTLE & MODERN */
   /* ========================================== */
-  
+
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.1);
   --shadow-2xl: 0 12px 32px rgba(0, 0, 0, 0.12);
-  
+
   /* Colored shadows for buttons */
   --shadow-primary: 0 1px 3px rgba(59, 130, 246, 0.2);
   --shadow-primary-lg: 0 4px 12px rgba(59, 130, 246, 0.25);
   --shadow-success: 0 1px 3px rgba(16, 185, 129, 0.2);
   --shadow-danger: 0 1px 3px rgba(239, 68, 68, 0.2);
-  
+
   /* Legacy 3D shadows (deprecated - use flat shadows above) */
   --shadow-3d: var(--shadow-md);
   --shadow-3d-active: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
-  
+
   /* ========================================== */
   /* SPACING SCALE - 4px BASE */
   /* ========================================== */
-  
+
   --space-0: 0;
-  --space-1: 0.25rem;   /* 4px */
-  --space-2: 0.5rem;    /* 8px */
-  --space-3: 0.75rem;   /* 12px */
-  --space-4: 1rem;      /* 16px */
-  --space-5: 1.25rem;   /* 20px */
-  --space-6: 1.5rem;    /* 24px */
-  --space-7: 1.75rem;   /* 28px */
-  --space-8: 2rem;      /* 32px */
-  --space-10: 2.5rem;   /* 40px */
-  --space-12: 3rem;     /* 48px */
-  --space-14: 3.5rem;   /* 56px */
-  --space-16: 4rem;     /* 64px */
-  --space-20: 5rem;     /* 80px */
-  --space-24: 6rem;     /* 96px */
-  
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-7: 1.75rem; /* 28px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-14: 3.5rem; /* 56px */
+  --space-16: 4rem; /* 64px */
+  --space-20: 5rem; /* 80px */
+  --space-24: 6rem; /* 96px */
+
   /* ========================================== */
   /* BORDER RADIUS */
   /* ========================================== */
-  
+
   --radius-none: 0;
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -176,30 +176,30 @@
   --radius-2xl: 16px;
   --radius-3xl: 24px;
   --radius-full: 9999px;
-  
+
   /* ========================================== */
   /* TYPOGRAPHY */
   /* ========================================== */
-  
+
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'Menlo', 'Monaco', 'Courier New', monospace;
-  
+
   /* Font sizes */
-  --text-xs: 0.75rem;     /* 12px */
-  --text-sm: 0.875rem;    /* 14px */
-  --text-base: 1rem;      /* 16px */
-  --text-lg: 1.125rem;    /* 18px */
-  --text-xl: 1.25rem;     /* 20px */
-  --text-2xl: 1.5rem;     /* 24px */
-  --text-3xl: 1.875rem;   /* 30px */
-  --text-4xl: 2.25rem;    /* 36px */
-  
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.5rem; /* 24px */
+  --text-3xl: 1.875rem; /* 30px */
+  --text-4xl: 2.25rem; /* 36px */
+
   /* Font weights */
   --font-normal: 400;
   --font-medium: 500;
   --font-semibold: 600;
   --font-bold: 700;
-  
+
   /* Line heights */
   --leading-none: 1;
   --leading-tight: 1.25;
@@ -207,34 +207,34 @@
   --leading-normal: 1.5;
   --leading-relaxed: 1.625;
   --leading-loose: 2;
-  
+
   /* Letter spacing */
   --tracking-tighter: -0.05em;
   --tracking-tight: -0.025em;
   --tracking-normal: 0;
   --tracking-wide: 0.025em;
   --tracking-wider: 0.05em;
-  
+
   /* ========================================== */
   /* TRANSITIONS - FAST & SMOOTH */
   /* ========================================== */
-  
+
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slower: 500ms cubic-bezier(0.4, 0, 0.2, 1);
-  
+
   /* Easing functions */
   --ease-linear: linear;
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  
+
   /* ========================================== */
   /* Z-INDEX SCALE */
   /* ========================================== */
-  
+
   --z-base: 0;
   --z-dropdown: 1000;
   --z-sticky: 1020;
@@ -245,30 +245,30 @@
   --z-tooltip: 1070;
   --z-notification: 1080;
   --z-max: 9999;
-  
+
   /* ========================================== */
   /* BREAKPOINTS (for JS usage) */
   /* ========================================== */
-  
+
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1536px;
-  
+
   /* ========================================== */
   /* CONTAINER WIDTHS */
   /* ========================================== */
-  
+
   --container-sm: 640px;
   --container-md: 768px;
   --container-lg: 1024px;
   --container-xl: 1280px;
-  
+
   /* ========================================== */
   /* OPACITY SCALE */
   /* ========================================== */
-  
+
   --opacity-0: 0;
   --opacity-5: 0.05;
   --opacity-10: 0.1;
@@ -291,7 +291,7 @@
   :root {
     --background: #0a0a0a;
     --foreground: #f9fafb;
-    
+
     /* Inverted grays for dark mode */
     --gray-50: #1f2937;
     --gray-100: #111827;

@@ -3,6 +3,7 @@
 ## 🔧 Prerequisites
 
 Pastikan database schema sudah ada:
+
 - ✅ `inspection_templates` table
 - ✅ `inspection_records` table
 - ✅ `photos` table
@@ -18,11 +19,13 @@ Ada 3 cara untuk membuat default template:
 ### **Option A: Via API Route (Recommended)**
 
 1. Buka browser dan akses:
+
 ```
 POST http://localhost:3000/api/seed/template
 ```
 
 Atau gunakan cURL:
+
 ```bash
 curl -X POST http://localhost:3000/api/seed/template \
   -H "Content-Type: application/json" \
@@ -30,6 +33,7 @@ curl -X POST http://localhost:3000/api/seed/template \
 ```
 
 2. Response sukses:
+
 ```json
 {
   "success": true,
@@ -186,6 +190,7 @@ Template service akan otomatis membuat default template jika tidak ada saat pert
 ## 🎯 Step 2: Test Inspection Form
 
 1. Navigate ke inspection page:
+
 ```
 http://localhost:3000/inspection
 ```
@@ -203,7 +208,8 @@ http://localhost:3000/inspection
 
 ### **Error: "Template tidak memiliki komponen"**
 
-**Solusi:** 
+**Solusi:**
+
 1. Check apakah template ada di database
 2. Jalankan seed template (Option A atau B)
 3. Refresh page
@@ -216,9 +222,11 @@ Bug sudah di-fix. Update ke latest code dan pastikan template memiliki field `co
 ### **Template tidak muncul**
 
 **Solusi:**
+
 1. Check Supabase connection
 2. Check RLS policies untuk `inspection_templates` table
 3. Enable RLS bypass untuk development:
+
 ```sql
 ALTER TABLE inspection_templates DISABLE ROW LEVEL SECURITY;
 ```
@@ -226,6 +234,7 @@ ALTER TABLE inspection_templates DISABLE ROW LEVEL SECURITY;
 ### **Photo upload gagal**
 
 **Solusi:**
+
 1. Pastikan Cloudinary credentials di `.env` benar
 2. Check preset name: `toilet-monitoring_unsigned`
 3. Test upload manual di Cloudinary dashboard
@@ -238,16 +247,16 @@ Query untuk check template:
 
 ```sql
 -- Check semua templates
-SELECT id, name, is_default, is_active, 
+SELECT id, name, is_default, is_active,
        jsonb_array_length(fields->'components') as component_count
 FROM inspection_templates;
 
 -- Check default template detail
-SELECT * FROM inspection_templates 
+SELECT * FROM inspection_templates
 WHERE is_default = true;
 
 -- Count komponen dalam template
-SELECT 
+SELECT
   id,
   name,
   jsonb_array_length(fields->'components') as total_components
@@ -322,6 +331,7 @@ uiState: {
 ## 📞 Support
 
 Kalo masih ada issue, cek:
+
 - Console logs (browser DevTools)
 - Supabase logs
 - Network tab untuk failed requests

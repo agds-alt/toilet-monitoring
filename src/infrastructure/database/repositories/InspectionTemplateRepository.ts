@@ -88,9 +88,9 @@ export class InspectionTemplateRepository {
   async delete(id: string): Promise<void> {
     const { error } = await supabase
       .from('inspection_templates')
-      .update({ 
+      .update({
         is_active: false,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('id', id);
 
@@ -100,13 +100,15 @@ export class InspectionTemplateRepository {
   async findByLocation(locationId: string): Promise<InspectionTemplate[]> {
     const { data, error } = await supabase
       .from('template_location_assignments')
-      .select(`
+      .select(
+        `
         template:inspection_templates (*)
-      `)
+      `
+      )
       .eq('location_id', locationId);
 
     if (error) throw error;
 
-    return data?.map(item => item.template) || [];
+    return data?.map((item) => item.template) || [];
   }
 }

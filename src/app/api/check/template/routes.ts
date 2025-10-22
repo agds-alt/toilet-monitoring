@@ -47,8 +47,8 @@ export async function GET(request: NextRequest) {
             name: defaultTemplate.name,
             is_active: defaultTemplate.is_active,
             is_default: defaultTemplate.is_default,
-            componentsCount: defaultTemplate.fields?.["components"]?.length || 0,
-            hasComponents: defaultTemplate.fields?.["components"]?.length > 0,
+            componentsCount: defaultTemplate.fields?.['components']?.length || 0,
+            hasComponents: defaultTemplate.fields?.['components']?.length > 0,
           }
         : null,
       allTemplates:
@@ -57,14 +57,14 @@ export async function GET(request: NextRequest) {
           name: t.name,
           is_active: t.is_active,
           is_default: t.is_default,
-          componentsCount: t.fields?.["components"]?.length || 0,
+          componentsCount: t.fields?.['components']?.length || 0,
         })) || [],
       activeTemplates:
         activeTemplates?.map((t) => ({
           id: t.id,
           name: t.name,
           is_default: t.is_default,
-          componentsCount: t.fields?.["components"]?.length || 0,
+          componentsCount: t.fields?.['components']?.length || 0,
         })) || [],
     };
 

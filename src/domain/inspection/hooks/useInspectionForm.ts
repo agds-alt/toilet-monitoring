@@ -26,11 +26,7 @@ interface UseInspectionFormOptions {
   userId: string;
 }
 
-export function useInspectionForm({
-  templateId,
-  locationId,
-  userId,
-}: UseInspectionFormOptions) {
+export function useInspectionForm({ templateId, locationId, userId }: UseInspectionFormOptions) {
   // ============================================
   // STATE MANAGEMENT
   // ============================================
@@ -135,9 +131,7 @@ export function useInspectionForm({
       responses: formState.responses,
       photo_urls: formState.photos.map(() => ''), // placeholder
       notes: formState.notes,
-      duration_seconds: Math.floor(
-        (Date.now() - formState.startTime.getTime()) / 1000
-      ),
+      duration_seconds: Math.floor((Date.now() - formState.startTime.getTime()) / 1000),
     };
 
     return validateInspectionForm(dto, requiredComponents);
@@ -147,21 +141,18 @@ export function useInspectionForm({
   // RATING ACTIONS
   // ============================================
 
-  const setRating = useCallback(
-    (componentId: string, rating: RatingValue | null) => {
-      setFormState((prev) => ({
-        ...prev,
-        responses: {
-          ...prev.responses,
-          [componentId]: {
-            ...prev.responses[componentId],
-            rating,
-          },
+  const setRating = useCallback((componentId: string, rating: RatingValue | null) => {
+    setFormState((prev) => ({
+      ...prev,
+      responses: {
+        ...prev.responses,
+        [componentId]: {
+          ...prev.responses[componentId],
+          rating,
         },
-      }));
-    },
-    []
-  );
+      },
+    }));
+  }, []);
 
   const setComment = useCallback((componentId: string, comment: string) => {
     setFormState((prev) => ({
@@ -191,43 +182,40 @@ export function useInspectionForm({
   // PHOTO ACTIONS
   // ============================================
 
-  const addPhotos = useCallback(
-    (files: File[]) => {
-      const validFiles: File[] = [];
-      const errors: string[] = [];
+  const addPhotos = useCallback((files: File[]) => {
+    const validFiles: File[] = [];
+    const errors: string[] = [];
 
-      for (const file of files) {
-        const validation = validatePhotoFile(file);
-        if (validation.isValid) {
-          validFiles.push(file);
-        } else {
-          errors.push(`${file.name}: ${validation.error}`);
-        }
+    for (const file of files) {
+      const validation = validatePhotoFile(file);
+      if (validation.isValid) {
+        validFiles.push(file);
+      } else {
+        errors.push(`${file.name}: ${validation.error}`);
       }
+    }
 
-      if (errors.length > 0) {
-        setError(errors.join('\n'));
-      }
+    if (errors.length > 0) {
+      setError(errors.join('\n'));
+    }
 
-      setFormState((prev) => {
-        const newPhotos = [...prev.photos, ...validFiles];
-        if (newPhotos.length > VALIDATION_RULES.maxTotalPhotos) {
-          setError(
-            `Maksimal ${VALIDATION_RULES.maxTotalPhotos} foto. ${newPhotos.length - VALIDATION_RULES.maxTotalPhotos} foto tidak ditambahkan.`
-          );
-          return {
-            ...prev,
-            photos: newPhotos.slice(0, VALIDATION_RULES.maxTotalPhotos),
-          };
-        }
+    setFormState((prev) => {
+      const newPhotos = [...prev.photos, ...validFiles];
+      if (newPhotos.length > VALIDATION_RULES.maxTotalPhotos) {
+        setError(
+          `Maksimal ${VALIDATION_RULES.maxTotalPhotos} foto. ${newPhotos.length - VALIDATION_RULES.maxTotalPhotos} foto tidak ditambahkan.`
+        );
         return {
           ...prev,
-          photos: newPhotos,
+          photos: newPhotos.slice(0, VALIDATION_RULES.maxTotalPhotos),
         };
-      });
-    },
-    []
-  );
+      }
+      return {
+        ...prev,
+        photos: newPhotos,
+      };
+    });
+  }, []);
 
   const removePhoto = useCallback((index: number) => {
     setFormState((prev) => ({
@@ -247,18 +235,15 @@ export function useInspectionForm({
   // SETTINGS ACTIONS
   // ============================================
 
-  const updateSettings = useCallback(
-    (settings: Partial<InspectionSettings>) => {
-      setFormState((prev) => ({
-        ...prev,
-        settings: {
-          ...prev.settings,
-          ...settings,
-        },
-      }));
-    },
-    []
-  );
+  const updateSettings = useCallback((settings: Partial<InspectionSettings>) => {
+    setFormState((prev) => ({
+      ...prev,
+      settings: {
+        ...prev.settings,
+        ...settings,
+      },
+    }));
+  }, []);
 
   const setNotes = useCallback((notes: string) => {
     setFormState((prev) => ({
@@ -336,9 +321,7 @@ export function useInspectionForm({
         responses: formState.responses,
         photo_urls: photoUrls,
         notes: formState.notes || null,
-        duration_seconds: Math.floor(
-          (Date.now() - formState.startTime.getTime()) / 1000
-        ),
+        duration_seconds: Math.floor((Date.now() - formState.startTime.getTime()) / 1000),
         geolocation: null, // TODO: implement GPS
       };
 
@@ -350,20 +333,13 @@ export function useInspectionForm({
 
       return result;
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Gagal mengirim inspeksi';
+      const errorMessage = err instanceof Error ? err.message : 'Gagal mengirim inspeksi';
       setError(errorMessage);
       return null;
     } finally {
       setIsSubmitting(false);
     }
-  }, [
-    validation,
-    formState,
-    userId,
-    overallStatus,
-    reset,
-  ]);
+  }, [validation, formState, userId, overallStatus, reset]);
 
   // ============================================
   // RETURN VALUES

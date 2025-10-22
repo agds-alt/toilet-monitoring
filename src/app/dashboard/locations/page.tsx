@@ -105,7 +105,7 @@ export default function LocationsPage() {
           >
             <option value="all">Semua Gedung</option>
             {buildings.map((building) => (
-              <option key={building} value={building || ""}>
+              <option key={building} value={building || ''}>
                 {building}
               </option>
             ))}

@@ -18,6 +18,7 @@ mkdir -p src/lib/seed
 ### **Step 3: Seed Template (PILIH 1 CARA)**
 
 #### **Option A: Via UI (TERMUDAH!)** ⭐
+
 1. Buka inspection page: `http://localhost:3000/inspection`
 2. Lihat error "Template Belum Tersedia"
 3. Klik button **"🌱 Buat Template Default"**
@@ -26,27 +27,35 @@ mkdir -p src/lib/seed
 6. **DONE!** ✅
 
 #### **Option B: Via Browser Console**
+
 1. Buka browser console (F12)
 2. Paste & Enter:
+
 ```javascript
 fetch('/api/seed/template', {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' }
-}).then(r => r.json()).then(console.log)
+  headers: { 'Content-Type': 'application/json' },
+})
+  .then((r) => r.json())
+  .then(console.log);
 ```
+
 3. Refresh halaman
 4. **DONE!** ✅
 
 #### **Option C: Via cURL**
+
 ```bash
 curl -X POST http://localhost:3000/api/seed/template \
   -H "Content-Type: application/json"
 ```
 
 #### **Option D: Via Postman/Thunder Client**
+
 - Method: `POST`
 - URL: `http://localhost:3000/api/seed/template`
 - Body: (optional)
+
 ```json
 {
   "userId": "your-user-id"
@@ -62,6 +71,7 @@ curl -X POST http://localhost:3000/api/seed/template \
 1. Go to Table Editor
 2. Select `inspection_templates` table
 3. You should see:
+
 ```
 | id | name | is_default | is_active | components |
 |----|------|------------|-----------|------------|
@@ -69,11 +79,12 @@ curl -X POST http://localhost:3000/api/seed/template \
 ```
 
 ### **Check via SQL:**
+
 ```sql
-SELECT 
-  id, 
-  name, 
-  is_default, 
+SELECT
+  id,
+  name,
+  is_default,
   is_active,
   jsonb_array_length(fields->'components') as component_count
 FROM inspection_templates;
@@ -164,15 +175,19 @@ src/
 ## 🐛 Troubleshooting
 
 ### **Error: "Template Belum Tersedia"**
+
 **Solution:** Klik button "🌱 Buat Template Default"
 
 ### **Error: "Failed to seed template"**
+
 **Possible causes:**
+
 1. Supabase connection issue
 2. RLS policies blocking insert
 3. Table doesn't exist
 
 **Fix:**
+
 ```sql
 -- Check if table exists
 SELECT * FROM inspection_templates LIMIT 1;
@@ -184,13 +199,17 @@ ALTER TABLE inspection_templates DISABLE ROW LEVEL SECURITY;
 ```
 
 ### **Button seed tidak muncul**
-**Solution:** 
+
+**Solution:**
+
 1. Check console errors
 2. Make sure API route exists
 3. Restart dev server
 
 ### **Template created but still error**
+
 **Solution:**
+
 1. Hard refresh (Ctrl+Shift+R)
 2. Clear localStorage
 3. Check browser console for errors
@@ -215,6 +234,7 @@ After seeding, you should have:
 ## 🎉 You're Done!
 
 Template is ready! Now you can:
+
 1. Start inspecting toilets 🚽
 2. Test all features
 3. Customize components if needed
@@ -226,16 +246,19 @@ Need help? Check console logs! 🔍
 ## 📞 Quick Commands
 
 ### **Seed Template:**
+
 ```bash
 curl -X POST http://localhost:3000/api/seed/template
 ```
 
 ### **Check Template:**
+
 ```sql
 SELECT * FROM inspection_templates WHERE is_default = true;
 ```
 
 ### **Reset Template:**
+
 ```sql
 DELETE FROM inspection_templates WHERE is_default = true;
 -- Then seed again

@@ -101,8 +101,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 /* 🆕 Spinner animation */
 .spinner {
@@ -116,8 +120,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* 🆕 Success state */
@@ -133,14 +141,25 @@
 }
 
 @keyframes successPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 @keyframes successZoom {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* 🆕 Scanning indicator */
@@ -167,8 +186,13 @@
 }
 
 @keyframes scanAnimation {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .scanningText {
@@ -260,7 +284,8 @@
 }
 
 @keyframes scanAnimation {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(-100px);
     opacity: 0.5;
   }
@@ -279,7 +304,6 @@
   font-size: 0.875rem;
   text-align: center;
 }
-
 
 /*
 KEPT FROM YOUR CODE:
@@ -312,4 +336,3 @@ BENEFITS:
 📈 More intuitive for users
 📈 Production-ready
 */
-

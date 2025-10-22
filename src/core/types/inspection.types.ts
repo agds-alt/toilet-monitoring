@@ -1,10 +1,10 @@
 // src/core/types/inspection.types.ts
-import { 
-  InspectionRecord, 
+import {
+  InspectionRecord,
   InspectionRecordInsert,
   InspectionTemplate,
   Location,
-  Photo 
+  Photo,
 } from './database.types';
 
 export type { InspectionRecord, InspectionTemplate, Location, Photo };
@@ -21,7 +21,7 @@ export interface InspectionComponent {
   required: boolean;
   order: number;
   icon?: string;
-  description?: string;  // ← Added this
+  description?: string; // ← Added this
 }
 
 export interface InspectionTemplateFields {
@@ -98,7 +98,7 @@ export interface GeolocationData {
   longitude: number;
   accuracy: number;
   timestamp: number;
-  formatted_address?: string;  // ← Added for useGeolocation
+  formatted_address?: string; // ← Added for useGeolocation
 }
 
 // ============================================
@@ -109,19 +109,19 @@ export interface InspectionFormState {
   templateId: string;
   locationId: string | null;
   userId: string;
-  
+
   template: InspectionTemplate | null;
   location: Location | null;
   components: InspectionComponent[];
-  
+
   responses: InspectionResponses;
   notes: string;
   pendingPhotos: PendingPhoto[];
-  
+
   geolocation: GeolocationData | null;
   startTime: number;
   duration: number;
-  
+
   uiState: InspectionUIState;
 }
 

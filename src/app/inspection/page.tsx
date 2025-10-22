@@ -32,20 +32,19 @@ export default function InspectionPage() {
 
         // Get default template
         const response = await fetch('/api/templates?default=true');
-        
+
         if (!response.ok) {
           throw new Error('Failed to load default template');
         }
 
         const result = await response.json();
-        
+
         if (!result.success || !result.data) {
           throw new Error('No default template found');
         }
 
         setTemplateId(result.data.id);
         console.log('✅ Default template loaded:', result.data.name);
-
       } catch (err: any) {
         console.error('❌ Error loading template:', err);
         setError(err.message || 'Failed to load template');
@@ -106,20 +105,12 @@ export default function InspectionPage() {
         <div className={styles.errorContainer}>
           <div className={styles.errorIcon}>❌</div>
           <h2 className={styles.errorTitle}>Gagal Memuat Form</h2>
-          <p className={styles.errorMessage}>
-            {error || 'Template inspeksi tidak ditemukan'}
-          </p>
+          <p className={styles.errorMessage}>{error || 'Template inspeksi tidak ditemukan'}</p>
           <div className={styles.errorActions}>
-            <button 
-              onClick={() => router.push('/dashboard')} 
-              className={styles.backButton}
-            >
+            <button onClick={() => router.push('/dashboard')} className={styles.backButton}>
               ← Kembali ke Dashboard
             </button>
-            <button 
-              onClick={() => window.location.reload()} 
-              className={styles.retryButton}
-            >
+            <button onClick={() => window.location.reload()} className={styles.retryButton}>
               🔄 Coba Lagi
             </button>
           </div>
@@ -136,19 +127,11 @@ export default function InspectionPage() {
     <div className={styles.page}>
       {/* Header */}
       <div className={styles.pageHeader}>
-        <button 
-          onClick={handleCancel} 
-          className={styles.backButton} 
-          aria-label="Back"
-        >
+        <button onClick={handleCancel} className={styles.backButton} aria-label="Back">
           ← Kembali
         </button>
         <h1 className={styles.pageTitle}>Form Inspeksi Toilet</h1>
-        {locationName && (
-          <div className={styles.locationBadge}>
-            📍 {locationName}
-          </div>
-        )}
+        {locationName && <div className={styles.locationBadge}>📍 {locationName}</div>}
       </div>
 
       {/* Main Form */}

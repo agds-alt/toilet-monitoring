@@ -154,12 +154,7 @@ export function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
 
       {/* Camera View */}
       <div className="relative w-full h-full">
-        <video
-          ref={videoRef}
-          className="w-full h-full object-cover"
-          playsInline
-          muted
-        />
+        <video ref={videoRef} className="w-full h-full object-cover" playsInline muted />
 
         {/* Hidden canvas for QR detection */}
         <canvas ref={canvasRef} className="hidden" />
@@ -188,12 +183,8 @@ export function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
 
         {/* Instruction Text */}
         <div className="absolute bottom-32 left-0 right-0 text-center px-4">
-          <p className="text-white text-lg font-medium mb-2">
-            Arahkan kamera ke QR Code
-          </p>
-          <p className="text-white/80 text-sm">
-            Pastikan QR Code berada di dalam frame
-          </p>
+          <p className="text-white text-lg font-medium mb-2">Arahkan kamera ke QR Code</p>
+          <p className="text-white/80 text-sm">Pastikan QR Code berada di dalam frame</p>
         </div>
       </div>
 
@@ -218,10 +209,7 @@ export function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
       {error && (
         <div className="absolute top-20 left-4 right-4 p-4 bg-red-500 text-white rounded-lg shadow-lg">
           <p className="text-sm">{error}</p>
-          <button
-            onClick={startCamera}
-            className="mt-2 text-sm underline"
-          >
+          <button onClick={startCamera} className="mt-2 text-sm underline">
             Coba lagi
           </button>
         </div>

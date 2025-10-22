@@ -12,10 +12,7 @@ import type {
   ComponentResponse,
   RatingValue,
 } from '@/core/types/inspection.types';
-import {
-  RATING_EMOJIS,
-  RATING_LABELS,
-} from '@/core/constants/inspection.constant';
+import { RATING_EMOJIS, RATING_LABELS } from '@/core/constants/inspection.constant';
 
 interface ComponentRatingProps {
   component: InspectionComponent;
@@ -24,12 +21,7 @@ interface ComponentRatingProps {
   onComment: (comment: string) => void;
 }
 
-export function ComponentRating({
-  component,
-  response,
-  onRate,
-  onComment,
-}: ComponentRatingProps) {
+export function ComponentRating({ component, response, onRate, onComment }: ComponentRatingProps) {
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState(response?.comment || '');
 
@@ -49,9 +41,7 @@ export function ComponentRating({
           <div>
             <h3 className="font-semibold text-gray-800">
               {component.label_id || component.label}
-              {component.required && (
-                <span className="text-red-500 ml-1">*</span>
-              )}
+              {component.required && <span className="text-red-500 ml-1">*</span>}
             </h3>
             {component.description && (
               <p className="text-xs text-gray-500">{component.description}</p>
@@ -85,8 +75,8 @@ export function ComponentRating({
                   ? rating === 'clean'
                     ? 'bg-green-50 border-green-500'
                     : rating === 'needs_work'
-                    ? 'bg-yellow-50 border-yellow-500'
-                    : 'bg-red-50 border-red-500'
+                      ? 'bg-yellow-50 border-yellow-500'
+                      : 'bg-red-50 border-red-500'
                   : 'bg-white border-gray-200 hover:border-gray-300'
               }`}
             >
@@ -98,8 +88,8 @@ export function ComponentRating({
                       ? rating === 'clean'
                         ? 'text-green-700'
                         : rating === 'needs_work'
-                        ? 'text-yellow-700'
-                        : 'text-red-700'
+                          ? 'text-yellow-700'
+                          : 'text-red-700'
                       : 'text-gray-600'
                   }`}
                 >

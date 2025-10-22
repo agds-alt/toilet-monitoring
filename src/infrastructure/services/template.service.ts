@@ -2,10 +2,7 @@
 import { supabase } from '@/infrastructure/database/supabase';
 import { InspectionTemplate } from '@/core/types/inspection.types';
 import { DEFAULT_TOILET_COMPONENTS } from '@/lib/constants/inspection.constants';
-import { 
-  componentsToJson, 
-  dbToInspectionTemplate 
-} from '@/lib/utils/type-helpers';
+import { componentsToJson, dbToInspectionTemplate } from '@/lib/utils/type-helpers';
 
 export class TemplateService {
   async getActiveTemplates(): Promise<InspectionTemplate[]> {
@@ -91,15 +88,12 @@ export class TemplateService {
   async updateTemplate(id: string, updates: Partial<InspectionTemplate>): Promise<boolean> {
     try {
       const updateData: any = { ...updates, updated_at: new Date().toISOString() };
-      
+
       if (updates.fields) {
         updateData.fields = componentsToJson(updates.fields.components);
       }
 
-      const { error } = await supabase
-        .from('inspection_templates')
-        .update(updateData)
-        .eq('id', id);
+      const { error } = await supabase.from('inspection_templates').update(updateData).eq('id', id);
 
       if (error) throw error;
       console.log('✅ Template updated:', id);

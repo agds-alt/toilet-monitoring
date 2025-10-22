@@ -14,14 +14,14 @@ import * as path from 'path';
 
 function loadEnv() {
   const envFiles = ['.env.local', '.env'];
-  
+
   for (const file of envFiles) {
     const filePath = path.join(process.cwd(), file);
-    
+
     if (fs.existsSync(filePath)) {
       console.log(`📄 Loading environment from: ${file}`);
       const envContent = fs.readFileSync(filePath, 'utf8');
-      
+
       envContent.split('\n').forEach((line) => {
         const trimmed = line.trim();
         if (trimmed && !trimmed.startsWith('#')) {
@@ -30,11 +30,11 @@ function loadEnv() {
           process.env[key.trim()] = value;
         }
       });
-      
+
       return true;
     }
   }
-  
+
   return false;
 }
 
@@ -163,9 +163,7 @@ async function seedLocations() {
     }
 
     // Create new
-    const { error } = await supabase
-      .from('locations')
-      .insert(location);
+    const { error } = await supabase.from('locations').insert(location);
 
     if (error) {
       console.error('   ❌ Error:', location.name, error.message);

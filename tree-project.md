@@ -4,12 +4,12 @@ toilet-monitoring/
 ├── cleanup-old-assessment.sh
 ├── dist
 │   └── scripts
-│       ├── infrastructure
-│       │   └── database
-│       │       └── repositories
-│       ├── lib
-│       │   └── constants
-│       └── scripts
+│   ├── infrastructure
+│   │   └── database
+│   │   └── repositories
+│   ├── lib
+│   │   └── constants
+│   └── scripts
 ├── final-type-fix.sh
 ├── fix-errors.sh
 ├── fix-null-checks.txt
@@ -21,7 +21,7 @@ toilet-monitoring/
 ├── next.config.js
 ├── next.config.mjs
 ├── next-env.d.ts
-├── node_modules
+├── node*modules
 │   ├── autoprefixer -> .pnpm/autoprefixer@10.4.21_postcss@8.5.6/node_modules/autoprefixer
 │   ├── @babel
 │   │   └── runtime -> ../.pnpm/@babel+runtime@7.28.4/node_modules/@babel/runtime
@@ -44,7 +44,7 @@ toilet-monitoring/
 │   ├── react-dom -> .pnpm/react-dom@19.2.0_react@19.2.0/node_modules/react-dom
 │   ├── react-qr-scanner -> .pnpm/react-qr-scanner@1.0.0-alpha.11_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-qr-scanner
 │   ├── @supabase
-│   │   ├── auth-helpers-nextjs -> ../.pnpm/@supabase+auth-helpers-nextjs@0.8.7_@supabase+supabase-js@2.75.1/node_modules/@supabase/auth-helpers-nextjs
+│   │   ├── auth-helpers-nextjs -> ../.pnpm/@supabase+auth-helpers-nextjs@0.8.7*@supabase+supabase-js@2.75.1/node*modules/@supabase/auth-helpers-nextjs
 │   │   └── supabase-js -> ../.pnpm/@supabase+supabase-js@2.75.1/node_modules/@supabase/supabase-js
 │   ├── supabase -> .pnpm/supabase@2.51.0/node_modules/supabase
 │   ├── @tailwindcss
@@ -55,7 +55,7 @@ toilet-monitoring/
 │   ├── @types
 │   │   ├── node -> ../.pnpm/@types+node@20.19.22/node_modules/@types/node
 │   │   ├── react -> ../.pnpm/@types+react@18.3.26/node_modules/@types/react
-│   │   └── react-dom -> ../.pnpm/@types+react-dom@18.3.7_@types+react@18.3.26/node_modules/@types/react-dom
+│   │   └── react-dom -> ../.pnpm/@types+react-dom@18.3.7*@types+react@18.3.26/node_modules/@types/react-dom
 │   └── typescript -> .pnpm/typescript@5.9.3/node_modules/typescript
 ├── package.json
 ├── PERFORMANCE_FIX.md
@@ -86,7 +86,7 @@ toilet-monitoring/
 │   │   ├── api
 │   │   │   ├── check
 │   │   │   │   └── template
-│   │   │   │       └── routes.ts
+│   │   │   │   └── routes.ts
 │   │   │   ├── inspections
 │   │   │   │   └── route.ts
 │   │   │   ├── locations
@@ -94,19 +94,19 @@ toilet-monitoring/
 │   │   │   │   │   └── route.ts
 │   │   │   │   ├── route.ts
 │   │   │   │   └── test
-│   │   │   │       └── route.ts
+│   │   │   │   └── route.ts
 │   │   │   ├── photos
 │   │   │   │   └── delete
-│   │   │   │       └── route.ts
+│   │   │   │   └── route.ts
 │   │   │   ├── seed
 │   │   │   │   └── template
-│   │   │   │       └── route.ts
+│   │   │   │   └── route.ts
 │   │   │   ├── templates
 │   │   │   │   ├── [id]
 │   │   │   │   │   └── route.ts
 │   │   │   │   └── route.ts
 │   │   │   └── upload
-│   │   │       └── route.ts
+│   │   │   └── route.ts
 │   │   ├── dashboard
 │   │   │   ├── history
 │   │   │   │   ├── page.module.css
@@ -118,8 +118,8 @@ toilet-monitoring/
 │   │   │   │   ├── page.module.css
 │   │   │   │   ├── page.tsx
 │   │   │   │   └── success
-│   │   │   │       ├── page.module.css
-│   │   │   │       └── page.tsx
+│   │   │   │   ├── page.module.css
+│   │   │   │   └── page.tsx
 │   │   │   ├── layout.module.css
 │   │   │   ├── layout.tsx
 │   │   │   ├── locations
@@ -131,13 +131,13 @@ toilet-monitoring/
 │   │   │   │   │   └── page.tsx
 │   │   │   │   ├── [id]
 │   │   │   │   │   └── qr
-│   │   │   │   │       ├── page.tsx
-│   │   │   │   │       └── qr.module.css
+│   │   │   │   │   ├── page.tsx
+│   │   │   │   │   └── qr.module.css
 │   │   │   │   ├── locations.module.css
 │   │   │   │   ├── page.tsx
 │   │   │   │   └── print-qr
-│   │   │   │       ├── page.tsx
-│   │   │   │       └── print-qr.module.css
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── print-qr.module.css
 │   │   │   ├── page.module.css
 │   │   │   ├── page.tsx
 │   │   │   ├── reports
@@ -145,14 +145,14 @@ toilet-monitoring/
 │   │   │   │   ├── page.module.css
 │   │   │   │   └── page.tsx
 │   │   │   └── scan
-│   │   │       ├── [code]
-│   │   │       │   ├── page.tsx
-│   │   │       │   └── scan.module.css
-│   │   │       ├── page.module.css
-│   │   │       └── page.tsx
+│   │   │   ├── [code]
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── scan.module.css
+│   │   │   ├── page.module.css
+│   │   │   └── page.tsx
 │   │   ├── debug
 │   │   │   └── template
-│   │   │       └── page.tsx
+│   │   │   └── page.tsx
 │   │   ├── error.tsx
 │   │   ├── favicon.ico
 │   │   ├── globals.css
@@ -160,8 +160,8 @@ toilet-monitoring/
 │   │   │   ├── inspection.module.css
 │   │   │   ├── page.tsx
 │   │   │   └── success
-│   │   │       ├── page.tsx
-│   │   │       └── success.module.css
+│   │   │   ├── page.tsx
+│   │   │   └── success.module.css
 │   │   ├── landing.module.css
 │   │   ├── layout.tsx
 │   │   ├── loading.tsx
@@ -175,8 +175,8 @@ toilet-monitoring/
 │   │   │   ├── page.tsx
 │   │   │   └── seed.module.css
 │   │   └── setup
-│   │       ├── page.tsx
-│   │       └── setup.module.css
+│   │   ├── page.tsx
+│   │   └── setup.module.css
 │   ├── core
 │   │   ├── dtos
 │   │   │   └── CreateInspectionDTO.ts
@@ -204,20 +204,20 @@ toilet-monitoring/
 │   │   │   ├── supabase.types.ts
 │   │   │   └── user-role.enum.ts
 │   │   └── use-cases
-│   │       ├── BulkCreateLocations.ts
-│   │       ├── CreateLocation.ts
-│   │       ├── DeleteLocation.ts
-│   │       ├── GetCurrentUserUseCase.ts
-│   │       ├── GetLocationByCode.ts
-│   │       ├── GetLocationById.ts
-│   │       ├── GetLocationsByBuilding.ts
-│   │       ├── GetLocationsByFloor.ts
-│   │       ├── GetLocations.ts
-│   │       ├── index.ts
-│   │       ├── SearchLocations.ts
-│   │       ├── SubscribeToLocations.ts
-│   │       ├── UpdateLocation.ts
-│   │       └── UploadPhoto.ts
+│   │   ├── BulkCreateLocations.ts
+│   │   ├── CreateLocation.ts
+│   │   ├── DeleteLocation.ts
+│   │   ├── GetCurrentUserUseCase.ts
+│   │   ├── GetLocationByCode.ts
+│   │   ├── GetLocationById.ts
+│   │   ├── GetLocationsByBuilding.ts
+│   │   ├── GetLocationsByFloor.ts
+│   │   ├── GetLocations.ts
+│   │   ├── index.ts
+│   │   ├── SearchLocations.ts
+│   │   ├── SubscribeToLocations.ts
+│   │   ├── UpdateLocation.ts
+│   │   └── UploadPhoto.ts
 │   ├── infrastructure
 │   │   ├── auth
 │   │   │   └── supabase-auth.ts
@@ -235,7 +235,7 @@ toilet-monitoring/
 │   │   │   ├── notification.service.ts
 │   │   │   └── template.service.ts
 │   │   └── storage
-│   │       └── CloudinaryPhotoRepository.ts
+│   │   └── CloudinaryPhotoRepository.ts
 │   ├── lib
 │   │   ├── auto-cache.ts
 │   │   ├── cloudinary.ts
@@ -248,17 +248,17 @@ toilet-monitoring/
 │   │   ├── seed
 │   │   │   └── seedTemplate.ts
 │   │   └── utils
-│   │       ├── calendar.ts
-│   │       ├── cloudinary.client.ts
-│   │       ├── date.ts
-│   │       ├── formatting.ts
-│   │       ├── geolocation.utils.ts
-│   │       ├── index.ts
-│   │       ├── rating.utils.ts
-│   │       ├── scoring.ts
-│   │       ├── type-helpers.ts
-│   │       ├── validation.ts
-│   │       └── validation.utils.ts
+│   │   ├── calendar.ts
+│   │   ├── cloudinary.client.ts
+│   │   ├── date.ts
+│   │   ├── formatting.ts
+│   │   ├── geolocation.utils.ts
+│   │   ├── index.ts
+│   │   ├── rating.utils.ts
+│   │   ├── scoring.ts
+│   │   ├── type-helpers.ts
+│   │   ├── validation.ts
+│   │   └── validation.utils.ts
 │   ├── presentation
 │   │   ├── components
 │   │   │   ├── features
@@ -315,39 +315,39 @@ toilet-monitoring/
 │   │   │   │   │   ├── WeeklyReport.module.css
 │   │   │   │   │   └── WeeklyReport.tsx
 │   │   │   │   └── ReviewSubmit
-│   │   │   │       ├── index.ts
-│   │   │   │       ├── ReviewSubmit.module.css
-│   │   │   │       └── ReviewSubmit.tsx
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── ReviewSubmit.module.css
+│   │   │   │   └── ReviewSubmit.tsx
 │   │   │   ├── layout
 │   │   │   │   ├── BottomNav
 │   │   │   │   │   ├── BottomNav.module.css
 │   │   │   │   │   ├── BottomNav.tsx
 │   │   │   │   │   └── index.ts
 │   │   │   │   └── Header
-│   │   │   │       ├── Header.module.css
-│   │   │   │       ├── Header.tsx
-│   │   │   │       └── index.ts
+│   │   │   │   ├── Header.module.css
+│   │   │   │   ├── Header.tsx
+│   │   │   │   └── index.ts
 │   │   │   └── ui
-│   │   │       ├── Button
-│   │   │       │   ├── Button.module.css
-│   │   │       │   ├── Button.tsx
-│   │   │       │   └── index.ts
-│   │   │       ├── Card
-│   │   │       │   ├── Card.module.css
-│   │   │       │   ├── Card.tsx
-│   │   │       │   └── index.ts
-│   │   │       ├── EmptyLocationsState.tsx
-│   │   │       ├── index.ts
-│   │   │       ├── Input
-│   │   │       │   ├── index.ts
-│   │   │       │   ├── Input.module.css
-│   │   │       │   └── Input.tsx
-│   │   │       ├── Modal
-│   │   │       │   ├── index.ts
-│   │   │       │   ├── Modal.module.css
-│   │   │       │   └── Modal.tsx
-│   │   │       ├── Skeleton.tsx
-│   │   │       └── Toast.tsx
+│   │   │   ├── Button
+│   │   │   │   ├── Button.module.css
+│   │   │   │   ├── Button.tsx
+│   │   │   │   └── index.ts
+│   │   │   ├── Card
+│   │   │   │   ├── Card.module.css
+│   │   │   │   ├── Card.tsx
+│   │   │   │   └── index.ts
+│   │   │   ├── EmptyLocationsState.tsx
+│   │   │   ├── index.ts
+│   │   │   ├── Input
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── Input.module.css
+│   │   │   │   └── Input.tsx
+│   │   │   ├── Modal
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── Modal.module.css
+│   │   │   │   └── Modal.tsx
+│   │   │   ├── Skeleton.tsx
+│   │   │   └── Toast.tsx
 │   │   ├── contexts
 │   │   │   └── AuthContext.tsx
 │   │   ├── hooks
@@ -359,13 +359,13 @@ toilet-monitoring/
 │   │   │   ├── usePhotoUpload.ts
 │   │   │   └── useTimer.ts
 │   │   └── styles
-│   │       └── tokens.css
+│   │   └── tokens.css
 │   └── types
-│       ├── css-modules.d.ts
-│       ├── global.d.ts
-│       ├── html5-qrcode.d.ts
-│       ├── index.ts
-│       └── supabase.d.ts
+│   ├── css-modules.d.ts
+│   ├── global.d.ts
+│   ├── html5-qrcode.d.ts
+│   ├── index.ts
+│   └── supabase.d.ts
 ├── STEP_BY_STEP_ADD_TEAMPLATE.md
 ├── supabase
 │   └── config.toml
@@ -384,5 +384,4 @@ toilet-monitoring/
 └── vercel.json
 
 124 directories, 259 files
-dracarys@pop-os:~$ 
-
+dracarys@pop-os:~$

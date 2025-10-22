@@ -15,7 +15,7 @@ export default function InspectionPage() {
   const params = useParams();
   const router = useRouter();
   const locationId = params.locationId as string;
-  
+
   const [location, setLocation] = useState<Location | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +23,7 @@ export default function InspectionPage() {
     const loadLocation = async () => {
       try {
         const locations = await getLocationsUseCase.execute();
-        const found = locations.find(l => l.id === locationId);
+        const found = locations.find((l) => l.id === locationId);
         setLocation(found || null);
       } catch (error) {
         console.error('Failed to load location:', error);
@@ -102,9 +102,10 @@ export default function InspectionPage() {
           </div>
           <h2 className={styles.comingSoonTitle}>Inspection Form</h2>
           <p className={styles.comingSoonText}>
-            Form assessment dengan 11 komponen penilaian kebersihan toilet akan segera tersedia di sini.
+            Form assessment dengan 11 komponen penilaian kebersihan toilet akan segera tersedia di
+            sini.
           </p>
-          
+
           <div className={styles.features}>
             <h3>Fitur yang akan tersedia:</h3>
             <ul>
@@ -118,16 +119,13 @@ export default function InspectionPage() {
           </div>
 
           <div className={styles.actions}>
-            <button 
+            <button
               onClick={() => router.push('/dashboard/locations')}
               className={styles.btnPrimary}
             >
               Kembali ke Location List
             </button>
-            <button 
-              onClick={() => router.push('/dashboard/scan')}
-              className={styles.btnSecondary}
-            >
+            <button onClick={() => router.push('/dashboard/scan')} className={styles.btnSecondary}>
               Scan QR Lagi
             </button>
           </div>

@@ -7,7 +7,7 @@
 
 .statCard {
   background: white;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 20px;
   display: flex;
@@ -18,12 +18,12 @@
 .statIcon {
   width: 48px;
   height: 48px;
-  background: #EFF6FF;
+  background: #eff6ff;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #2563EB;
+  color: #2563eb;
 }
 
 .statContent {
@@ -32,14 +32,14 @@
 
 .statLabel {
   font-size: 14px;
-  color: #6B7280;
+  color: #6b7280;
   margin-bottom: 4px;
 }
 
 .statValue {
   font-size: 32px;
   font-weight: 700;
-  color: #1F2937;
+  color: #1f2937;
 }
 
 @media (max-width: 768px) {

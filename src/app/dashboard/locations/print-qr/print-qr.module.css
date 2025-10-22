@@ -1,11 +1,11 @@
 .container {
   min-height: 100vh;
-  background: #F7F7F8;
+  background: #f7f7f8;
 }
 
 .header {
   background: white;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid #e5e7eb;
   padding: 20px 24px;
 }
 
@@ -22,22 +22,22 @@
   gap: 8px;
   padding: 8px 16px;
   background: transparent;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
-  color: #1F2937;
+  color: #1f2937;
   transition: all 0.2s;
 }
 
 .btnBack:hover {
-  background: #F7F7F8;
+  background: #f7f7f8;
 }
 
 .title {
   font-size: 24px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
   margin: 0;
 }
 
@@ -55,12 +55,12 @@
 
 .select {
   padding: 8px 12px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
   font-size: 14px;
   background: white;
   cursor: pointer;
-  color: #1F2937;
+  color: #1f2937;
 }
 
 .selectionActions {
@@ -75,17 +75,17 @@
   gap: 6px;
   padding: 8px 16px;
   background: white;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  color: #1F2937;
+  color: #1f2937;
   transition: all 0.2s;
 }
 
 .btnSecondary:hover {
-  background: #F7F7F8;
+  background: #f7f7f8;
 }
 
 .printActions {
@@ -94,13 +94,13 @@
   justify-content: space-between;
   gap: 16px;
   padding-top: 16px;
-  border-top: 1px solid #E5E7EB;
+  border-top: 1px solid #e5e7eb;
 }
 
 .selectedCount {
   font-size: 14px;
   font-weight: 600;
-  color: #2563EB;
+  color: #2563eb;
 }
 
 .btnPrint {
@@ -108,7 +108,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 24px;
-  background: #2563EB;
+  background: #2563eb;
   color: white;
   border: none;
   border-radius: 6px;
@@ -119,7 +119,7 @@
 }
 
 .btnPrint:hover:not(:disabled) {
-  background: #1D4ED8;
+  background: #1d4ed8;
   transform: translateY(-1px);
 }
 
@@ -143,20 +143,20 @@
   gap: 12px;
   padding: 16px;
   background: white;
-  border: 2px solid #E5E7EB;
+  border: 2px solid #e5e7eb;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .selectionCard:hover {
-  border-color: #2563EB;
+  border-color: #2563eb;
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
 }
 
 .selectionCard.selected {
-  border-color: #2563EB;
-  background: #EFF6FF;
+  border-color: #2563eb;
+  background: #eff6ff;
 }
 
 .checkbox {
@@ -173,7 +173,7 @@
 .cardTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
   margin-bottom: 8px;
   line-height: 1.4;
 }
@@ -183,16 +183,16 @@
   flex-wrap: wrap;
   gap: 8px;
   font-size: 12px;
-  color: #6B7280;
+  color: #6b7280;
 }
 
 .code {
   font-family: 'Courier New', monospace;
-  background: #F7F7F8;
+  background: #f7f7f8;
   padding: 2px 6px;
   border-radius: 4px;
   font-weight: 600;
-  color: #2563EB;
+  color: #2563eb;
 }
 
 .loading {
@@ -207,20 +207,22 @@
 .spinner {
   width: 48px;
   height: 48px;
-  border: 4px solid #E5E7EB;
-  border-top-color: #2563EB;
+  border: 4px solid #e5e7eb;
+  border-top-color: #2563eb;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .emptyState {
   text-align: center;
   padding: 60px 20px;
-  color: #6B7280;
+  color: #6b7280;
 }
 
 /* Print Area - FIXED */
@@ -242,7 +244,7 @@
   break-inside: avoid;
   background: white;
   padding: 20px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
   text-align: center;
 }
@@ -255,7 +257,7 @@
   align-items: center;
   justify-content: center;
   background: white;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   border-radius: 4px;
 }
 
@@ -266,21 +268,21 @@
 .locationName {
   font-size: 16px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
   margin-bottom: 4px;
 }
 
 .locationCode {
   font-family: 'Courier New', monospace;
   font-size: 14px;
-  color: #2563EB;
+  color: #2563eb;
   font-weight: 600;
   margin-bottom: 4px;
 }
 
 .locationDetails {
   font-size: 12px;
-  color: #6B7280;
+  color: #6b7280;
 }
 
 .instructions {
@@ -289,13 +291,13 @@
   padding: 24px;
   background: white;
   border-radius: 8px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
 }
 
 .instructions h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
   margin: 0 0 16px 0;
 }
 
@@ -307,7 +309,7 @@
 .instructions li {
   margin-bottom: 8px;
   line-height: 1.6;
-  color: #1F2937;
+  color: #1f2937;
 }
 
 /* Print Styles - FIXED */
@@ -319,27 +321,27 @@
   .printHide {
     display: none !important;
   }
-  
+
   .printArea {
     display: block !important;
   }
-  
+
   .container {
     background: white;
   }
-  
+
   .qrGrid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 30px;
     padding: 20px;
   }
-  
+
   .qrPrintCard {
     page-break-inside: avoid;
     break-inside: avoid;
   }
-  
+
   @page {
     size: A4;
     margin: 1.5cm;
@@ -352,34 +354,34 @@
     align-items: stretch;
     gap: 12px;
   }
-  
+
   .title {
     text-align: center;
   }
-  
+
   .selectionGrid {
     grid-template-columns: 1fr;
     padding: 16px;
   }
-  
+
   .filters {
     flex-direction: column;
   }
-  
+
   .select {
     width: 100%;
   }
-  
+
   .printActions {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .btnPrint {
     width: 100%;
     justify-content: center;
   }
-  
+
   .qrGrid {
     grid-template-columns: 1fr;
     gap: 20px;

@@ -3,7 +3,7 @@
 // ALIGNED INSPECTION TYPES - Based on Supabase Schema
 // ============================================
 
-import { 
+import {
   InspectionRecord,
   InspectionRecordInsert,
   InspectionRecordUpdate,
@@ -101,20 +101,20 @@ export interface InspectionFormState {
   // Template & Location
   template: InspectionTemplate | null;
   location: Location | null;
-  
+
   // Responses
   responses: InspectionResponses;
   notes: string;
-  
+
   // Photos
   pendingPhotos: PendingPhoto[];
-  
+
   // Geolocation
   geolocation: GeolocationData | null;
-  
+
   // UI
   uiState: InspectionUIState;
-  
+
   // Timer
   startTime: number | null;
   duration: number;
@@ -208,11 +208,9 @@ export function hasRequiredFields(
   responses: InspectionResponses,
   components: InspectionComponent[]
 ): boolean {
-  const requiredIds = components
-    .filter(c => c.required)
-    .map(c => c.id);
-  
-  return requiredIds.every(id => {
+  const requiredIds = components.filter((c) => c.required).map((c) => c.id);
+
+  return requiredIds.every((id) => {
     const response = responses[id];
     return response && isValidRating(response.rating);
   });
@@ -226,37 +224,32 @@ export function calculateOverallStatus(
   responses: InspectionResponses
 ): 'clean' | 'needs_work' | 'dirty' {
   const ratings = Object.values(responses)
-    .map(r => r.rating)
+    .map((r) => r.rating)
     .filter(Boolean) as RatingValue[];
-  
+
   if (ratings.length === 0) {
     return 'clean'; // Default
   }
-  
-  const dirtyCount = ratings.filter(r => r === 'dirty').length;
-  const needsWorkCount = ratings.filter(r => r === 'needs_work').length;
-  
+
+  const dirtyCount = ratings.filter((r) => r === 'dirty').length;
+  const needsWorkCount = ratings.filter((r) => r === 'needs_work').length;
+
   if (dirtyCount > 0) {
     return 'dirty';
   }
-  
+
   if (needsWorkCount > 0) {
     return 'needs_work';
   }
-  
+
   return 'clean';
 }
 
-export function calculateProgress(
-  responses: InspectionResponses,
-  totalComponents: number
-): number {
+export function calculateProgress(responses: InspectionResponses, totalComponents: number): number {
   if (totalComponents === 0) return 0;
-  
-  const completedCount = Object.values(responses).filter(
-    r => r.rating !== null
-  ).length;
-  
+
+  const completedCount = Object.values(responses).filter((r) => r.rating !== null).length;
+
   return Math.round((completedCount / totalComponents) * 100);
 }
 
@@ -287,19 +280,16 @@ export async function uploadPhotoToCloudinary(
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', uploadPreset);
-  
-  const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-    {
-      method: 'POST',
-      body: formData,
-    }
-  );
-  
+
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+
   if (!response.ok) {
     throw new Error('Failed to upload photo');
   }
-  
+
   const data: CloudinaryUploadResponse = await response.json();
   return data.secure_url;
 }
@@ -308,12 +298,10 @@ export async function uploadPhotoToCloudinary(
 // VALIDATION HELPERS
 // ============================================
 
-export function validateInspectionForm(
-  state: InspectionFormState
-): ValidationResult {
+export function validateInspectionForm(state: InspectionFormState): ValidationResult {
   const errors: ValidationError[] = [];
   const warnings: ValidationError[] = [];
-  
+
   // Check template
   if (!state.template) {
     errors.push({
@@ -322,7 +310,7 @@ export function validateInspectionForm(
       severity: 'error',
     });
   }
-  
+
   // Check location
   if (!state.location) {
     errors.push({
@@ -331,15 +319,15 @@ export function validateInspectionForm(
       severity: 'error',
     });
   }
-  
+
   // Check required components
   if (state.template) {
     const fields = state.template.fields as any as InspectionTemplateFields;
-    const requiredComponents = fields.components.filter(c => c.required);
-    
+    const requiredComponents = fields.components.filter((c) => c.required);
+
     for (const component of requiredComponents) {
       const response = state.responses[component.id];
-      
+
       if (!response || !response.rating) {
         errors.push({
           field: component.id,
@@ -349,12 +337,12 @@ export function validateInspectionForm(
       }
     }
   }
-  
+
   // Warnings for missing photos
-  const componentsWithoutPhotos = Object.entries(state.responses)
-    .filter(([_, response]) => !response.photos || response.photos.length === 0)
-    .length;
-  
+  const componentsWithoutPhotos = Object.entries(state.responses).filter(
+    ([_, response]) => !response.photos || response.photos.length === 0
+  ).length;
+
   if (componentsWithoutPhotos > 0 && state.pendingPhotos.length === 0) {
     warnings.push({
       field: 'photos',
@@ -362,7 +350,7 @@ export function validateInspectionForm(
       severity: 'warning',
     });
   }
-  
+
   return {
     isValid: errors.length === 0,
     errors,

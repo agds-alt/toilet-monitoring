@@ -37,11 +37,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
   }
 
   async findById(id: string): Promise<Location | null> {
-    const { data, error } = await supabase
-      .from('locations')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const { data, error } = await supabase.from('locations').select('*').eq('id', id).single();
 
     if (error) {
       if (error.code === 'PGRST116') return null;
@@ -64,9 +60,10 @@ export class SupabaseLocationRepository implements ILocationRepository {
     if (statsError) throw statsError;
 
     const totalInspections = inspectionStats?.length || 0;
-    const cleanCount = inspectionStats?.filter(ir => ir.overall_status === 'clean').length || 0;
-    const dirtyCount = inspectionStats?.filter(ir => ir.overall_status === 'dirty').length || 0;
-    const needsWorkCount = inspectionStats?.filter(ir => ir.overall_status === 'needs_work').length || 0;
+    const cleanCount = inspectionStats?.filter((ir) => ir.overall_status === 'clean').length || 0;
+    const dirtyCount = inspectionStats?.filter((ir) => ir.overall_status === 'dirty').length || 0;
+    const needsWorkCount =
+      inspectionStats?.filter((ir) => ir.overall_status === 'needs_work').length || 0;
 
     return {
       ...location,
@@ -75,7 +72,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
         clean_count: cleanCount,
         dirty_count: dirtyCount,
         needs_work_count: needsWorkCount,
-      }
+      },
     };
   }
 
@@ -103,9 +100,10 @@ export class SupabaseLocationRepository implements ILocationRepository {
       if (statsError) throw statsError;
 
       const totalInspections = inspectionStats?.length || 0;
-      const cleanCount = inspectionStats?.filter(ir => ir.overall_status === 'clean').length || 0;
-      const dirtyCount = inspectionStats?.filter(ir => ir.overall_status === 'dirty').length || 0;
-      const needsWorkCount = inspectionStats?.filter(ir => ir.overall_status === 'needs_work').length || 0;
+      const cleanCount = inspectionStats?.filter((ir) => ir.overall_status === 'clean').length || 0;
+      const dirtyCount = inspectionStats?.filter((ir) => ir.overall_status === 'dirty').length || 0;
+      const needsWorkCount =
+        inspectionStats?.filter((ir) => ir.overall_status === 'needs_work').length || 0;
 
       locationsWithDetails.push({
         ...location,
@@ -114,7 +112,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
           clean_count: cleanCount,
           dirty_count: dirtyCount,
           needs_work_count: needsWorkCount,
-        }
+        },
       });
     }
 
@@ -139,9 +137,9 @@ export class SupabaseLocationRepository implements ILocationRepository {
   async delete(id: string): Promise<void> {
     const { error } = await supabase
       .from('locations')
-      .update({ 
+      .update({
         is_active: false,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('id', id);
 
@@ -185,7 +183,9 @@ export class SupabaseLocationRepository implements ILocationRepository {
     const { data, error } = await supabase
       .from('locations')
       .select('*')
-      .or(`name.ilike.%${query}%,code.ilike.%${query}%,building.ilike.%${query}%,floor.ilike.%${query}%`)
+      .or(
+        `name.ilike.%${query}%,code.ilike.%${query}%,building.ilike.%${query}%,floor.ilike.%${query}%`
+      )
       .eq('is_active', true);
 
     if (error) throw error;

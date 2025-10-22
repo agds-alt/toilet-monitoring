@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Location, LocationFormData } from '@/core/entities/Location';
 import { createLocationUseCase, updateLocationUseCase } from '@/lib/di';
 import { Input } from '@/presentation/components/ui/Input';
-import  Button  from '@/presentation/components/ui/Button';
+import Button from '@/presentation/components/ui/Button';
 
 interface LocationFormProps {
   location?: Location;
@@ -45,9 +45,9 @@ export function LocationForm({ location, onSuccess, onCancel }: LocationFormProp
   };
 
   const handleChange = (field: keyof LocationFormData, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -80,9 +80,7 @@ export function LocationForm({ location, onSuccess, onCancel }: LocationFormProp
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Floor *
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Floor *</label>
           <select
             value={formData.floor}
             onChange={(e) => handleChange('floor', e.target.value)}
@@ -100,9 +98,7 @@ export function LocationForm({ location, onSuccess, onCancel }: LocationFormProp
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Section *
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Section *</label>
           <select
             value={formData.section}
             onChange={(e) => handleChange('section', e.target.value)}
@@ -162,4 +158,5 @@ export function LocationForm({ location, onSuccess, onCancel }: LocationFormProp
       </div>
     </form>
   );
-} export default LocationForm;
+}
+export default LocationForm;

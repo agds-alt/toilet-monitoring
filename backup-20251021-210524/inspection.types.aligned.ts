@@ -3,7 +3,7 @@
 // ALIGNED INSPECTION TYPES - Based on Supabase Schema
 // ============================================
 
-import { 
+import {
   InspectionRecord,
   InspectionRecordInsert,
   InspectionRecordUpdate,

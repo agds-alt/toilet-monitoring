@@ -1,4 +1,3 @@
-
 .container {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -117,14 +116,16 @@
 
 .modeCard.genz {
   border: 3px solid transparent;
-  background: linear-gradient(white, white) padding-box,
-              linear-gradient(135deg, #f093fb 0%, #f5576c 100%) border-box;
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(135deg, #f093fb 0%, #f5576c 100%) border-box;
 }
 
 .modeCard.professional {
   border: 3px solid transparent;
-  background: linear-gradient(white, white) padding-box,
-              linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) border-box;
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) border-box;
 }
 
 .modeIcon {
@@ -143,13 +144,13 @@
 .modeName {
   font-size: 24px;
   font-weight: 700;
-  color: #1F2937;
+  color: #1f2937;
   margin: 0 0 12px 0;
 }
 
 .modeDesc {
   font-size: 16px;
-  color: #6B7280;
+  color: #6b7280;
   margin: 0 0 20px 0;
   line-height: 1.5;
 }
@@ -163,9 +164,9 @@
 
 .modeFeatures span {
   font-size: 14px;
-  color: #1F2937;
+  color: #1f2937;
   padding: 6px 12px;
-  background: #F7F7F8;
+  background: #f7f7f8;
   border-radius: 6px;
 }
 
@@ -205,11 +206,11 @@
   .modeTitle h1 {
     font-size: 28px;
   }
-  
+
   .modeTitle p {
     font-size: 16px;
   }
-  
+
   .modeCards {
     grid-template-columns: 1fr;
   }

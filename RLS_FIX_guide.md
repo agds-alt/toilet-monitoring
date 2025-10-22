@@ -1,6 +1,7 @@
 # 🔐 RLS Policy Fix Guide
 
 ## 🚨 Problem
+
 ```
 Error: new row violates row-level security policy for table "inspection_templates"
 ```
@@ -27,6 +28,7 @@ This allows seed operations to bypass RLS using admin privileges.
 #### **Step 2: Add to .env**
 
 Add to your `.env.local`:
+
 ```bash
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ...
 ```
@@ -71,20 +73,20 @@ Key policies to create:
 
 ```sql
 -- Allow public read for templates
-CREATE POLICY "Allow public read access" 
-ON inspection_templates FOR SELECT 
+CREATE POLICY "Allow public read access"
+ON inspection_templates FOR SELECT
 USING (true);
 
 -- Allow service_role insert (for seeding)
-CREATE POLICY "Allow service_role insert" 
-ON inspection_templates FOR INSERT 
-TO service_role 
+CREATE POLICY "Allow service_role insert"
+ON inspection_templates FOR INSERT
+TO service_role
 WITH CHECK (true);
 
 -- Allow authenticated users
-CREATE POLICY "Allow authenticated insert" 
-ON inspection_templates FOR INSERT 
-TO authenticated 
+CREATE POLICY "Allow authenticated insert"
+ON inspection_templates FOR INSERT
+TO authenticated
 WITH CHECK (true);
 ```
 
@@ -235,11 +237,11 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=xxx
 ### **Check RLS Status:**
 
 ```sql
-SELECT 
+SELECT
   tablename,
-  rowsecurity 
-FROM pg_tables 
-WHERE schemaname = 'public' 
+  rowsecurity
+FROM pg_tables
+WHERE schemaname = 'public'
   AND tablename IN (
     'inspection_templates',
     'inspection_records',
@@ -251,13 +253,13 @@ WHERE schemaname = 'public'
 ### **Check Policies:**
 
 ```sql
-SELECT 
+SELECT
   tablename,
   policyname,
   permissive,
   roles,
   cmd
-FROM pg_policies 
+FROM pg_policies
 WHERE tablename = 'inspection_templates';
 ```
 

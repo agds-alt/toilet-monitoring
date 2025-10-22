@@ -5,11 +5,7 @@ import { User, UserWithRoles } from '@/core/entities/User';
 
 export class SupabaseUserRepository implements IUserRepository {
   async findById(id: string): Promise<User | null> {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const { data, error } = await supabase.from('users').select('*').eq('id', id).single();
 
     if (error) {
       if (error.code === 'PGRST116') return null;
@@ -20,11 +16,7 @@ export class SupabaseUserRepository implements IUserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .single();
+    const { data, error } = await supabase.from('users').select('*').eq('email', email).single();
 
     if (error) {
       if (error.code === 'PGRST116') return null;
@@ -81,9 +73,9 @@ export class SupabaseUserRepository implements IUserRepository {
   async delete(id: string): Promise<void> {
     const { error } = await supabase
       .from('users')
-      .update({ 
+      .update({
         is_active: false,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('id', id);
 
@@ -96,7 +88,8 @@ export class SupabaseUserRepository implements IUserRepository {
 
     const { data: userRoles, error } = await supabase
       .from('user_roles')
-      .select(`
+      .select(
+        `
         role:roles (
           id,
           name,
@@ -104,24 +97,25 @@ export class SupabaseUserRepository implements IUserRepository {
           level,
           color
         )
-      `)
+      `
+      )
       .eq('user_id', userId);
 
     if (error) throw error;
 
-    const roles = userRoles?.map(ur => ur.role) || [];
+    const roles = userRoles?.map((ur) => ur.role) || [];
 
     return {
       ...user,
-      roles
+      roles,
     };
   }
 
   async updateLastLogin(userId: string): Promise<void> {
     const { error } = await supabase
       .from('users')
-      .update({ 
-        last_login_at: new Date().toISOString() 
+      .update({
+        last_login_at: new Date().toISOString(),
       })
       .eq('id', userId);
 

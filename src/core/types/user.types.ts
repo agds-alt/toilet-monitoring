@@ -1,10 +1,10 @@
 // src/core/types/user.types.ts
-import { 
-  User as DBUser, 
-  UserInsert as DBUserInsert, 
-  UserUpdate as DBUserUpdate, 
+import {
+  User as DBUser,
+  UserInsert as DBUserInsert,
+  UserUpdate as DBUserUpdate,
   Role,
-  UserRole as DBUserRole
+  UserRole as DBUserRole,
 } from './database.types';
 
 // Export renamed to avoid conflicts

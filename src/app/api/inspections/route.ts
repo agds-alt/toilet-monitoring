@@ -15,29 +15,20 @@ export async function POST(request: NextRequest) {
   try {
     // 1. Parse request body
     const body: CreateInspectionDTO = await request.json();
-    
+
     // 2. Validate required fields
     if (!body.template_id) {
-      return NextResponse.json(
-        { error: 'template_id is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'template_id is required' }, { status: 400 });
     }
-    
+
     if (!body.location_id) {
-      return NextResponse.json(
-        { error: 'location_id is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'location_id is required' }, { status: 400 });
     }
-    
+
     if (!body.user_id) {
-      return NextResponse.json(
-        { error: 'user_id is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'user_id is required' }, { status: 400 });
     }
-    
+
     // 3. Prepare data for insertion (matching InspectionRecordInsert type)
     const inspectionData: InspectionRecordInsert = {
       template_id: body.template_id,
@@ -50,16 +41,16 @@ export async function POST(request: NextRequest) {
       photo_urls: body.photo_urls || [],
       notes: body.notes || null,
       duration_seconds: body.duration_seconds,
-      geolocation: body.geolocation as any || null, // JSONB
+      geolocation: (body.geolocation as any) || null, // JSONB
     };
-    
+
     // 4. Insert into database
     const { data, error } = await supabase
       .from('inspection_records')
       .insert(inspectionData)
       .select()
       .single();
-    
+
     if (error) {
       console.error('Database error:', error);
       return NextResponse.json(
@@ -67,7 +58,7 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-    
+
     // 5. Return success
     return NextResponse.json(
       {
@@ -77,7 +68,6 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-    
   } catch (error: any) {
     console.error('API Error:', error);
     return NextResponse.json(
@@ -94,7 +84,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    
+
     // Get query parameters
     const locationId = searchParams.get('location_id');
     const userId = searchParams.get('user_id');
@@ -103,7 +93,7 @@ export async function GET(request: NextRequest) {
     const dateTo = searchParams.get('date_to');
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');
-    
+
     // Build query
     let query = supabase
       .from('inspection_records')
@@ -111,31 +101,31 @@ export async function GET(request: NextRequest) {
       .order('inspection_date', { ascending: false })
       .order('inspection_time', { ascending: false })
       .range(offset, offset + limit - 1);
-    
+
     // Apply filters
     if (locationId) {
       query = query.eq('location_id', locationId);
     }
-    
+
     if (userId) {
       query = query.eq('user_id', userId);
     }
-    
+
     if (status) {
       query = query.eq('overall_status', status);
     }
-    
+
     if (dateFrom) {
       query = query.gte('inspection_date', dateFrom);
     }
-    
+
     if (dateTo) {
       query = query.lte('inspection_date', dateTo);
     }
-    
+
     // Execute query
     const { data, error, count } = await query;
-    
+
     if (error) {
       console.error('Database error:', error);
       return NextResponse.json(
@@ -143,7 +133,7 @@ export async function GET(request: NextRequest) {
         { status: 500 }
       );
     }
-    
+
     // Return results
     return NextResponse.json({
       success: true,
@@ -154,7 +144,6 @@ export async function GET(request: NextRequest) {
         offset,
       },
     });
-    
   } catch (error: any) {
     console.error('API Error:', error);
     return NextResponse.json(
@@ -171,16 +160,13 @@ export async function GET(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     const { id, verified_by, verification_notes } = body;
-    
+
     if (!id) {
-      return NextResponse.json(
-        { error: 'id is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'id is required' }, { status: 400 });
     }
-    
+
     // Update inspection
     const { data, error } = await supabase
       .from('inspection_records')
@@ -192,7 +178,7 @@ export async function PATCH(request: NextRequest) {
       .eq('id', id)
       .select()
       .single();
-    
+
     if (error) {
       console.error('Database error:', error);
       return NextResponse.json(
@@ -200,13 +186,12 @@ export async function PATCH(request: NextRequest) {
         { status: 500 }
       );
     }
-    
+
     return NextResponse.json({
       success: true,
       data,
       message: 'Inspection verified successfully',
     });
-    
   } catch (error: any) {
     console.error('API Error:', error);
     return NextResponse.json(

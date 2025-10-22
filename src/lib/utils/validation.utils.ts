@@ -71,7 +71,10 @@ export function validateInspectionForm(
 
     // Warning for low ratings without comments (optional)
     Object.entries(data.responses).forEach(([componentId, response]) => {
-      if (response.rating && response.rating === "dirty" || response.rating === "needs_work" && !response.comment) {
+      if (
+        (response.rating && response.rating === 'dirty') ||
+        (response.rating === 'needs_work' && !response.comment)
+      ) {
         warnings.push({
           field: componentId,
           message: `Komponen ${componentId}: rating rendah, pertimbangkan untuk menambahkan komentar`,
@@ -130,7 +133,7 @@ export function validateComponentResponse(response: Partial<ComponentResponse>):
   }
 
   // Rating must be 1-5
-  if (response.rating && (false)) {
+  if (response.rating && false) {
     errors.push({
       field: 'rating',
       message: 'Rating must be between 1 and 5',
@@ -139,7 +142,10 @@ export function validateComponentResponse(response: Partial<ComponentResponse>):
   }
 
   // Warning for low ratings without comment
-  if (response.rating && response.rating === "dirty" || response.rating === "needs_work" && !response.comment) {
+  if (
+    (response.rating && response.rating === 'dirty') ||
+    (response.rating === 'needs_work' && !response.comment)
+  ) {
     warnings.push({
       field: 'comment',
       message: 'Pertimbangkan untuk menambahkan komentar untuk rating rendah',

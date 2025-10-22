@@ -3,11 +3,7 @@
 // RATING UTILITIES - String-based ratings
 // ============================================
 
-import {
-  RatingValue,
-  ComponentResponse,
-  OverallStatus,
-} from '@/core/types/inspection.types';
+import { RatingValue, ComponentResponse, OverallStatus } from '@/core/types/inspection.types';
 
 // ============================================
 // RATING CONSTANTS
@@ -56,26 +52,28 @@ export function scoreToRating(score: number): RatingValue {
 // CALCULATE OVERALL STATUS
 // ============================================
 
-export function calculateOverallStatus(responses: Record<string, ComponentResponse>): OverallStatus {
+export function calculateOverallStatus(
+  responses: Record<string, ComponentResponse>
+): OverallStatus {
   const ratings = Object.values(responses)
-    .map(r => r.rating)
+    .map((r) => r.rating)
     .filter((r): r is RatingValue => r !== null);
 
   if (ratings.length === 0) return 'needs_work';
 
   // Count each rating type
   const counts = {
-    clean: ratings.filter(r => r === 'clean').length,
-    needs_work: ratings.filter(r => r === 'needs_work').length,
-    dirty: ratings.filter(r => r === 'dirty').length,
+    clean: ratings.filter((r) => r === 'clean').length,
+    needs_work: ratings.filter((r) => r === 'needs_work').length,
+    dirty: ratings.filter((r) => r === 'dirty').length,
   };
 
   // If more than 30% dirty → overall dirty
   if (counts.dirty / ratings.length > 0.3) return 'dirty';
-  
+
   // If more than 70% clean → overall clean
   if (counts.clean / ratings.length > 0.7) return 'clean';
-  
+
   // Otherwise needs work
   return 'needs_work';
 }
@@ -86,7 +84,7 @@ export function calculateOverallStatus(responses: Record<string, ComponentRespon
 
 export function calculateAverageScore(responses: Record<string, ComponentResponse>): number {
   const scores = Object.values(responses)
-    .map(r => r.rating)
+    .map((r) => r.rating)
     .filter((r): r is RatingValue => r !== null)
     .map(ratingToScore);
 
@@ -125,13 +123,13 @@ export interface RatingBreakdown {
 
 export function getRatingBreakdown(responses: Record<string, ComponentResponse>): RatingBreakdown {
   const ratings = Object.values(responses)
-    .map(r => r.rating)
+    .map((r) => r.rating)
     .filter((r): r is RatingValue => r !== null);
 
   return {
-    clean: ratings.filter(r => r === 'clean').length,
-    needs_work: ratings.filter(r => r === 'needs_work').length,
-    dirty: ratings.filter(r => r === 'dirty').length,
+    clean: ratings.filter((r) => r === 'clean').length,
+    needs_work: ratings.filter((r) => r === 'needs_work').length,
+    dirty: ratings.filter((r) => r === 'dirty').length,
     total: ratings.length,
   };
 }

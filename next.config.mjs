@@ -4,23 +4,23 @@ const nextConfig = {
     appDir: true,
     serverComponentsExternalPackages: ['@supabase/supabase-js'],
   },
-  
+
   // Image domains untuk storage yang digunakan
   images: {
     domains: [
-      'res.cloudinary.com',        // Cloudinary untuk photo storage
+      'res.cloudinary.com', // Cloudinary untuk photo storage
       'lh3.googleusercontent.com', // Google auth (jika pakai OAuth)
-      'avatars.githubusercontent.com' // GitHub auth (jika pakai OAuth)
+      'avatars.githubusercontent.com', // GitHub auth (jika pakai OAuth)
     ],
     formats: ['image/webp', 'image/avif'],
   },
-  
+
   // Environment variables untuk client side
   env: {
     CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
     CLOUDINARY_UPLOAD_PRESET: process.env.CLOUDINARY_UPLOAD_PRESET,
   },
-  
+
   // Webpack configuration untuk path aliases
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Path aliases untuk development dan production
@@ -52,23 +52,23 @@ const nextConfig = {
       '@/constants': './src/lib/constants',
       '@/utils': './src/lib/utils',
     };
-    
+
     // Support untuk QR scanner dan camera
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
       path: false,
     };
-    
+
     // Rule khusus untuk file binary (jika ada library QR scanner)
     config.module.rules.push({
       test: /\.node$/,
       use: 'node-loader',
     });
-    
+
     return config;
   },
-  
+
   // Headers untuk security dan CORS
   async headers() {
     return [
@@ -86,10 +86,10 @@ const nextConfig = {
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
         ],
-      }
+      },
     ];
   },
-  
+
   // Redirects untuk user experience
   async redirects() {
     return [
@@ -115,12 +115,12 @@ const nextConfig = {
       },
     ];
   },
-  
+
   // Compiler optimization untuk production
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  
+
   // Output standalone untuk deployment yang lebih efisien
   output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
 };

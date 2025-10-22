@@ -13,7 +13,7 @@ export interface IPhotoRepository {
     uploaded_by?: string | null;
     field_reference?: string | null;
   }): Promise<Photo>;
-  
+
   findByInspection(inspectionId: string): Promise<Photo[]>;
   findByLocation(locationId: string): Promise<Photo[]>;
   delete(id: string, deletedBy: string): Promise<void>;

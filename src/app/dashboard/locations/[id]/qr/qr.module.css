@@ -1,11 +1,11 @@
 .container {
   min-height: 100vh;
-  background: #F7F7F8;
+  background: #f7f7f8;
 }
 
 .header {
   background: white;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid #e5e7eb;
   padding: 20px 24px;
   display: flex;
   align-items: center;
@@ -20,22 +20,22 @@
   gap: 8px;
   padding: 8px 16px;
   background: transparent;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
-  color: #1F2937;
+  color: #1f2937;
   transition: all 0.2s;
 }
 
 .btnBack:hover {
-  background: #F7F7F8;
+  background: #f7f7f8;
 }
 
 .title {
   font-size: 24px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
   margin: 0;
   flex: 1;
 }
@@ -50,7 +50,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: #2563EB;
+  background: #2563eb;
   color: white;
   border: none;
   border-radius: 6px;
@@ -61,7 +61,7 @@
 }
 
 .btnPrimary:hover {
-  background: #1D4ED8;
+  background: #1d4ed8;
   transform: translateY(-1px);
 }
 
@@ -86,14 +86,16 @@
 .spinner {
   width: 48px;
   height: 48px;
-  border: 4px solid #E5E7EB;
-  border-top-color: #2563EB;
+  border: 4px solid #e5e7eb;
+  border-top-color: #2563eb;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .notFound {
@@ -107,7 +109,7 @@
 
 .btn {
   padding: 10px 20px;
-  background: #2563EB;
+  background: #2563eb;
   color: white;
   border: none;
   border-radius: 6px;
@@ -120,13 +122,13 @@
   background: white;
   padding: 32px;
   border-radius: 12px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
 }
 
 .instructions h3 {
   font-size: 20px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
   margin: 0 0 20px 0;
 }
 
@@ -138,24 +140,24 @@
 .instructions li {
   margin-bottom: 12px;
   line-height: 1.6;
-  color: #1F2937;
+  color: #1f2937;
 }
 
 .instructions strong {
-  color: #2563EB;
+  color: #2563eb;
 }
 
 .tips {
-  background: #EFF6FF;
+  background: #eff6ff;
   padding: 20px;
   border-radius: 8px;
-  border: 1px solid #BFDBFE;
+  border: 1px solid #bfdbfe;
 }
 
 .tips h4 {
   font-size: 16px;
   font-weight: 600;
-  color: #1E40AF;
+  color: #1e40af;
   margin: 0 0 12px 0;
 }
 
@@ -166,7 +168,7 @@
 
 .tips li {
   margin-bottom: 8px;
-  color: #1E40AF;
+  color: #1e40af;
   line-height: 1.5;
 }
 
@@ -179,15 +181,15 @@
   .printHide {
     display: none !important;
   }
-  
+
   .container {
     background: white;
   }
-  
+
   .main {
     padding: 20px;
   }
-  
+
   @page {
     size: A4;
     margin: 2cm;
@@ -199,24 +201,24 @@
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .title {
     text-align: center;
   }
-  
+
   .headerActions {
     width: 100%;
   }
-  
+
   .btnPrimary {
     width: 100%;
     justify-content: center;
   }
-  
+
   .main {
     padding: 24px 16px;
   }
-  
+
   .instructions {
     padding: 20px;
   }

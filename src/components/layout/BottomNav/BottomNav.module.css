@@ -69,7 +69,7 @@
     width: 200px;
     height: 100vh;
   }
-  
+
   .navItem {
     flex-direction: row;
     padding: 0.75rem 1.5rem;
@@ -79,23 +79,23 @@
     margin: 0.25rem 0.5rem;
     transition: all 0.3s ease;
   }
-  
+
   .navItem:hover {
     background: #f8f8f8;
     color: #000000;
   }
-  
+
   .navItem.active {
     background: #000000;
     color: #ffffff;
   }
-  
+
   .icon {
     margin-bottom: 0;
     margin-right: 0.75rem;
     font-size: 1rem;
   }
-  
+
   .label {
     font-size: 0.875rem;
   }
@@ -131,28 +131,28 @@
     background: #1f2937;
     border-top-color: #374151;
   }
-  
+
   .navItem {
     color: #9ca3af;
   }
-  
+
   .navItem:hover {
     color: #d1d5db;
   }
-  
+
   .navItem.active {
     color: #ffffff;
   }
-  
+
   @media (min-width: 768px) {
     .nav {
       border-right-color: #374151;
     }
-    
+
     .navItem:hover {
       background: #374151;
     }
-    
+
     .navItem.active {
       background: #000000;
     }

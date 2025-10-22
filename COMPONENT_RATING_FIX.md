@@ -11,6 +11,7 @@ const ratings: RatingValue[] = ['dirty', 'needs_work', 'clean'];
 ```
 
 Or if you want to keep the 5-star system, change RatingValue type to numbers:
+
 ```typescript
 // In inspection.types.ts:
 export type RatingValue = 1 | 2 | 3 | 4 | 5;

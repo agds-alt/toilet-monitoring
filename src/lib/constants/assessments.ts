@@ -21,9 +21,12 @@ export const ASSESSMENT_CATEGORIES: AssessmentCategory[] = [
 
 export const ASSESSMENT_CONFIGS = ASSESSMENT_CATEGORIES;
 
-export function validateAssessments(assessments: Record<string, any>): { valid: boolean; errors: string[] } {
+export function validateAssessments(assessments: Record<string, any>): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
-  
+
   if (!assessments || typeof assessments !== 'object') {
     errors.push('Assessments must be an object');
     return { valid: false, errors };

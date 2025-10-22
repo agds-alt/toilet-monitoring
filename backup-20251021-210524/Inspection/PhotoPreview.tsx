@@ -11,9 +11,15 @@ interface PhotoPreviewProps {
 export function PhotoPreview({ url, onRemove }: PhotoPreviewProps) {
   return (
     <div style={{ position: 'relative', display: 'inline-block' }}>
-      <img src={url} alt="Preview" style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+      <img
+        src={url}
+        alt="Preview"
+        style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+      />
       {onRemove && (
-        <button onClick={onRemove} style={{ position: 'absolute', top: 0, right: 0 }}>×</button>
+        <button onClick={onRemove} style={{ position: 'absolute', top: 0, right: 0 }}>
+          ×
+        </button>
       )}
     </div>
   );

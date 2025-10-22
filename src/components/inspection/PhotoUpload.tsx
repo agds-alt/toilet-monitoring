@@ -15,12 +15,7 @@ interface PhotoUploadProps {
   maxPhotos?: number;
 }
 
-export function PhotoUpload({
-  photos,
-  onCapture,
-  onRemove,
-  maxPhotos = 20,
-}: PhotoUploadProps) {
+export function PhotoUpload({ photos, onCapture, onRemove, maxPhotos = 20 }: PhotoUploadProps) {
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const [previews, setPreviews] = useState<string[]>([]);
@@ -84,7 +79,10 @@ export function PhotoUpload({
       {previews.length > 0 && (
         <div className="grid grid-cols-3 gap-2 mb-3">
           {previews.map((preview, index) => (
-            <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
+            <div
+              key={index}
+              className="relative aspect-square rounded-lg overflow-hidden bg-gray-100"
+            >
               <img
                 src={preview}
                 alt={`Preview ${index + 1}`}

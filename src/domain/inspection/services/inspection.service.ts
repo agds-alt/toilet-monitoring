@@ -93,11 +93,7 @@ export class InspectionService {
    * Get location by ID
    */
   async getLocationById(id: string): Promise<Location | null> {
-    const { data, error } = await this.supabase
-      .from('locations')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const { data, error } = await this.supabase.from('locations').select('*').eq('id', id).single();
 
     if (error && error.code !== 'PGRST116') {
       throw new Error(`Failed to fetch location: ${error.message}`);
@@ -131,9 +127,7 @@ export class InspectionService {
   /**
    * Create new inspection
    */
-  async createInspection(
-    dto: CreateInspectionDTO
-  ): Promise<InspectionRecord> {
+  async createInspection(dto: CreateInspectionDTO): Promise<InspectionRecord> {
     // Get template for validation
     const template = await this.getTemplateById(dto.template_id);
     if (!template) {
@@ -142,16 +136,12 @@ export class InspectionService {
 
     // Extract required components
     const components = (template.fields as any)?.components || [];
-    const requiredComponents = components
-      .filter((c: any) => c.required)
-      .map((c: any) => c.id);
+    const requiredComponents = components.filter((c: any) => c.required).map((c: any) => c.id);
 
     // Validate
     const validation = validateInspectionForm(dto, requiredComponents);
     if (!validation.isValid) {
-      throw new Error(
-        `Validation failed: ${validation.errors.map((e) => e.message).join(', ')}`
-      );
+      throw new Error(`Validation failed: ${validation.errors.map((e) => e.message).join(', ')}`);
     }
 
     // Calculate overall status if not provided
@@ -189,10 +179,7 @@ export class InspectionService {
   /**
    * Get inspections by user
    */
-  async getInspectionsByUser(
-    userId: string,
-    limit = 50
-  ): Promise<InspectionRecord[]> {
+  async getInspectionsByUser(userId: string, limit = 50): Promise<InspectionRecord[]> {
     const { data, error } = await this.supabase
       .from('inspection_records')
       .select('*')
@@ -207,10 +194,7 @@ export class InspectionService {
   /**
    * Get inspections by location
    */
-  async getInspectionsByLocation(
-    locationId: string,
-    limit = 50
-  ): Promise<InspectionRecord[]> {
+  async getInspectionsByLocation(locationId: string, limit = 50): Promise<InspectionRecord[]> {
     const { data, error } = await this.supabase
       .from('inspection_records')
       .select('*')
@@ -226,9 +210,7 @@ export class InspectionService {
    * Get inspection statistics
    */
   async getInspectionStats(locationId?: string) {
-    let query = this.supabase
-      .from('inspection_records')
-      .select('overall_status');
+    let query = this.supabase.from('inspection_records').select('overall_status');
 
     if (locationId) {
       query = query.eq('location_id', locationId);
@@ -258,10 +240,7 @@ export class InspectionService {
   /**
    * Upload photo to storage
    */
-  async uploadPhoto(
-    file: File,
-    inspectionId: string
-  ): Promise<string> {
+  async uploadPhoto(file: File, inspectionId: string): Promise<string> {
     const fileExt = file.name.split('.').pop();
     const fileName = `${inspectionId}/${Date.now()}.${fileExt}`;
     const filePath = `inspection-photos/${fileName}`;
@@ -274,9 +253,7 @@ export class InspectionService {
       throw new Error(`Failed to upload photo: ${uploadError.message}`);
     }
 
-    const { data } = this.supabase.storage
-      .from('inspections')
-      .getPublicUrl(filePath);
+    const { data } = this.supabase.storage.from('inspections').getPublicUrl(filePath);
 
     return data.publicUrl;
   }
@@ -284,13 +261,8 @@ export class InspectionService {
   /**
    * Upload multiple photos
    */
-  async uploadPhotos(
-    files: File[],
-    inspectionId: string
-  ): Promise<string[]> {
-    const uploadPromises = files.map((file) =>
-      this.uploadPhoto(file, inspectionId)
-    );
+  async uploadPhotos(files: File[], inspectionId: string): Promise<string[]> {
+    const uploadPromises = files.map((file) => this.uploadPhoto(file, inspectionId));
     return Promise.all(uploadPromises);
   }
 }

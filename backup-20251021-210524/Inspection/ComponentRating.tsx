@@ -119,7 +119,7 @@ interface StarRatingProps {
 }
 
 function StarRating({ value, hoverValue, onRate, onHoverEnter, onHoverLeave }: StarRatingProps) {
-  const ratings: RatingValue[] = ["dirty", "needs_work", "clean"];
+  const ratings: RatingValue[] = ['dirty', 'needs_work', 'clean'];
 
   return (
     <div className={styles.starRating}>
@@ -157,7 +157,7 @@ interface EmojiRatingProps {
 }
 
 function EmojiRating({ value, hoverValue, onRate, onHoverEnter, onHoverLeave }: EmojiRatingProps) {
-  const ratings: RatingValue[] = ["dirty", "needs_work", "clean"];
+  const ratings: RatingValue[] = ['dirty', 'needs_work', 'clean'];
 
   return (
     <div className={styles.emojiRating}>

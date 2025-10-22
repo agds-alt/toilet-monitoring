@@ -32,8 +32,8 @@ interface AuthContextType {
   signUp?: (email: string, password: string, fullName: string) => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType>({ 
-  user: null, 
+const AuthContext = createContext<AuthContextType>({
+  user: null,
   loading: true,
   signOut: async () => {},
 });
@@ -46,10 +46,10 @@ function mapSupabaseUser(supabaseUser: SupabaseUser | null): User | null {
   if (!supabaseUser) return null;
 
   // Try to get fullName from various sources
-  const fullName = 
-    supabaseUser.user_metadata?.full_name || 
-    supabaseUser.user_metadata?.name || 
-    supabaseUser.email?.split('@')[0] || 
+  const fullName =
+    supabaseUser.user_metadata?.full_name ||
+    supabaseUser.user_metadata?.name ||
+    supabaseUser.email?.split('@')[0] ||
     'User';
 
   return {

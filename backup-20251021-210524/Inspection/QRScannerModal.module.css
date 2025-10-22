@@ -132,7 +132,7 @@
   animation: pulse 2s ease-in-out infinite;
 }
 
-.scanCorner[data-corner="tl"] {
+.scanCorner[data-corner='tl'] {
   top: 0;
   left: 0;
   border-right: none;
@@ -140,7 +140,7 @@
   border-top-left-radius: 8px;
 }
 
-.scanCorner[data-corner="tr"] {
+.scanCorner[data-corner='tr'] {
   top: 0;
   right: 0;
   border-left: none;
@@ -148,7 +148,7 @@
   border-top-right-radius: 8px;
 }
 
-.scanCorner[data-corner="bl"] {
+.scanCorner[data-corner='bl'] {
   bottom: 0;
   left: 0;
   border-right: none;
@@ -156,7 +156,7 @@
   border-bottom-left-radius: 8px;
 }
 
-.scanCorner[data-corner="br"] {
+.scanCorner[data-corner='br'] {
   bottom: 0;
   right: 0;
   border-left: none;
@@ -165,7 +165,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -294,7 +295,8 @@
 }
 
 @keyframes shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
   25% {

@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "es6"
-    ],
+    "lib": ["dom", "dom.iterable", "es6"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -17,117 +13,73 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      // APP PATHS
-      "@/app/*": [
-        "./src/app/*"
-      ],
-      "@/api/*": [
-        "./src/app/api/*"
-      ],
-      "@/dashboard/*": [
-        "./src/app/dashboard/*"
-      ],
-      "@/pages/*": [
-        "./src/app/*"
-      ],
+      "@/*": ["./src/*"],
+
+      // ========================
+      // APP LAYER
+      // ========================
+      "@/app/*": ["./src/app/*"],
+      "@/api/*": ["./src/app/api/*"],
+      "@/dashboard/*": ["./src/app/dashboard/*"],
+      "@/pages/*": ["./src/app/*"],
+
+      // ========================
       // CORE LAYER
-      "@/core/*": [
-        "./src/core/*"
-      ],
-      "@/entities/*": [
-        "./src/core/entities/*"
-      ],
-      "@/dtos/*": [
-        "./src/core/dtos/*"
-      ],
-      "@/repositories/*": [
-        "./src/core/repositories/*"
-      ],
-      "@/use-cases/*": [
-        "./src/core/use-cases/*"
-      ],
-      "@/types/*": [
-        "./src/core/types/*"
-      ],
+      // ========================
+      "@/core/*": ["./src/core/*"],
+      "@/entities/*": ["./src/core/entities/*"],
+      "@/dtos/*": ["./src/core/dtos/*"],
+      "@/repositories/*": ["./src/core/repositories/*"],
+      "@/use-cases/*": ["./src/core/use-cases/*"],
+      "@/types/*": ["./src/core/types/*"],
+
+      // ========================
       // INFRASTRUCTURE LAYER
-      "@/infrastructure/*": [
-        "./src/infrastructure/*"
-      ],
-      "@/database/*": [
-        "./src/infrastructure/database/*"
-      ],
-      "@/auth/*": [
-        "./src/infrastructure/auth/*"
-      ],
-      "@/storage/*": [
-        "./src/infrastructure/storage/*"
-      ],
+      // ========================
+      "@/infrastructure/*": ["./src/infrastructure/*"],
+      "@/database/*": ["./src/infrastructure/database/*"],
+      "@/auth/*": ["./src/infrastructure/auth/*"],
+      "@/storage/*": ["./src/infrastructure/storage/*"],
+
+      // ========================
       // PRESENTATION LAYER
-      "@/presentation/*": [
-        "./src/presentation/*"
-      ],
-      "@/components/*": [
-        "./src/presentation/components/*"
-      ],
-      "@/features/*": [
-        "./src/presentation/components/features/*"
-      ],
-      "@/ui/*": [
-        "./src/presentation/components/ui/*"
-      ],
-      "@/layout/*": [
-        "./src/presentation/components/layout/*"
-      ],
-      "@/hooks/*": [
-        "./src/presentation/hooks/*"
-      ],
-      "@/contexts/*": [
-        "./src/presentation/contexts/*"
-      ],
-      "@/styles/*": [
-        "./src/presentation/styles/*"
-      ],
-      // LIB & UTILS
-      "@/lib/*": [
-        "./src/lib/*"
-      ],
-      "@/constants/*": [
-        "./src/lib/constants/*"
-      ],
-      "@/utils/*": [
-        "./src/lib/utils/*"
-      ],
-      // TYPES
-      "@/global-types/*": [
-        "./src/types/*"
-      ]
+      // ========================
+      "@/presentation/*": ["./src/presentation/*"],
+      "@/features/*": ["./src/presentation/components/features/*"],
+      "@/feature/inspection/*": ["./src/presentation/components/features/Inspection/*"],
+      "@/feature/location/*": ["./src/presentation/components/features/locations/*"],
+      "@/feature/reports/*": ["./src/presentation/components/features/Reports/*"],
+      "@/feature/review/*": ["./src/presentation/components/features/ReviewSubmit/*"],
+      "@/feature/qr/*": ["./src/presentation/components/features/QRScanner/*"],
+      "@/feature/photo/*": ["./src/presentation/components/features/PhotoCapture/*"],
+      "@/layout/*": ["./src/presentation/components/layout/*"],
+      "@/ui/*": ["./src/presentation/components/ui/*"],
+      "@/hooks/*": ["./src/presentation/hooks/*"],
+      "@/contexts/*": ["./src/presentation/contexts/*"],
+      "@/styles/*": ["./src/presentation/styles/*"],
+
+      // ========================
+      // LIBS & UTILS
+      // ========================
+      "@/lib/*": ["./src/lib/*"],
+      "@/constants/*": ["./src/lib/constants/*"],
+      "@/utils/*": ["./src/lib/utils/*"],
+
+      // ========================
+      // TYPES GLOBAL
+      // ========================
+      "@/global-types/*": ["./src/types/*"]
     }
   },
-<<<<<<< HEAD
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/setup/page.modulecss", "src/presentation/hooks/useInspection.ts.backup"],
-  "exclude": [
-    "backup-*","node_modules"]
-}
-=======
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "src/presentation/hooks/useInspection.ts.backup"
   ],
-  "exclude": [
-    "node_modules",
-    "src/core/types/database.types.ts"
-  ]
+  "exclude": ["backup-*", "node_modules"]
 }
->>>>>>> 9855cde (fallback to location worked QR generated)

@@ -37,11 +37,7 @@ export default function InspectionLayout({ children }: { children: React.ReactNo
     <div className={styles.layout}>
       {/* Simple Header */}
       <header className={styles.header}>
-        <button
-          onClick={() => router.back()}
-          className={styles.backButton}
-          aria-label="Back"
-        >
+        <button onClick={() => router.back()} className={styles.backButton} aria-label="Back">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path
               d="M12 15L7 10L12 5"
@@ -58,16 +54,12 @@ export default function InspectionLayout({ children }: { children: React.ReactNo
         </div>
 
         <div className={styles.userInfo}>
-          <div className={styles.userAvatar}>
-            {user.fullName?.charAt(0).toUpperCase() || 'U'}
-          </div>
+          <div className={styles.userAvatar}>{user.fullName?.charAt(0).toUpperCase() || 'U'}</div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className={styles.main}>
-        {children}
-      </main>
+      <main className={styles.main}>{children}</main>
     </div>
   );
 }

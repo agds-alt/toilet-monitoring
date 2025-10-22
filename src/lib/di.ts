@@ -68,7 +68,7 @@ export const container = {
   locationRepository,
   userRepository,
   photoRepository,
-  
+
   getLocationsUseCase,
   getLocationByIdUseCase,
   getLocationByCodeUseCase,

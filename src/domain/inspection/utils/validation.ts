@@ -94,9 +94,7 @@ export function validateResponses(
 /**
  * Calculate overall status from responses
  */
-export function calculateOverallStatus(
-  responses: InspectionResponses
-): RatingValue {
+export function calculateOverallStatus(responses: InspectionResponses): RatingValue {
   const ratings = Object.values(responses)
     .map((r) => r.rating)
     .filter((r): r is RatingValue => r !== null);
@@ -198,10 +196,7 @@ export function validateInspectionForm(
  * Sanitize notes input
  */
 export function sanitizeNotes(notes: string): string {
-  return notes
-    .trim()
-    .slice(0, VALIDATION_RULES.maxNotesLength)
-    .replace(/\s+/g, ' ');
+  return notes.trim().slice(0, VALIDATION_RULES.maxNotesLength).replace(/\s+/g, ' ');
 }
 
 /**

@@ -8,55 +8,82 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "gen:types": "npx supabase gen types typescript --project-id zznhsfsvankfewasstel > src/core/types/database.types.ts",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "clean": "rm -rf .next node_modules",
-    "fresh-install": "npm run clean && npm install",
-    "seed": "tsx scripts/seed.ts",
-    "seed:inspection": "tsx scripts/seed-inspection-template.ts",
-    "fix:template": "tsx scripts/fix-template.ts",
-    "db:reset": "tsx scripts/reset-db.ts",
-    "db:types": "supabase gen types typescript --project-id zznhsfsvankfewasstel > src/core/types/database.types.ts",    
-       "db:seed": "npx supabase db seed"
+    "type-check:watch": "tsc --noEmit --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "clean": "rm -rf .next node_modules/.cache",
+    "clean:full": "rm -rf .next node_modules package-lock.json && npm install",
+    "generate:types": "supabase gen types typescript --project-id your-project-id > src/core/types/supabase.types.ts",
+    "db:push": "npx supabase db push",
+    "db:reset": "npx supabase db reset",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky install",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "analyze": "cross-env ANALYZE=true next build",
+    "docker:build": "docker build -t toilet-monitoring .",
+    "docker:run": "docker run -p 3000:3000 toilet-monitoring"
   },
   "dependencies": {
-    "@babel/runtime": "^7.28.4",
-    "@supabase/auth-helpers-nextjs": "^0.8.7",
-    "@supabase/supabase-js": "^2.75.0",
-    "cloudinary": "^2.7.0",
-    "create-next-app": "^15.5.6",
-    "html5-qrcode": "^2.3.8",
-    "jsqr": "^1.4.0",
-    "lucide-react": "^0.546.0",
-    "next": "^15.5.6",
-    "node": "^25.0.0",
-    "qrcode.react": "^4.2.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-qr-scanner": "^1.0.0-alpha.11"
+    "next": "14.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "@supabase/supabase-js": "^2.38.0",
+    "lucide-react": "^0.294.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0",
+    "date-fns": "^2.30.0",
+    "react-hook-form": "^7.47.0",
+    "zod": "^3.22.4",
+    "@hookform/resolvers": "^3.3.2",
+    "sonner": "^1.0.0"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^15.5.5",
-    "@tailwindcss/postcss": "^4.1.14",
-    "@types/node": "^20.19.21",
-    "@types/react": "^18.3.26",
-    "@types/react-dom": "^18.3.7",
-    "autoprefixer": "^10.4.21",
-    "dotenv": "^17.2.3",
-    "eslint": "^8.57.1",
-    "eslint-config-next": "^14.0.4",
-    "postcss": "^8.5.6",
-    "prettier": "^3.1.1",
-    "supabase": "^2.51.0",
-    "tailwindcss": "^4.1.14",
-    "tsconfig-paths": "^4.2.0",
-<<<<<<< HEAD
-    "tsx": "^4.7.0",
-    "typescript": "^5.9.3"
-=======
-    "typescript": "^5.6.3"
->>>>>>> 9855cde (fallback to location worked QR generated)
+    "typescript": "^5.2.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/node": "^20.8.0",
+    "eslint": "^8.52.0",
+    "eslint-config-next": "14.0.0",
+    "prettier": "^3.0.0",
+    "jest": "^29.7.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^6.1.4",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.0.0",
+    "@storybook/react": "^7.5.0",
+    "@storybook/addon-essentials": "^7.5.0",
+    "@storybook/addon-interactions": "^7.5.0",
+    "@storybook/addon-links": "^7.5.0",
+    "@storybook/blocks": "^7.5.0",
+    "storybook": "^7.5.0",
+    "@next/bundle-analyzer": "^14.0.0",
+    "cross-env": "^7.0.3",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write"
+    ],
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.3%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
-  
-  
 }

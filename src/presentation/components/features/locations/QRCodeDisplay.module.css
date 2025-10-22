@@ -4,18 +4,18 @@
   align-items: center;
   gap: 20px;
   padding: 32px;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .qrWrapper {
   padding: 24px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 2px solid #E5E7EB;
+  border: 2px solid #e5e7eb;
 }
 
 .info {
@@ -27,7 +27,7 @@
 .locationName {
   font-size: 18px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
   margin-bottom: 12px;
   line-height: 1.4;
 }
@@ -38,33 +38,33 @@
 
 .locationCode code {
   font-family: 'Courier New', monospace;
-  background: #F7F7F8;
+  background: #f7f7f8;
   padding: 6px 16px;
   border-radius: 6px;
   font-size: 16px;
   font-weight: 700;
-  color: #2563EB;
+  color: #2563eb;
   letter-spacing: 1px;
 }
 
 .building {
   font-size: 14px;
-  color: #6B7280;
+  color: #6b7280;
   margin-bottom: 4px;
 }
 
 .floor {
   font-size: 14px;
-  color: #6B7280;
+  color: #6b7280;
   margin-bottom: 12px;
 }
 
 .qrUrl {
   font-size: 11px;
-  color: #9CA3AF;
+  color: #9ca3af;
   word-break: break-all;
   padding: 8px 12px;
-  background: #F7F7F8;
+  background: #f7f7f8;
   border-radius: 6px;
   font-family: monospace;
 }
@@ -76,7 +76,7 @@
   justify-content: center;
   width: 100%;
   padding-top: 8px;
-  border-top: 1px solid #E5E7EB;
+  border-top: 1px solid #e5e7eb;
 }
 
 .btn {
@@ -84,18 +84,18 @@
   align-items: center;
   gap: 6px;
   padding: 10px 16px;
-  background: #F7F7F8;
-  border: 1px solid #E5E7EB;
+  background: #f7f7f8;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  color: #1F2937;
+  color: #1f2937;
   transition: all 0.2s;
 }
 
 .btn:hover {
-  background: #E5E7EB;
+  background: #e5e7eb;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -109,24 +109,24 @@
   .actions {
     display: none !important;
   }
-  
+
   .container {
     border: none;
     box-shadow: none;
     padding: 0;
     page-break-after: always;
   }
-  
+
   .qrWrapper {
     box-shadow: none;
     border: 2px solid #000;
   }
-  
+
   .locationName {
     font-size: 24px;
     margin-top: 20px;
   }
-  
+
   .locationCode code {
     font-size: 20px;
     padding: 8px 20px;
@@ -137,12 +137,12 @@
   .container {
     padding: 20px;
   }
-  
+
   .actions {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .btn {
     width: 100%;
     justify-content: center;

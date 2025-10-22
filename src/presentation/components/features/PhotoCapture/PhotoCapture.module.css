@@ -14,8 +14,12 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
@@ -46,7 +50,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .title {
@@ -55,7 +59,7 @@
   gap: 8px;
   font-size: 18px;
   font-weight: 600;
-  color: #1F2937;
+  color: #1f2937;
   margin: 0;
 }
 
@@ -65,13 +69,13 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  color: #6B7280;
+  color: #6b7280;
   transition: all 0.2s;
 }
 
 .btnClose:hover {
-  background: #F7F7F8;
-  color: #1F2937;
+  background: #f7f7f8;
+  color: #1f2937;
 }
 
 .content {
@@ -91,27 +95,27 @@
   font-weight: 500;
 }
 
-.geoStatus[data-status="loading"] {
-  background: #FEF3C7;
-  color: #92400E;
+.geoStatus[data-status='loading'] {
+  background: #fef3c7;
+  color: #92400e;
 }
 
-.geoStatus[data-status="success"] {
-  background: #D1FAE5;
-  color: #065F46;
+.geoStatus[data-status='success'] {
+  background: #d1fae5;
+  color: #065f46;
 }
 
-.geoStatus[data-status="error"] {
-  background: #FEE2E2;
-  color: #991B1B;
+.geoStatus[data-status='error'] {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .error {
   padding: 12px 16px;
-  background: #FEE2E2;
-  border: 1px solid #FCA5A5;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
   border-radius: 8px;
-  color: #991B1B;
+  color: #991b1b;
   font-size: 14px;
   margin-bottom: 16px;
 }
@@ -166,7 +170,7 @@
   justify-content: center;
   gap: 8px;
   padding: 16px;
-  background: #2563EB;
+  background: #2563eb;
   color: white;
   border: none;
   border-radius: 12px;
@@ -177,7 +181,7 @@
 }
 
 .btnCapture:hover:not(:disabled) {
-  background: #1D4ED8;
+  background: #1d4ed8;
   transform: translateY(-2px);
 }
 
@@ -203,17 +207,17 @@
 
 .btnRetake {
   background: white;
-  color: #1F2937;
-  border: 2px solid #E5E7EB;
+  color: #1f2937;
+  border: 2px solid #e5e7eb;
 }
 
 .btnRetake:hover {
-  background: #F7F7F8;
-  border-color: #2563EB;
+  background: #f7f7f8;
+  border-color: #2563eb;
 }
 
 .btnConfirm {
-  background: #10B981;
+  background: #10b981;
   color: white;
   border: none;
 }
@@ -231,9 +235,9 @@
 
 .tip {
   font-size: 13px;
-  color: #6B7280;
+  color: #6b7280;
   padding: 8px 12px;
-  background: #F7F7F8;
+  background: #f7f7f8;
   border-radius: 6px;
 }
 
@@ -243,11 +247,11 @@
     border-radius: 16px 16px 0 0;
     margin-top: auto;
   }
-  
+
   .content {
     padding: 16px;
   }
-  
+
   .cameraContainer {
     aspect-ratio: 3/4;
   }

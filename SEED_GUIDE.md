@@ -17,6 +17,7 @@
 ## ✅ SOLUSI CEPAT
 
 ### **Option 1: Skip Seed (Recommended)**
+
 Template udah ada, jadi **ga perlu seed lagi**. Langsung aja lanjut development:
 
 ```bash
@@ -34,6 +35,7 @@ Gw udah bikinin API yang **idempotent** (aman dipanggil berkali-kali):
 **File**: `src/app/api/seed/template/route.ts`
 
 API ini akan:
+
 - ✅ Cek dulu apakah template sudah ada
 - ✅ Kalau ada, skip dan return existing
 - ✅ Kalau belum ada, baru create new
@@ -193,9 +195,11 @@ npm run seed
 ## 📝 SEED DATA SUMMARY
 
 ### **Templates:**
+
 - ✅ Standard Toilet Inspection (11 components)
 
 ### **Locations (Optional):**
+
 - 📍 Toilet Lantai 1 - Lobby (QR: LOC-A001-F01)
 - 📍 Toilet Lantai 2 - Office (QR: LOC-A002-F02)
 - 📍 Toilet Lantai 3 - Cafeteria (QR: LOC-A003-F03)
@@ -226,6 +230,7 @@ npm run seed
 **Template udah ada = GOOD TO GO!** 🎉
 
 Sekarang tinggal:
+
 1. Test inspection flow
 2. Integrate QR scanner
 3. Deploy to production

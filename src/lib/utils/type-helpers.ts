@@ -22,7 +22,7 @@ export function jsonToComponents(json: Json): InspectionComponent[] {
   if (!json || typeof json !== 'object' || Array.isArray(json)) {
     return [];
   }
-  
+
   const obj = json as { components?: any[] };
   return (obj.components || []) as InspectionComponent[];
 }
@@ -41,7 +41,7 @@ export function jsonToResponses(json: Json): Record<string, ComponentResponse> {
   if (!json || typeof json !== 'object' || Array.isArray(json)) {
     return {};
   }
-  
+
   return json as Record<string, ComponentResponse>;
 }
 
@@ -59,7 +59,7 @@ export function parseTemplateFields(json: Json): { components: InspectionCompone
   if (!json || typeof json !== 'object' || Array.isArray(json)) {
     return { components: [] };
   }
-  
+
   const obj = json as { components?: any[] };
   return {
     components: (obj.components || []) as InspectionComponent[],

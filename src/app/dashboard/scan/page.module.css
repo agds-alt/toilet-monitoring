@@ -313,7 +313,9 @@
 }
 
 @keyframes dotPulse {
-  0%, 80%, 100% {
+  0%,
+  80%,
+  100% {
     opacity: 0.3;
     transform: scale(0.9);
   }
@@ -638,8 +640,6 @@
   will-change: transform, opacity;
   backface-visibility: hidden;
 }
-
-
 
 /* Dark mode - Keep it simple */
 @media (prefers-color-scheme: dark) {

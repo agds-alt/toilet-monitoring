@@ -14,14 +14,14 @@ import * as path from 'path';
 
 function loadEnv() {
   const envFiles = ['.env.local', '.env'];
-  
+
   for (const file of envFiles) {
     const filePath = path.join(process.cwd(), file);
-    
+
     if (fs.existsSync(filePath)) {
       console.log(`📄 Loading environment from: ${file}`);
       const envContent = fs.readFileSync(filePath, 'utf8');
-      
+
       envContent.split('\n').forEach((line) => {
         const trimmed = line.trim();
         if (trimmed && !trimmed.startsWith('#')) {
@@ -30,11 +30,11 @@ function loadEnv() {
           process.env[key.trim()] = value;
         }
       });
-      
+
       return true;
     }
   }
-  
+
   return false;
 }
 
@@ -67,7 +67,7 @@ async function fixTemplate() {
   try {
     // 1. Check existing templates
     console.log('\n📊 Checking current state...');
-    
+
     const { data: allTemplates, error: allError } = await supabase
       .from('inspection_templates')
       .select('*');
@@ -93,7 +93,7 @@ async function fixTemplate() {
     if (!allTemplates || allTemplates.length === 0) {
       // No templates at all - create new
       console.log('\n📝 Creating new default template...');
-      
+
       const { data: newTemplate, error: insertError } = await supabase
         .from('inspection_templates')
         .insert({
@@ -113,7 +113,7 @@ async function fixTemplate() {
         // Check if name already exists
         if (insertError.code === '23505') {
           console.log('   ⚠️  Template name already exists, fetching it...');
-          
+
           const { data: existing } = await supabase
             .from('inspection_templates')
             .select('*')
@@ -142,11 +142,9 @@ async function fixTemplate() {
     } else if (!defaultTemplate) {
       // Templates exist but no default
       console.log('\n🔧 Setting first active template as default...');
-      
+
       // Unset all defaults first
-      await supabase
-        .from('inspection_templates')
-        .update({ is_default: false });
+      await supabase.from('inspection_templates').update({ is_default: false });
 
       // Set first active as default
       const firstActive = allTemplates.find((t) => t.is_active);
@@ -174,7 +172,7 @@ async function fixTemplate() {
 
     // 4. Verify fix
     console.log('\n🔍 Verifying...');
-    
+
     const { data: verifyTemplate, error: verifyError } = await supabase
       .from('inspection_templates')
       .select('*')
@@ -190,7 +188,7 @@ async function fixTemplate() {
       console.log(`   Components: ${verifyTemplate.fields.components.length}`);
       console.log(`   Status: ${verifyTemplate.is_active ? 'Active' : 'Inactive'}`);
       console.log(`   Default: ${verifyTemplate.is_default ? 'Yes' : 'No'}`);
-      
+
       console.log('\n━'.repeat(50));
       console.log('✅ Template fix completed successfully!');
       console.log('\n💡 Next step: Restart dev server or refresh browser\n');

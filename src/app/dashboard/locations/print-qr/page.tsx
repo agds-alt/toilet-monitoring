@@ -145,7 +145,7 @@ export default function BulkQRPrintPage() {
             >
               <option value="all">Semua Gedung</option>
               {buildings.map((b) => (
-                <option key={b} value={b || ""}>
+                <option key={b} value={b || ''}>
                   {b}
                 </option>
               ))}
@@ -158,7 +158,7 @@ export default function BulkQRPrintPage() {
             >
               <option value="all">Semua Lantai</option>
               {floors.map((f) => (
-                <option key={f} value={f || ""}>
+                <option key={f} value={f || ''}>
                   Lantai {f}
                 </option>
               ))}
