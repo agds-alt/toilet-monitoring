@@ -1,6 +1,6 @@
-/* QR Generator Page Styles - Mobile First */
+/* QR Generator Page Styles - Professional Mobile First */
 .container {
-  @apply min-h-screen bg-gray-50;
+  @apply min-h-screen bg-white;
   @apply pb-20; /* Space for bottom nav */
 }
 

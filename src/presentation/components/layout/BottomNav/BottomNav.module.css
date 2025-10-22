@@ -2,7 +2,7 @@
 .bottomNav {
   @apply fixed bottom-0 left-0 right-0 z-50;
   @apply bg-white border-t border-gray-200;
-   padding-bottom: env(safe-area-inset-bottom);
+  @apply safe-area-pb;
 }
 
 .navContainer {
@@ -14,13 +14,13 @@
 .navItem {
   @apply flex flex-col items-center justify-center;
   @apply relative px-3 py-2;
-  @apply text-gray-600 hover:text-green-500;
+  @apply text-gray-600 hover:text-green-400;
   @apply transition-colors duration-200;
   @apply min-w-0 flex-1;
 }
 
 .navItem.active {
-  @apply text-green-500;
+  @apply text-green-400;
 }
 
 .centerItem {
@@ -38,16 +38,16 @@
 
 .centerIcon {
   @apply w-12 h-12;
-  @apply bg-green-500 text-white;
+  @apply bg-green-400 text-white;
   @apply shadow-lg;
-  @apply hover:bg-green-600;
+  @apply hover:bg-green-500;
   @apply active:scale-95;
 }
 
 .centerGlow {
   @apply absolute inset-0;
   @apply rounded-full;
-  @apply bg-green-500;
+  @apply bg-green-400;
   @apply opacity-20;
   @apply blur-md;
   @apply -z-10;
@@ -62,7 +62,7 @@
 
 .centerLabel {
   @apply text-sm font-semibold;
-  @apply text-green-500;
+  @apply text-green-400;
 }
 
 /* Mobile optimizations */
@@ -90,6 +90,6 @@
 /* Safe area for devices with home indicator */
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .bottomNav {
-    padding-bottom: env(safe-area-inset-bottom);
+    @apply safe-area-pb;
   }
 }

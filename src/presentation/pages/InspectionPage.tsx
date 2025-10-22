@@ -3,10 +3,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Camera, CheckCircle, XCircle, AlertTriangle, ArrowLeft, Save } from 'lucide-react';
+import { Camera, CheckCircle, XCircle, AlertTriangle, ArrowLeft, Save, Star } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { BottomNav } from '../components/layout/BottomNav';
 import { formatDate, formatTime } from '../lib/utils';
+import { OPTIMIZED_INSPECTION_COMPONENTS, InspectionOptimizer } from '../../lib/inspection/optimized-components';
 import styles from './InspectionPage.module.css';
 
 interface InspectionField {
@@ -37,71 +38,16 @@ const InspectionPage: React.FC<InspectionPageProps> = ({
   locationCode = 'TOILET-001'
 }) => {
   const router = useRouter();
-  const [template, setTemplate] = useState<InspectionTemplate | null>(null);
   const [responses, setResponses] = useState<Record<string, any>>({});
   const [notes, setNotes] = useState('');
   const [photos, setPhotos] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Mock template data
-  const mockTemplate: InspectionTemplate = {
-    id: 'template-1',
-    name: 'Toilet Inspection Template',
-    estimatedTime: 5,
-    fields: [
-      {
-        id: 'cleanliness',
-        name: 'Kebersihan Umum',
-        type: 'radio',
-        options: ['excellent', 'good', 'fair', 'poor', 'critical'],
-        required: true,
-        order: 1
-      },
-      {
-        id: 'toilet_bowl',
-        name: 'Kondisi Toilet Bowl',
-        type: 'radio',
-        options: ['excellent', 'good', 'fair', 'poor', 'critical'],
-        required: true,
-        order: 2
-      },
-      {
-        id: 'sink',
-        name: 'Kondisi Wastafel',
-        type: 'radio',
-        options: ['excellent', 'good', 'fair', 'poor', 'critical'],
-        required: true,
-        order: 3
-      },
-      {
-        id: 'soap_dispenser',
-        name: 'Sabun Tersedia',
-        type: 'checkbox',
-        required: true,
-        order: 4
-      },
-      {
-        id: 'paper_towel',
-        name: 'Tissue Tersedia',
-        type: 'checkbox',
-        required: true,
-        order: 5
-      },
-      {
-        id: 'lighting',
-        name: 'Pencahayaan',
-        type: 'radio',
-        options: ['excellent', 'good', 'fair', 'poor', 'critical'],
-        required: true,
-        order: 6
-      }
-    ]
-  };
+  // Use optimized components
+  const components = OPTIMIZED_INSPECTION_COMPONENTS;
 
-  useEffect(() => {
-    setTemplate(mockTemplate);
-  }, []);
+  // No need for useEffect since we're using static components
 
   const getStatusOptions = () => [
     { value: 'excellent', label: 'Excellent', icon: '✅', color: 'text-green-600' },
@@ -131,29 +77,13 @@ const InspectionPage: React.FC<InspectionPageProps> = ({
   };
 
   const calculateOverallStatus = () => {
-    const statusValues = Object.values(responses).filter(value => 
-      ['excellent', 'good', 'fair', 'poor', 'critical'].includes(value)
-    );
-    
-    if (statusValues.length === 0) return 'fair';
-    
-    const statusCounts = {
-      excellent: 0,
-      good: 0,
-      fair: 0,
-      poor: 0,
-      critical: 0
-    };
-    
-    statusValues.forEach(status => {
-      statusCounts[status as keyof typeof statusCounts]++;
-    });
-    
-    if (statusCounts.critical > 0) return 'critical';
-    if (statusCounts.poor > 1) return 'poor';
-    if (statusCounts.fair > 2) return 'fair';
-    if (statusCounts.good > statusCounts.excellent) return 'good';
-    return 'excellent';
+    const inspectionResponses = Object.entries(responses).map(([componentId, value]) => ({
+      componentId,
+      value,
+      notes: notes
+    }));
+
+    return InspectionOptimizer.calculateOverallScore(inspectionResponses);
   };
 
   const handleSubmit = async () => {
@@ -180,78 +110,139 @@ const InspectionPage: React.FC<InspectionPageProps> = ({
     }
   };
 
-  const renderField = (field: InspectionField) => {
-    switch (field.type) {
+  const renderComponent = (component: any) => {
+    const currentValue = responses[component.id];
+    const overallStatus = calculateOverallStatus();
+
+    switch (component.type) {
+      case 'rating':
+        return (
+          <div key={component.id} className={styles.componentGroup}>
+            <label className={styles.componentLabel}>
+              <span className={styles.componentIcon}>{component.icon}</span>
+              {component.name}
+              {component.required && <span className={styles.required}>*</span>}
+            </label>
+            <p className={styles.componentDescription}>{component.description}</p>
+            <div className={styles.ratingGroup}>
+              {[1, 2, 3, 4, 5].map(rating => (
+                <button
+                  key={rating}
+                  type="button"
+                  onClick={() => handleResponseChange(component.id, rating)}
+                  className={`${styles.ratingButton} ${
+                    currentValue >= rating ? styles.ratingActive : ''
+                  }`}
+                >
+                  <Star size={24} />
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'slider':
+        return (
+          <div key={component.id} className={styles.componentGroup}>
+            <label className={styles.componentLabel}>
+              <span className={styles.componentIcon}>{component.icon}</span>
+              {component.name}
+              {component.required && <span className={styles.required}>*</span>}
+            </label>
+            <p className={styles.componentDescription}>{component.description}</p>
+            <div className={styles.sliderContainer}>
+              <input
+                type="range"
+                min="1"
+                max="10"
+                value={currentValue || 5}
+                onChange={(e) => handleResponseChange(component.id, parseInt(e.target.value))}
+                className={styles.slider}
+              />
+              <div className={styles.sliderValue}>{currentValue || 5}/10</div>
+            </div>
+          </div>
+        );
+
       case 'radio':
         return (
-          <div key={field.id} className={styles.fieldGroup}>
-            <label className={styles.fieldLabel}>
-              {field.name}
-              {field.required && <span className={styles.required}>*</span>}
+          <div key={component.id} className={styles.componentGroup}>
+            <label className={styles.componentLabel}>
+              <span className={styles.componentIcon}>{component.icon}</span>
+              {component.name}
+              {component.required && <span className={styles.required}>*</span>}
             </label>
+            <p className={styles.componentDescription}>{component.description}</p>
             <div className={styles.radioGroup}>
-              {getStatusOptions().map(option => (
-                <label key={option.value} className={styles.radioOption}>
+              {component.options?.map(option => (
+                <label key={option} className={styles.radioOption}>
                   <input
                     type="radio"
-                    name={field.id}
-                    value={option.value}
-                    checked={responses[field.id] === option.value}
-                    onChange={(e) => handleResponseChange(field.id, e.target.value)}
+                    name={component.id}
+                    value={option}
+                    checked={currentValue === option}
+                    onChange={(e) => handleResponseChange(component.id, e.target.value)}
                     className={styles.radioInput}
                   />
                   <div className={`${styles.radioButton} ${
-                    responses[field.id] === option.value ? styles.radioSelected : ''
+                    currentValue === option ? styles.radioSelected : ''
                   }`}>
-                    <span className={styles.radioIcon}>{option.icon}</span>
-                    <span className={`${styles.radioLabel} ${option.color}`}>
-                      {option.label}
-                    </span>
+                    <span className={styles.radioLabel}>{option}</span>
                   </div>
                 </label>
               ))}
             </div>
           </div>
         );
-      
+
       case 'checkbox':
         return (
-          <div key={field.id} className={styles.fieldGroup}>
+          <div key={component.id} className={styles.componentGroup}>
             <label className={styles.checkboxOption}>
               <input
                 type="checkbox"
-                checked={responses[field.id] || false}
-                onChange={(e) => handleResponseChange(field.id, e.target.checked)}
+                checked={currentValue || false}
+                onChange={(e) => handleResponseChange(component.id, e.target.checked)}
                 className={styles.checkboxInput}
               />
               <div className={`${styles.checkboxButton} ${
-                responses[field.id] ? styles.checkboxSelected : ''
+                currentValue ? styles.checkboxSelected : ''
               }`}>
-                <span className={styles.checkboxIcon}>
-                  {responses[field.id] ? '✅' : '⬜'}
-                </span>
-                <span className={styles.checkboxLabel}>{field.name}</span>
+                <span className={styles.componentIcon}>{component.icon}</span>
+                <div className={styles.checkboxContent}>
+                  <span className={styles.checkboxLabel}>{component.name}</span>
+                  <p className={styles.componentDescription}>{component.description}</p>
+                </div>
               </div>
             </label>
           </div>
         );
-      
+
+      case 'text':
+        return (
+          <div key={component.id} className={styles.componentGroup}>
+            <label className={styles.componentLabel}>
+              <span className={styles.componentIcon}>{component.icon}</span>
+              {component.name}
+              {component.required && <span className={styles.required}>*</span>}
+            </label>
+            <p className={styles.componentDescription}>{component.description}</p>
+            <textarea
+              value={currentValue || ''}
+              onChange={(e) => handleResponseChange(component.id, e.target.value)}
+              className={styles.textInput}
+              placeholder="Masukkan catatan..."
+              rows={3}
+            />
+          </div>
+        );
+
       default:
         return null;
     }
   };
 
-  if (!template) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loading}>
-          <div className={styles.loadingSpinner} />
-          <p>Memuat template inspeksi...</p>
-        </div>
-        <BottomNav />
-      </div>
-    );
-  }
+  // No need for template check since we're using static components
 
   return (
     <div className={styles.container}>
@@ -287,9 +278,7 @@ const InspectionPage: React.FC<InspectionPageProps> = ({
           <h3 className={styles.sectionTitle}>Form Inspeksi</h3>
           
           <div className={styles.formFields}>
-            {template.fields
-              .sort((a, b) => a.order - b.order)
-              .map(renderField)}
+            {components.map(renderComponent)}
           </div>
         </div>
 
@@ -350,10 +339,13 @@ const InspectionPage: React.FC<InspectionPageProps> = ({
           <h3 className={styles.sectionTitle}>Status Keseluruhan</h3>
           <div className={styles.statusDisplay}>
             <span className={styles.statusIcon}>
-              {getStatusOptions().find(opt => opt.value === calculateOverallStatus())?.icon}
+              {calculateOverallStatus().icon}
             </span>
             <span className={styles.statusLabel}>
-              {getStatusOptions().find(opt => opt.value === calculateOverallStatus())?.label}
+              {calculateOverallStatus().status.toUpperCase()}
+            </span>
+            <span className={styles.statusScore}>
+              {Math.round(calculateOverallStatus().score)}%
             </span>
           </div>
         </div>

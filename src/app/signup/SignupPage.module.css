@@ -1,4 +1,4 @@
-/* Login Page Styles - Professional Mobile First */
+/* Signup Page Styles - Professional Mobile First */
 .container {
   @apply min-h-screen bg-white;
   @apply flex items-center justify-center;
@@ -20,13 +20,20 @@
   @apply mb-6;
 }
 
+.backButton {
+  @apply flex items-center space-x-2;
+  @apply text-gray-600 hover:text-gray-900;
+  @apply transition-colors;
+  @apply mb-4;
+}
+
 .logo {
   @apply flex justify-center;
   @apply mb-3;
 }
 
 .logoIcon {
-  @apply text-green-500;
+  @apply text-green-400;
 }
 
 .title {
@@ -36,30 +43,6 @@
 
 .subtitle {
   @apply text-sm text-gray-600;
-}
-
-/* Toggle Buttons */
-.toggleContainer {
-  @apply flex;
-  @apply bg-gray-100;
-  @apply rounded-lg;
-  @apply p-1;
-  @apply mb-6;
-}
-
-.toggleButton {
-  @apply flex-1;
-  @apply py-2 px-4;
-  @apply text-sm font-medium;
-  @apply rounded-md;
-  @apply transition-all duration-200;
-  @apply text-gray-600;
-  @apply hover:text-gray-900;
-}
-
-.toggleButton.active {
-  @apply bg-white text-green-600;
-  @apply shadow-sm;
 }
 
 /* Form */
@@ -93,7 +76,7 @@
   @apply rounded-lg;
   @apply text-sm;
   @apply transition-colors;
-  @apply focus:ring-2 focus:ring-green-500 focus:border-green-500;
+  @apply focus:ring-2 focus:ring-green-400 focus:border-green-400;
   @apply bg-white;
 }
 
@@ -116,59 +99,20 @@
   @apply border border-red-200;
 }
 
-/* Signup Link */
-.signupLink {
+/* Login Link */
+.loginLink {
   @apply text-center;
-  @apply mb-6;
 }
 
-.signupText {
+.loginText {
   @apply text-sm text-gray-600;
 }
 
-.signupButton {
+.loginButton {
   @apply text-green-400;
   @apply font-medium;
   @apply hover:text-green-500;
   @apply transition-colors;
-}
-
-/* Features */
-.features {
-  @apply space-y-3;
-}
-
-.featuresTitle {
-  @apply text-sm font-semibold text-gray-900;
-  @apply text-center;
-  @apply mb-3;
-}
-
-.featuresList {
-  @apply space-y-3;
-}
-
-.featureItem {
-  @apply flex items-start space-x-3;
-}
-
-.featureIcon {
-  @apply text-green-500;
-  @apply flex-shrink-0;
-  @apply mt-0.5;
-}
-
-.featureContent {
-  @apply flex-1;
-}
-
-.featureTitle {
-  @apply text-sm font-medium text-gray-900;
-  @apply mb-1;
-}
-
-.featureDescription {
-  @apply text-xs text-gray-600;
 }
 
 /* Responsive Design */
@@ -194,22 +138,6 @@
   
   .content {
     @apply max-w-lg;
-    @apply flex;
-    @apply items-center;
-    @apply space-x-8;
-  }
-  
-  .header {
-    @apply flex-1;
-    @apply text-left;
-  }
-  
-  .form {
-    @apply flex-1;
-  }
-  
-  .features {
-    @apply hidden;
   }
 }
 

@@ -1,6 +1,6 @@
-/* Dashboard Page Styles - Mobile First */
+/* Dashboard Page Styles - Professional Mobile First */
 .container {
-  @apply min-h-screen bg-gray-50;
+  @apply min-h-screen bg-white;
   @apply pb-20; /* Space for bottom nav */
 }
 
@@ -47,13 +47,14 @@
 
 .primaryAction {
   @apply w-full;
-  @apply bg-gradient-to-r from-green-500 to-green-600;
+  @apply bg-green-400;
   @apply text-white;
   @apply rounded-xl;
   @apply p-6;
   @apply flex items-center space-x-4;
-  @apply shadow-lg;
-  @apply hover:shadow-xl;
+  @apply shadow-sm;
+  @apply hover:bg-green-500;
+  @apply hover:shadow-md;
   @apply active:scale-98;
   @apply transition-all duration-200;
 }
@@ -173,7 +174,7 @@
 }
 
 .statNumber {
-  @apply text-2xl font-bold text-green-500;
+  @apply text-2xl font-bold text-green-400;
   @apply mb-1;
 }
 

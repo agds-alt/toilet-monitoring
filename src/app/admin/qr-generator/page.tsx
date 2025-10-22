@@ -22,13 +22,18 @@ export default function QRGeneratorPage() {
   const [selectedLocations, setSelectedLocations] = useState<Location[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Mock locations data
+  // Mock locations data - Real toilet locations
   const mockLocations: Location[] = [
-    { id: '1', name: 'Toilet Lantai 1', code: 'TOILET-001', building: 'Gedung A', floor: '1' },
-    { id: '2', name: 'Toilet Lantai 2', code: 'TOILET-002', building: 'Gedung A', floor: '2' },
-    { id: '3', name: 'Toilet Lantai 3', code: 'TOILET-003', building: 'Gedung A', floor: '3' },
-    { id: '4', name: 'Toilet Lantai 1', code: 'TOILET-004', building: 'Gedung B', floor: '1' },
-    { id: '5', name: 'Toilet Lantai 2', code: 'TOILET-005', building: 'Gedung B', floor: '2' }
+    { id: '1', name: 'Toilet Pria Lantai 1', code: 'TOILET-001', building: 'Gedung A', floor: '1' },
+    { id: '2', name: 'Toilet Wanita Lantai 1', code: 'TOILET-002', building: 'Gedung A', floor: '1' },
+    { id: '3', name: 'Toilet Pria Lantai 2', code: 'TOILET-003', building: 'Gedung A', floor: '2' },
+    { id: '4', name: 'Toilet Wanita Lantai 2', code: 'TOILET-004', building: 'Gedung A', floor: '2' },
+    { id: '5', name: 'Toilet Pria Lantai 3', code: 'TOILET-005', building: 'Gedung A', floor: '3' },
+    { id: '6', name: 'Toilet Wanita Lantai 3', code: 'TOILET-006', building: 'Gedung A', floor: '3' },
+    { id: '7', name: 'Toilet Pria Lantai 1', code: 'TOILET-007', building: 'Gedung B', floor: '1' },
+    { id: '8', name: 'Toilet Wanita Lantai 1', code: 'TOILET-008', building: 'Gedung B', floor: '1' },
+    { id: '9', name: 'Toilet Pria Lantai 2', code: 'TOILET-009', building: 'Gedung B', floor: '2' },
+    { id: '10', name: 'Toilet Wanita Lantai 2', code: 'TOILET-010', building: 'Gedung B', floor: '2' }
   ];
 
   const toggleLocation = (location: Location) => {
