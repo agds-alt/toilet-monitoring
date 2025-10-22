@@ -1,241 +1,146 @@
-// app/login/page.tsx
+// Next.js Page: Login
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/infrastructure/database/supabase';
-import styles from './login.module.css';
-
-type AuthMode = 'login' | 'signup';
+import { Button } from '../../presentation/components/ui/Button';
+import { QrCode, User, Lock } from 'lucide-react';
+import styles from './LoginPage.module.css';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [mode, setMode] = useState<AuthMode>('login');
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    email: 'agdscid@gmail.com', // Pre-filled demo email
-    password: '',
-    confirmPassword: '',
-    fullName: '',
+    email: '',
+    password: ''
   });
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage(null);
-
-    // Validation
-    if (mode === 'signup' && formData.password !== formData.confirmPassword) {
-      setMessage({ type: 'error', text: 'Passwords do not match' });
-      setIsLoading(false);
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setMessage({ type: 'error', text: 'Password must be at least 6 characters' });
-      setIsLoading(false);
-      return;
-    }
+    setError('');
 
     try {
-      if (mode === 'login') {
-        // Login logic
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: formData.email,
-          password: formData.password,
-        });
-
-        if (error) throw error;
-
-        setMessage({ type: 'success', text: 'Login successful!' });
-
-        // Redirect after short delay
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 1000);
-      } else {
-        // Signup logic
-        const { data, error } = await supabase.auth.signUp({
-          email: formData.email,
-          password: formData.password,
-          options: {
-            data: {
-              full_name: formData.fullName,
-            },
-          },
-        });
-
-        if (error) throw error;
-
-        if (data.user) {
-          setMessage({
-            type: 'success',
-            text: 'Signup successful! Please check your email for verification.',
-          });
-
-          // Auto-switch to login after signup
-          setTimeout(() => {
-            setMode('login');
-            setFormData((prev) => ({ ...prev, password: '', confirmPassword: '', fullName: '' }));
-          }, 2000);
-        }
-      }
-    } catch (error: any) {
-      console.error('Auth error:', error);
-      setMessage({
-        type: 'error',
-        text: error.message || `Failed to ${mode}`,
-      });
+      // In a real implementation, this would authenticate with Supabase
+      console.log('Login attempt:', formData);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Redirect to dashboard
+      router.push('/dashboard');
+    } catch (err) {
+      setError('Login gagal. Silakan coba lagi.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const switchMode = () => {
-    setMode(mode === 'login' ? 'signup' : 'login');
-    setMessage(null);
-    setFormData((prev) => ({
-      ...prev,
-      password: '',
-      confirmPassword: '',
-      fullName: '',
-    }));
-  };
-
-  const useDemoCredentials = () => {
-    setFormData((prev) => ({
-      ...prev,
-      email: 'agdscid@gmail.com',
-      password: 'demopass123',
-    }));
-    setMode('login');
-  };
-
   return (
     <div className={styles.container}>
-      <div className={styles.card}>
-        {/* Header dengan Toggle */}
+      <div className={styles.content}>
+        {/* Logo/Header */}
         <div className={styles.header}>
-          <div className={styles.logo}>🚀</div>
-          <h1 className={styles.title}>{mode === 'login' ? 'Welcome Back' : 'Create Account'}</h1>
+          <div className={styles.logo}>
+            <QrCode size={48} className={styles.logoIcon} />
+          </div>
+          <h1 className={styles.title}>Toilet Checklist</h1>
           <p className={styles.subtitle}>
-            {mode === 'login' ? 'Sign in to your account' : 'Sign up to get started'}
+            Sistem inspeksi toilet yang mudah dan efisien
           </p>
         </div>
 
-        {/* Demo Credentials Quick Access */}
-        <button onClick={useDemoCredentials} className={styles.demoButton} type="button">
-          🎯 Use Demo Credentials
-        </button>
-
-        {/* Message Alert */}
-        {message && (
-          <div className={`${styles.message} ${styles[message.type]}`}>{message.text}</div>
-        )}
-
-        {/* Form */}
+        {/* Login Form */}
         <form onSubmit={handleSubmit} className={styles.form}>
-          {mode === 'signup' && (
-            <div className={styles.inputGroup}>
+          <div className={styles.formGroup}>
+            <label htmlFor="email" className={styles.label}>
+              Email
+            </label>
+            <div className={styles.inputWrapper}>
+              <User size={20} className={styles.inputIcon} />
               <input
-                name="fullName"
-                type="text"
-                value={formData.fullName}
-                onChange={handleChange}
-                required={mode === 'signup'}
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
                 className={styles.input}
-                placeholder="Full name"
-                autoComplete="name"
+                placeholder="Masukkan email Anda"
+                required
               />
             </div>
-          )}
-
-          <div className={styles.inputGroup}>
-            <input
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className={styles.input}
-              placeholder="Email address"
-              autoComplete="email"
-            />
           </div>
 
-          <div className={styles.inputGroup}>
-            <input
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className={styles.input}
-              placeholder="Password"
-              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-            />
-          </div>
-
-          {mode === 'signup' && (
-            <div className={styles.inputGroup}>
+          <div className={styles.formGroup}>
+            <label htmlFor="password" className={styles.label}>
+              Password
+            </label>
+            <div className={styles.inputWrapper}>
+              <Lock size={20} className={styles.inputIcon} />
               <input
-                name="confirmPassword"
                 type="password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required={mode === 'signup'}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
                 className={styles.input}
-                placeholder="Confirm password"
-                autoComplete="new-password"
+                placeholder="Masukkan password Anda"
+                required
               />
+            </div>
+          </div>
+
+          {error && (
+            <div className={styles.errorMessage}>
+              {error}
             </div>
           )}
 
-          <button type="submit" disabled={isLoading} className={styles.submitButton}>
-            {isLoading ? (
-              <span className={styles.loadingText}>
-                {mode === 'login' ? 'Signing in...' : 'Creating account...'}
-              </span>
-            ) : mode === 'login' ? (
-              'Sign In'
-            ) : (
-              'Create Account'
-            )}
-          </button>
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            fullWidth
+            loading={isLoading}
+            disabled={!formData.email || !formData.password}
+          >
+            {isLoading ? 'Masuk...' : 'Masuk'}
+          </Button>
         </form>
 
-        {/* Mode Toggle */}
-        <div className={styles.modeToggle}>
-          <p className={styles.toggleText}>
-            {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
-          </p>
-          <button
-            onClick={switchMode}
-            className={styles.toggleButton}
-            type="button"
-            disabled={isLoading}
-          >
-            {mode === 'login' ? 'Sign Up' : 'Sign In'}
-          </button>
-        </div>
-
-        {/* Demo Info */}
-        <div className={styles.demoSection}>
-          <p className={styles.demoText}>
-            <strong>Demo Account:</strong>
-            <br />
-            Email: agdscid@gmail.com
-            <br />
-            Password: demopass123
-          </p>
+        {/* Features */}
+        <div className={styles.features}>
+          <h3 className={styles.featuresTitle}>Fitur Utama</h3>
+          <div className={styles.featuresList}>
+            <div className={styles.featureItem}>
+              <QrCode size={24} className={styles.featureIcon} />
+              <div className={styles.featureContent}>
+                <h4 className={styles.featureTitle}>Scan QR Code</h4>
+                <p className={styles.featureDescription}>
+                  Scan QR code di lokasi toilet untuk mulai inspeksi
+                </p>
+              </div>
+            </div>
+            
+            <div className={styles.featureItem}>
+              <User size={24} className={styles.featureIcon} />
+              <div className={styles.featureContent}>
+                <h4 className={styles.featureTitle}>Checklist Mudah</h4>
+                <p className={styles.featureDescription}>
+                  Form inspeksi yang sederhana dan user-friendly
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

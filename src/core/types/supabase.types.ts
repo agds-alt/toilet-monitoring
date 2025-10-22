@@ -14,50 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      audit_logs: {
-        Row: {
-          action: string
-          changes: Json | null
-          created_at: string | null
-          entity_id: string
-          entity_type: string
-          id: string
-          ip_address: unknown | null
-          user_agent: string | null
-          user_id: string | null
-        }
-        Insert: {
-          action: string
-          changes?: Json | null
-          created_at?: string | null
-          entity_id: string
-          entity_type: string
-          id?: string
-          ip_address?: unknown | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          action?: string
-          changes?: Json | null
-          created_at?: string | null
-          entity_id?: string
-          entity_type?: string
-          id?: string
-          ip_address?: unknown | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "audit_logs_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       inspection_records: {
         Row: {
           duration_seconds: number | null
@@ -250,67 +206,6 @@ export type Database = {
           },
         ]
       }
-      notifications: {
-        Row: {
-          created_at: string | null
-          id: string
-          inspection_id: string | null
-          is_read: boolean | null
-          location_id: string | null
-          message: string | null
-          read_at: string | null
-          title: string
-          type: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          inspection_id?: string | null
-          is_read?: boolean | null
-          location_id?: string | null
-          message?: string | null
-          read_at?: string | null
-          title: string
-          type: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          inspection_id?: string | null
-          is_read?: boolean | null
-          location_id?: string | null
-          message?: string | null
-          read_at?: string | null
-          title?: string
-          type?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "notifications_inspection_id_fkey"
-            columns: ["inspection_id"]
-            isOneToOne: false
-            referencedRelation: "inspection_records"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "notifications_location_id_fkey"
-            columns: ["location_id"]
-            isOneToOne: false
-            referencedRelation: "locations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "notifications_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       photos: {
         Row: {
           caption: string | null
@@ -438,98 +333,6 @@ export type Database = {
           },
         ]
       }
-      template_location_assignments: {
-        Row: {
-          assigned_at: string | null
-          assigned_by: string | null
-          id: string
-          location_id: string
-          template_id: string
-        }
-        Insert: {
-          assigned_at?: string | null
-          assigned_by?: string | null
-          id?: string
-          location_id: string
-          template_id: string
-        }
-        Update: {
-          assigned_at?: string | null
-          assigned_by?: string | null
-          id?: string
-          location_id?: string
-          template_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "template_location_assignments_assigned_by_fkey"
-            columns: ["assigned_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "template_location_assignments_location_id_fkey"
-            columns: ["location_id"]
-            isOneToOne: false
-            referencedRelation: "locations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "template_location_assignments_template_id_fkey"
-            columns: ["template_id"]
-            isOneToOne: false
-            referencedRelation: "inspection_templates"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      template_role_assignments: {
-        Row: {
-          assigned_at: string | null
-          assigned_by: string | null
-          id: string
-          role_id: string
-          template_id: string
-        }
-        Insert: {
-          assigned_at?: string | null
-          assigned_by?: string | null
-          id?: string
-          role_id: string
-          template_id: string
-        }
-        Update: {
-          assigned_at?: string | null
-          assigned_by?: string | null
-          id?: string
-          role_id?: string
-          template_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "template_role_assignments_assigned_by_fkey"
-            columns: ["assigned_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "template_role_assignments_role_id_fkey"
-            columns: ["role_id"]
-            isOneToOne: false
-            referencedRelation: "roles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "template_role_assignments_template_id_fkey"
-            columns: ["template_id"]
-            isOneToOne: false
-            referencedRelation: "inspection_templates"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       user_roles: {
         Row: {
           assigned_at: string | null
@@ -617,28 +420,7 @@ export type Database = {
       }
     }
     Views: {
-      daily_inspection_summary: {
-        Row: {
-          avg_duration_seconds: number | null
-          clean_count: number | null
-          cleaners: string[] | null
-          dirty_count: number | null
-          inspection_date: string | null
-          location_id: string | null
-          location_name: string | null
-          needs_work_count: number | null
-          total_inspections: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "inspection_records_location_id_fkey"
-            columns: ["location_id"]
-            isOneToOne: false
-            referencedRelation: "locations"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       user_has_any_role_level: {

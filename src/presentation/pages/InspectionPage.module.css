@@ -1,0 +1,319 @@
+/* Inspection Page Styles - Mobile First */
+.container {
+  @apply min-h-screen bg-gray-50;
+  @apply pb-24; /* Space for submit button and bottom nav */
+}
+
+.header {
+  @apply bg-white border-b border-gray-200;
+  @apply sticky top-0 z-40;
+  @apply flex items-center;
+  @apply px-4 py-4;
+}
+
+.backButton {
+  @apply flex items-center space-x-2;
+  @apply text-gray-600 hover:text-gray-900;
+  @apply transition-colors;
+  @apply mr-4;
+}
+
+.headerContent {
+  @apply flex-1;
+}
+
+.title {
+  @apply text-lg font-semibold text-gray-900;
+  @apply mb-1;
+}
+
+.subtitle {
+  @apply text-sm text-gray-600;
+}
+
+.main {
+  @apply px-4 py-6;
+  @apply space-y-6;
+}
+
+/* Location Card */
+.locationCard {
+  @apply bg-white;
+  @apply rounded-lg;
+  @apply p-4;
+  @apply border border-gray-200;
+  @apply shadow-sm;
+}
+
+.locationInfo {
+  @apply text-center;
+}
+
+.locationName {
+  @apply text-xl font-bold text-gray-900;
+  @apply mb-1;
+}
+
+.locationCode {
+  @apply text-sm text-gray-500;
+  @apply mb-2;
+}
+
+.inspectionTime {
+  @apply text-sm text-gray-600;
+}
+
+/* Form Section */
+.formSection {
+  @apply space-y-4;
+}
+
+.sectionTitle {
+  @apply text-lg font-semibold text-gray-900;
+  @apply mb-4;
+}
+
+.formFields {
+  @apply space-y-6;
+}
+
+.fieldGroup {
+  @apply space-y-3;
+}
+
+.fieldLabel {
+  @apply block;
+  @apply text-sm font-medium text-gray-900;
+}
+
+.required {
+  @apply text-red-500;
+  @apply ml-1;
+}
+
+/* Radio Options */
+.radioGroup {
+  @apply grid grid-cols-1 gap-2;
+}
+
+.radioOption {
+  @apply cursor-pointer;
+}
+
+.radioInput {
+  @apply sr-only;
+}
+
+.radioButton {
+  @apply flex items-center space-x-3;
+  @apply p-3;
+  @apply border border-gray-200;
+  @apply rounded-lg;
+  @apply transition-all duration-200;
+  @apply hover:border-green-300;
+  @apply hover:bg-green-50;
+}
+
+.radioSelected {
+  @apply border-green-500;
+  @apply bg-green-50;
+}
+
+.radioIcon {
+  @apply text-lg;
+}
+
+.radioLabel {
+  @apply font-medium;
+}
+
+/* Checkbox Options */
+.checkboxOption {
+  @apply cursor-pointer;
+}
+
+.checkboxInput {
+  @apply sr-only;
+}
+
+.checkboxButton {
+  @apply flex items-center space-x-3;
+  @apply p-3;
+  @apply border border-gray-200;
+  @apply rounded-lg;
+  @apply transition-all duration-200;
+  @apply hover:border-green-300;
+  @apply hover:bg-green-50;
+}
+
+.checkboxSelected {
+  @apply border-green-500;
+  @apply bg-green-50;
+}
+
+.checkboxIcon {
+  @apply text-lg;
+}
+
+.checkboxLabel {
+  @apply font-medium;
+}
+
+/* Photo Section */
+.photoSection {
+  @apply space-y-4;
+}
+
+.photoUpload {
+  @apply space-y-3;
+}
+
+.photoInput {
+  @apply sr-only;
+}
+
+.photoButton {
+  @apply flex items-center justify-center space-x-2;
+  @apply w-full;
+  @apply p-4;
+  @apply border-2 border-dashed border-gray-300;
+  @apply rounded-lg;
+  @apply text-gray-600;
+  @apply hover:border-green-400;
+  @apply hover:text-green-600;
+  @apply transition-colors;
+  @apply cursor-pointer;
+}
+
+.photoGrid {
+  @apply grid grid-cols-2 gap-3;
+}
+
+.photoItem {
+  @apply relative;
+  @apply aspect-square;
+}
+
+.photoPreview {
+  @apply w-full h-full;
+  @apply object-cover;
+  @apply rounded-lg;
+  @apply border border-gray-200;
+}
+
+.removePhoto {
+  @apply absolute -top-2 -right-2;
+  @apply w-6 h-6;
+  @apply bg-red-500 text-white;
+  @apply rounded-full;
+  @apply flex items-center justify-center;
+  @apply hover:bg-red-600;
+  @apply transition-colors;
+}
+
+/* Notes Section */
+.notesSection {
+  @apply space-y-4;
+}
+
+.notesInput {
+  @apply w-full;
+  @apply p-3;
+  @apply border border-gray-300;
+  @apply rounded-lg;
+  @apply resize-none;
+  @apply focus:ring-2 focus:ring-green-500 focus:border-green-500;
+  @apply transition-colors;
+}
+
+/* Status Section */
+.statusSection {
+  @apply space-y-4;
+}
+
+.statusDisplay {
+  @apply flex items-center justify-center space-x-3;
+  @apply p-4;
+  @apply bg-white;
+  @apply border border-gray-200;
+  @apply rounded-lg;
+  @apply shadow-sm;
+}
+
+.statusIcon {
+  @apply text-2xl;
+}
+
+.statusLabel {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+/* Submit Section */
+.submitSection {
+  @apply fixed bottom-20 left-4 right-4;
+  @apply z-30;
+}
+
+/* Loading State */
+.loading {
+  @apply flex flex-col items-center justify-center;
+  @apply min-h-screen;
+  @apply space-y-4;
+}
+
+.loadingSpinner {
+  @apply w-8 h-8;
+  @apply border-4 border-gray-300 border-t-green-500;
+  @apply rounded-full;
+  @apply animate-spin;
+}
+
+/* Responsive Design */
+@media (min-width: 640px) {
+  .main {
+    @apply max-w-2xl mx-auto;
+  }
+  
+  .radioGroup {
+    @apply grid-cols-2;
+  }
+  
+  .photoGrid {
+    @apply grid-cols-3;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    @apply pb-0; /* Remove bottom nav space on desktop */
+  }
+  
+  .submitSection {
+    @apply static;
+    @apply mt-6;
+  }
+  
+  .radioGroup {
+    @apply grid-cols-3;
+  }
+  
+  .photoGrid {
+    @apply grid-cols-4;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fieldGroup {
+  animation: fadeIn 0.3s ease-out;
+}

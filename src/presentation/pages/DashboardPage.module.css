@@ -1,0 +1,223 @@
+/* Dashboard Page Styles - Mobile First */
+.container {
+  @apply min-h-screen bg-gray-50;
+  @apply pb-20; /* Space for bottom nav */
+}
+
+.header {
+  @apply bg-white border-b border-gray-200;
+  @apply sticky top-0 z-40;
+}
+
+.headerContent {
+  @apply px-4 py-4;
+}
+
+.welcome {
+  @apply text-center;
+}
+
+.title {
+  @apply text-2xl font-bold text-gray-900;
+  @apply mb-1;
+}
+
+.subtitle {
+  @apply text-sm text-gray-600;
+}
+
+.main {
+  @apply px-4 py-6;
+  @apply space-y-6;
+}
+
+.sectionTitle {
+  @apply text-lg font-semibold text-gray-900;
+  @apply mb-4;
+}
+
+/* Quick Actions */
+.quickActions {
+  @apply space-y-4;
+}
+
+.actionGrid {
+  @apply space-y-3;
+}
+
+.primaryAction {
+  @apply w-full;
+  @apply bg-gradient-to-r from-green-500 to-green-600;
+  @apply text-white;
+  @apply rounded-xl;
+  @apply p-6;
+  @apply flex items-center space-x-4;
+  @apply shadow-lg;
+  @apply hover:shadow-xl;
+  @apply active:scale-98;
+  @apply transition-all duration-200;
+}
+
+.secondaryAction {
+  @apply w-full;
+  @apply bg-white;
+  @apply text-gray-900;
+  @apply rounded-xl;
+  @apply p-4;
+  @apply flex items-center space-x-3;
+  @apply border border-gray-200;
+  @apply shadow-sm;
+  @apply hover:shadow-md;
+  @apply active:scale-98;
+  @apply transition-all duration-200;
+}
+
+.actionIcon {
+  @apply flex-shrink-0;
+}
+
+.primaryAction .actionIcon {
+  @apply text-white;
+}
+
+.secondaryAction .actionIcon {
+  @apply text-green-500;
+}
+
+.actionContent {
+  @apply flex-1 text-left;
+}
+
+.actionTitle {
+  @apply font-semibold;
+  @apply mb-1;
+}
+
+.primaryAction .actionTitle {
+  @apply text-lg;
+}
+
+.secondaryAction .actionTitle {
+  @apply text-base;
+}
+
+.actionDescription {
+  @apply text-sm opacity-90;
+}
+
+.primaryAction .actionDescription {
+  @apply text-white;
+}
+
+.secondaryAction .actionDescription {
+  @apply text-gray-600;
+}
+
+/* Recent Activity */
+.recentActivity {
+  @apply space-y-4;
+}
+
+.activityList {
+  @apply space-y-3;
+}
+
+.activityItem {
+  @apply bg-white;
+  @apply rounded-lg;
+  @apply p-4;
+  @apply flex items-start space-x-3;
+  @apply border border-gray-200;
+  @apply shadow-sm;
+}
+
+.activityIcon {
+  @apply flex-shrink-0;
+  @apply w-8 h-8;
+  @apply bg-green-100;
+  @apply text-green-500;
+  @apply rounded-full;
+  @apply flex items-center justify-center;
+}
+
+.activityContent {
+  @apply flex-1;
+}
+
+.activityText {
+  @apply text-sm font-medium text-gray-900;
+  @apply mb-1;
+}
+
+.activityTime {
+  @apply text-xs text-gray-500;
+  @apply flex items-center space-x-1;
+}
+
+/* Stats */
+.stats {
+  @apply space-y-4;
+}
+
+.statsGrid {
+  @apply grid grid-cols-3 gap-3;
+}
+
+.statCard {
+  @apply bg-white;
+  @apply rounded-lg;
+  @apply p-4;
+  @apply text-center;
+  @apply border border-gray-200;
+  @apply shadow-sm;
+}
+
+.statNumber {
+  @apply text-2xl font-bold text-green-500;
+  @apply mb-1;
+}
+
+.statLabel {
+  @apply text-xs text-gray-600;
+  @apply font-medium;
+}
+
+/* Responsive Design */
+@media (min-width: 640px) {
+  .main {
+    @apply max-w-2xl mx-auto;
+  }
+  
+  .actionGrid {
+    @apply grid grid-cols-2 gap-4;
+  }
+  
+  .statsGrid {
+    @apply grid-cols-4;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    @apply pb-0; /* Remove bottom nav space on desktop */
+  }
+  
+  .main {
+    @apply max-w-4xl mx-auto;
+  }
+  
+  .actionGrid {
+    @apply grid-cols-3;
+  }
+}
+
+/* Animation utilities */
+@keyframes scale-98 {
+  to {
+    transform: scale(0.98);
+  }
+}
+
+.active\:scale-98:active {
+  animation: scale-98 0.1s ease-in-out;
+}

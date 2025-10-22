@@ -1,2 +1,1 @@
-// presentation/components/layout/BottomNav/index.ts
-export { BottomNav } from './BottomNav';
+export { default as BottomNav } from './BottomNav';

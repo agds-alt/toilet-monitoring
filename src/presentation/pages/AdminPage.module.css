@@ -1,0 +1,295 @@
+/* Admin Page Styles - Mobile First */
+.container {
+  @apply min-h-screen bg-gray-50;
+  @apply pb-20; /* Space for bottom nav */
+}
+
+.header {
+  @apply bg-white border-b border-gray-200;
+  @apply sticky top-0 z-40;
+}
+
+.headerContent {
+  @apply px-4 py-4;
+  @apply flex items-center justify-between;
+}
+
+.title {
+  @apply text-xl font-bold text-gray-900;
+}
+
+.viewToggle {
+  @apply flex;
+  @apply bg-gray-100;
+  @apply rounded-lg;
+  @apply p-1;
+}
+
+.toggleButton {
+  @apply flex items-center space-x-2;
+  @apply px-3 py-2;
+  @apply text-sm font-medium;
+  @apply rounded-md;
+  @apply transition-colors;
+  @apply text-gray-600;
+}
+
+.toggleButton.active {
+  @apply bg-white text-green-600;
+  @apply shadow-sm;
+}
+
+.main {
+  @apply flex-1;
+  @apply px-4 py-6;
+}
+
+/* Calendar View */
+.calendarView {
+  @apply space-y-4;
+}
+
+.calendarHeader {
+  @apply flex items-center justify-between;
+  @apply mb-4;
+}
+
+.navButton {
+  @apply p-2;
+  @apply text-gray-600 hover:text-gray-900;
+  @apply transition-colors;
+}
+
+.monthTitle {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.calendarGrid {
+  @apply grid grid-cols-7 gap-1;
+  @apply bg-white;
+  @apply rounded-lg;
+  @apply p-2;
+  @apply shadow-sm;
+}
+
+.calendarDay {
+  @apply relative;
+  @apply aspect-square;
+  @apply flex flex-col items-center justify-start;
+  @apply p-2;
+  @apply rounded-lg;
+  @apply transition-colors;
+  @apply hover:bg-gray-50;
+}
+
+.currentMonth {
+  @apply text-gray-900;
+}
+
+.otherMonth {
+  @apply text-gray-400;
+}
+
+.today {
+  @apply bg-green-100 text-green-700;
+  @apply font-semibold;
+}
+
+.selected {
+  @apply bg-green-500 text-white;
+  @apply font-semibold;
+}
+
+.dayNumber {
+  @apply text-sm;
+  @apply mb-1;
+}
+
+.inspectionIndicators {
+  @apply flex flex-wrap gap-1;
+  @apply justify-center;
+  @apply w-full;
+}
+
+.indicator {
+  @apply w-2 h-2;
+  @apply rounded-full;
+  @apply flex-shrink-0;
+}
+
+.moreIndicator {
+  @apply text-xs;
+  @apply text-gray-500;
+  @apply font-medium;
+}
+
+/* List View */
+.listView {
+  @apply space-y-4;
+}
+
+.listHeader {
+  @apply flex items-center justify-between;
+  @apply mb-4;
+}
+
+.listTitle {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.resultCount {
+  @apply text-sm text-gray-500;
+}
+
+.inspectionList {
+  @apply space-y-3;
+}
+
+.inspectionCard {
+  @apply bg-white;
+  @apply rounded-lg;
+  @apply p-4;
+  @apply border border-gray-200;
+  @apply shadow-sm;
+}
+
+.inspectionHeader {
+  @apply flex items-start justify-between;
+  @apply mb-3;
+}
+
+.inspectionInfo {
+  @apply flex-1;
+}
+
+.locationName {
+  @apply text-base font-semibold text-gray-900;
+  @apply mb-1;
+}
+
+.locationCode {
+  @apply text-sm text-gray-500;
+}
+
+.statusBadge {
+  @apply flex items-center space-x-1;
+  @apply px-2 py-1;
+  @apply rounded-full;
+  @apply text-xs font-medium;
+}
+
+.statusIcon {
+  @apply text-sm;
+}
+
+.statusLabel {
+  @apply text-xs;
+}
+
+.inspectionDetails {
+  @apply grid grid-cols-1 gap-2;
+  @apply mb-3;
+}
+
+.detailItem {
+  @apply flex justify-between;
+  @apply text-sm;
+}
+
+.detailLabel {
+  @apply text-gray-500;
+}
+
+.detailValue {
+  @apply text-gray-900;
+  @apply font-medium;
+}
+
+.inspectionNotes {
+  @apply mb-3;
+  @apply p-3;
+  @apply bg-gray-50;
+  @apply rounded-lg;
+}
+
+.notesText {
+  @apply text-sm text-gray-700;
+}
+
+.inspectionActions {
+  @apply flex space-x-2;
+}
+
+/* Empty State */
+.emptyState {
+  @apply flex flex-col items-center justify-center;
+  @apply py-12;
+  @apply text-center;
+}
+
+.emptyIcon {
+  @apply text-gray-400;
+  @apply mb-4;
+}
+
+.emptyTitle {
+  @apply text-lg font-semibold text-gray-900;
+  @apply mb-2;
+}
+
+.emptyDescription {
+  @apply text-sm text-gray-500;
+}
+
+/* Responsive Design */
+@media (min-width: 640px) {
+  .main {
+    @apply max-w-4xl mx-auto;
+  }
+  
+  .calendarGrid {
+    @apply gap-2;
+  }
+  
+  .calendarDay {
+    @apply p-3;
+  }
+  
+  .inspectionDetails {
+    @apply grid-cols-3;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    @apply pb-0; /* Remove bottom nav space on desktop */
+  }
+  
+  .calendarGrid {
+    @apply gap-3;
+  }
+  
+  .calendarDay {
+    @apply p-4;
+  }
+  
+  .inspectionCard {
+    @apply p-6;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.inspectionCard {
+  animation: fadeIn 0.3s ease-out;
+}

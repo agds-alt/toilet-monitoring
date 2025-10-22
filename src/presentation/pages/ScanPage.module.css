@@ -1,0 +1,174 @@
+/* Scan Page Styles - Mobile First */
+.container {
+  @apply min-h-screen bg-black;
+  @apply pb-20; /* Space for bottom nav */
+}
+
+.header {
+  @apply bg-white border-b border-gray-200;
+  @apply sticky top-0 z-40;
+  @apply flex items-center justify-between;
+  @apply px-4 py-4;
+}
+
+.backButton {
+  @apply flex items-center space-x-2;
+  @apply text-gray-600 hover:text-gray-900;
+  @apply transition-colors;
+}
+
+.title {
+  @apply text-lg font-semibold text-gray-900;
+  @apply flex-1 text-center;
+}
+
+.flashlightButton {
+  @apply p-2;
+  @apply text-gray-600 hover:text-gray-900;
+  @apply transition-colors;
+  @apply disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.main {
+  @apply flex-1;
+  @apply flex flex-col;
+}
+
+/* Scan Prompt */
+.scanPrompt {
+  @apply flex-1;
+  @apply flex flex-col items-center justify-center;
+  @apply px-6 py-12;
+  @apply text-center;
+}
+
+.scanIcon {
+  @apply text-green-500;
+  @apply mb-6;
+}
+
+.scanTitle {
+  @apply text-2xl font-bold text-white;
+  @apply mb-4;
+}
+
+.scanDescription {
+  @apply text-gray-300;
+  @apply mb-8;
+  @apply max-w-sm;
+}
+
+/* Scanner Container */
+.scannerContainer {
+  @apply flex-1;
+  @apply relative;
+  @apply bg-black;
+}
+
+.scannerVideo {
+  @apply w-full h-full;
+  @apply object-cover;
+}
+
+.scannerOverlay {
+  @apply absolute inset-0;
+  @apply flex flex-col items-center justify-center;
+  @apply pointer-events-none;
+}
+
+.scannerFrame {
+  @apply w-64 h-64;
+  @apply border-2 border-green-500;
+  @apply rounded-lg;
+  @apply relative;
+  @apply animate-pulse;
+}
+
+.scannerFrame::before {
+  content: '';
+  @apply absolute -top-1 -left-1;
+  @apply w-6 h-6;
+  @apply border-t-4 border-l-4 border-green-500;
+  @apply rounded-tl-lg;
+}
+
+.scannerFrame::after {
+  content: '';
+  @apply absolute -bottom-1 -right-1;
+  @apply w-6 h-6;
+  @apply border-b-4 border-r-4 border-green-500;
+  @apply rounded-br-lg;
+}
+
+.scannerInstructions {
+  @apply mt-8;
+  @apply text-center;
+}
+
+.scannerInstructions p {
+  @apply text-white;
+  @apply text-sm;
+  @apply bg-black bg-opacity-50;
+  @apply px-4 py-2;
+  @apply rounded-lg;
+}
+
+.scannerControls {
+  @apply absolute bottom-4 left-4 right-4;
+  @apply flex justify-center;
+}
+
+/* Error State */
+.errorState {
+  @apply flex-1;
+  @apply flex flex-col items-center justify-center;
+  @apply px-6 py-12;
+  @apply text-center;
+}
+
+.errorIcon {
+  @apply text-red-500;
+  @apply mb-6;
+}
+
+.errorTitle {
+  @apply text-xl font-bold text-white;
+  @apply mb-4;
+}
+
+.errorDescription {
+  @apply text-gray-300;
+  @apply mb-8;
+  @apply max-w-sm;
+}
+
+/* Responsive Design */
+@media (min-width: 640px) {
+  .scannerFrame {
+    @apply w-80 h-80;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    @apply pb-0; /* Remove bottom nav space on desktop */
+  }
+  
+  .scannerFrame {
+    @apply w-96 h-96;
+  }
+}
+
+/* Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
