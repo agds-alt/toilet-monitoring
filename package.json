@@ -7,22 +7,48 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
+    
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    
     "clean": "rm -rf .next node_modules/.cache",
     "clean:full": "rm -rf .next node_modules package-lock.json && npm install",
-    "generate:types": "supabase gen types typescript --project-id your-project-id > src/core/types/supabase.types.ts",
+    
+    "supabase:login": "npx supabase login",
+    "supabase:init": "npx supabase init",
+    "supabase:start": "npx supabase start",
+    "supabase:stop": "npx supabase stop",
+    "supabase:status": "npx supabase status",
+    
+    "db:generate": "npx supabase gen types typescript --local > src/core/types/supabase.types.ts",
+    "db:generate:prod": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/core/types/supabase.types.ts",
     "db:push": "npx supabase db push",
     "db:reset": "npx supabase db reset",
+    "db:diff": "npx supabase db diff",
+    "db:dump": "npx supabase db dump",
+    "db:pull": "npx supabase db pull",
+    
+    "migrations:new": "npx supabase migration new",
+    "migrations:list": "npx supabase migration list",
+    "migrations:up": "npx supabase migration up",
+    
+    "studio": "npx supabase studio",
+    "functions:serve": "npx supabase functions serve",
+    
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    
     "prepare": "husky install",
+    
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
+    
     "analyze": "cross-env ANALYZE=true next build",
+    
     "docker:build": "docker build -t toilet-monitoring .",
     "docker:run": "docker run -p 3000:3000 toilet-monitoring"
   },
@@ -31,6 +57,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "@supabase/supabase-js": "^2.38.0",
+    "@supabase/ssr": "^0.1.0",
+    "@supabase/realtime-js": "^2.8.2",
     "lucide-react": "^0.294.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -64,7 +92,8 @@
     "cross-env": "^7.0.3",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.5"
+    "tailwindcss": "^3.3.5",
+    "supabase": "^1.123.3"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,css,md}": [
@@ -72,18 +101,6 @@
     ],
     "**/*.{js,jsx,ts,tsx}": [
       "eslint --fix"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.3%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
     ]
   }
 }

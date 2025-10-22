@@ -128,8 +128,3 @@ export const isValidImageFile = (file: File): boolean => {
 
   return true;
 };
-<<<<<<< HEAD
-=======
-
-export default CloudinaryUploadResult;
->>>>>>> 9855cde (fallback to location worked QR generated)

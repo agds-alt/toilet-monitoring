@@ -1,8 +1,0 @@
-
-> toilet-monitoring@1.0.0 type-check
-> tsc --noEmit
-
-src/presentation/contexts/AuthContext-patch.ts(34,23): error TS1005: '>' expected.
-src/presentation/contexts/AuthContext-patch.ts(34,28): error TS1005: ';' expected.
-src/presentation/contexts/AuthContext-patch.ts(34,73): error TS1109: Expression expected.
-src/presentation/contexts/AuthContext-patch.ts(34,74): error TS1109: Expression expected.
