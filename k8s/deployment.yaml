@@ -1,0 +1,155 @@
+# ============================================
+# Kubernetes Deployment Configuration
+# ============================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toilet-monitoring
+  labels:
+    app: toilet-monitoring
+    version: v1
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: toilet-monitoring
+  template:
+    metadata:
+      labels:
+        app: toilet-monitoring
+        version: v1
+    spec:
+      containers:
+      - name: toilet-monitoring
+        image: your-registry/toilet-monitoring:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: NEXT_PUBLIC_SUPABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: toilet-monitoring-secrets
+              key: supabase-url
+        - name: NEXT_PUBLIC_SUPABASE_ANON_KEY
+          valueFrom:
+            secretKeyRef:
+              name: toilet-monitoring-secrets
+              key: supabase-anon-key
+        - name: SUPABASE_SERVICE_ROLE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: toilet-monitoring-secrets
+              key: supabase-service-role-key
+        - name: NEXT_PUBLIC_SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: toilet-monitoring-secrets
+              key: sentry-dsn
+        - name: SENTRY_AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: toilet-monitoring-secrets
+              key: sentry-auth-token
+        - name: UPSTASH_REDIS_REST_URL
+          valueFrom:
+            secretKeyRef:
+              name: toilet-monitoring-secrets
+              key: redis-url
+        - name: UPSTASH_REDIS_REST_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: toilet-monitoring-secrets
+              key: redis-token
+        - name: RESEND_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: toilet-monitoring-secrets
+              key: resend-api-key
+        - name: EMAIL_FROM
+          valueFrom:
+            configMapKeyRef:
+              name: toilet-monitoring-config
+              key: email-from
+        - name: ADMIN_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              name: toilet-monitoring-config
+              key: admin-email
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /api/health/live
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/health/ready
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /api/health/live
+            port: 3000
+          initialDelaySeconds: 0
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 12
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: toilet-monitoring
+  labels:
+    app: toilet-monitoring
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  selector:
+    app: toilet-monitoring
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: toilet-monitoring-config
+data:
+  email-from: "noreply@toilet-monitoring.com"
+  admin-email: "admin@toilet-monitoring.com"
+---
+# Note: Create secrets manually with:
+# kubectl create secret generic toilet-monitoring-secrets \
+#   --from-literal=supabase-url=YOUR_URL \
+#   --from-literal=supabase-anon-key=YOUR_KEY \
+#   --from-literal=supabase-service-role-key=YOUR_KEY \
+#   --from-literal=sentry-dsn=YOUR_DSN \
+#   --from-literal=sentry-auth-token=YOUR_TOKEN \
+#   --from-literal=redis-url=YOUR_URL \
+#   --from-literal=redis-token=YOUR_TOKEN \
+#   --from-literal=resend-api-key=YOUR_KEY
