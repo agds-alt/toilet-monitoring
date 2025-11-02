@@ -557,6 +557,75 @@ input[type='reset'] {
   :focus-visible {
     outline-width: 3px;
   }
+
+  a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+
+  .in-app-notification {
+    border: 3px solid currentColor;
+  }
+}
+
+/* ============================================ */
+/* SCREEN READER ONLY - SR-ONLY CLASS */
+/* ============================================ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* ============================================ */
+/* FOCUS INDICATORS - ENHANCED */
+/* ============================================ */
+
+.focus-ring {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.focus-ring-inset {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+/* Skip to main content link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+  font-weight: 600;
+  z-index: 9999;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 0;
 }
 /* ============================================ */
 /* ADD THIS TO src/app/globals.css */
