@@ -1,0 +1,106 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  pr-info:
+    name: PR Information
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: PR Stats
+        run: |
+          echo "## 📊 Pull Request Statistics" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Author:** @${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** \`${{ github.head_ref }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Base:** \`${{ github.base_ref }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          FILES_CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | wc -l)
+          LINES_ADDED=$(git diff --stat origin/${{ github.base_ref }}...HEAD | tail -1 | grep -oP '\d+(?= insertion)' || echo "0")
+          LINES_REMOVED=$(git diff --stat origin/${{ github.base_ref }}...HEAD | tail -1 | grep -oP '\d+(?= deletion)' || echo "0")
+
+          echo "- **Files Changed:** $FILES_CHANGED" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lines Added:** +$LINES_ADDED" >> $GITHUB_STEP_SUMMARY
+          echo "- **Lines Removed:** -$LINES_REMOVED" >> $GITHUB_STEP_SUMMARY
+
+  commit-quality:
+    name: Commit Message Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check commit messages
+        run: |
+          echo "## 📝 Commit Messages" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          git log origin/${{ github.base_ref }}..HEAD --oneline >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  size-label:
+    name: PR Size Labeling
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Calculate PR size
+        id: size
+        run: |
+          LINES_CHANGED=$(git diff --stat origin/${{ github.base_ref }}...HEAD | tail -1 | awk '{print $4+$6}')
+          echo "lines=$LINES_CHANGED" >> $GITHUB_OUTPUT
+
+          if [ "$LINES_CHANGED" -lt 50 ]; then
+            echo "size=XS" >> $GITHUB_OUTPUT
+          elif [ "$LINES_CHANGED" -lt 200 ]; then
+            echo "size=S" >> $GITHUB_OUTPUT
+          elif [ "$LINES_CHANGED" -lt 500 ]; then
+            echo "size=M" >> $GITHUB_OUTPUT
+          elif [ "$LINES_CHANGED" -lt 1000 ]; then
+            echo "size=L" >> $GITHUB_OUTPUT
+          else
+            echo "size=XL" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment PR size
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const size = '${{ steps.size.outputs.size }}';
+            const lines = '${{ steps.size.outputs.lines }}';
+            const sizeEmoji = {
+              'XS': '🟢',
+              'S': '🟢',
+              'M': '🟡',
+              'L': '🟠',
+              'XL': '🔴'
+            };
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `${sizeEmoji[size]} **PR Size: ${size}** (${lines} lines changed)\n\n` +
+                    `Smaller PRs are easier to review and merge faster! 🚀`
+            });

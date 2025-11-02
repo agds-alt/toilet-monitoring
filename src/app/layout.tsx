@@ -4,6 +4,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/presentation/contexts/AuthContext'; // ← CORRECT!
+import { TRPCProvider } from '@/lib/trpc';
 
 export const metadata: Metadata = {
   title: 'Smart Toilet Monitoring',
@@ -28,7 +29,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
       </head>
       <body suppressHydrationWarning>
-        <AuthProvider>{children}</AuthProvider>
+        <TRPCProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </TRPCProvider>
       </body>
     </html>
   );
