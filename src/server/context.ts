@@ -3,10 +3,12 @@ import { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 import { createClient } from '@supabase/supabase-js';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
+import { log } from '@/lib/logger';
+import { errorTracker } from '@/lib/sentry/error-tracker';
 
 /**
  * Create context for tRPC requests
- * This includes the authenticated Supabase client
+ * This includes the authenticated Supabase client, logging, and error tracking
  */
 export async function createContext(opts: FetchCreateContextFnOptions) {
   const authHeader = opts.req.headers.get('authorization');
@@ -26,6 +28,14 @@ export async function createContext(opts: FetchCreateContextFnOptions) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Set user context for error tracking
+  if (user) {
+    errorTracker.setUser({
+      id: user.id,
+      email: user.email,
+    });
+  }
+
   return {
     supabase,
     user,
@@ -42,6 +52,30 @@ export type Context = Awaited<ReturnType<typeof createContext>>;
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
+    // Log error
+    if (error.code === 'INTERNAL_SERVER_ERROR') {
+      log.error('tRPC Internal Server Error', error, {
+        code: error.code,
+        path: shape.path,
+      });
+
+      // Track in Sentry
+      if (error instanceof Error) {
+        errorTracker.captureException(error, {
+          trpc: {
+            code: error.code,
+            path: shape.path,
+          },
+        });
+      }
+    } else {
+      log.warn('tRPC Error', {
+        code: error.code,
+        message: error.message,
+        path: shape.path,
+      });
+    }
+
     return {
       ...shape,
       data: {
