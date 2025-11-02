@@ -1,0 +1,43 @@
+# ============================================
+# Kubernetes Ingress Configuration
+# ============================================
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: toilet-monitoring
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+spec:
+  tls:
+  - hosts:
+    - toilet-monitoring.com
+    - www.toilet-monitoring.com
+    secretName: toilet-monitoring-tls
+  rules:
+  - host: toilet-monitoring.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: toilet-monitoring
+            port:
+              number: 80
+  - host: www.toilet-monitoring.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: toilet-monitoring
+            port:
+              number: 80
