@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { useParams } from 'next/navigation';
-import InspectionPage from '../../../../presentation/pages/InspectionPage';
+import InspectionPage from '@/presentation/pages/InspectionPage';
 
 export default function Inspection() {
   const params = useParams();
