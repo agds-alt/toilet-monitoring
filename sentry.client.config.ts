@@ -16,19 +16,20 @@ Sentry.init({
   // Enable debug mode in development
   debug: process.env.NODE_ENV !== 'production',
 
+  // Trace propagation targets
+  tracePropagationTargets: [
+    'localhost',
+    /^https:\/\/.*\.vercel\.app/,
+    process.env.NEXT_PUBLIC_APP_URL || '',
+  ],
+
   // Integrations
   integrations: [
     Sentry.replayIntegration({
       maskAllText: true,
       blockAllMedia: true,
     }),
-    Sentry.browserTracingIntegration({
-      tracePropagationTargets: [
-        'localhost',
-        /^https:\/\/.*\.vercel\.app/,
-        process.env.NEXT_PUBLIC_APP_URL || '',
-      ],
-    }),
+    Sentry.browserTracingIntegration(),
   ],
 
   // Filtering
@@ -39,9 +40,10 @@ Sentry.init({
 
       // Ignore network errors
       if (error && typeof error === 'object' && 'message' in error) {
+        const message = (error as { message?: string }).message;
         if (
-          error.message?.includes('NetworkError') ||
-          error.message?.includes('Failed to fetch')
+          typeof message === 'string' &&
+          (message.includes('NetworkError') || message.includes('Failed to fetch'))
         ) {
           return null;
         }

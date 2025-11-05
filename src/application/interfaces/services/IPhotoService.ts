@@ -2,7 +2,7 @@
 import { PhotoEntity } from '../../../domain/entities/Photo';
 
 export interface IPhotoService {
-  uploadPhoto(file: File, options: {
+  uploadPhoto(file: File | Blob, options: {
     locationId?: string;
     inspectionId?: string;
     fieldReference?: string;

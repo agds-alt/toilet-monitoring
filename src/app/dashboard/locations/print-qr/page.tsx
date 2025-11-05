@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Printer, Check } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { getLocationsUseCase } from '@/lib/di';
-import { Location } from '@/core/entities/Location';
+import { Location } from '@/domain/entities/Location';
 import styles from './print-qr.module.css';
 
 export default function BulkQRPrintPage() {
@@ -73,7 +73,9 @@ export default function BulkQRPrintPage() {
       }
     `;
     document.head.appendChild(style);
-    return () => document.head.removeChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
   }, []);
 
   const filteredLocations = locations.filter((loc) => {

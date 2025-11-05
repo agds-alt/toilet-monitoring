@@ -3,7 +3,7 @@
 // TYPE CASTING HELPERS - Fix Json Type Issues
 // ============================================
 
-import { Json } from '@/core/types/database.types';
+import type { Json } from '@/core/types/supabase.types';
 import {
   InspectionComponent,
   ComponentResponse,
@@ -31,7 +31,7 @@ export function jsonToComponents(json: Json): InspectionComponent[] {
  * Safely cast InspectionComponent[] to Json
  */
 export function componentsToJson(components: InspectionComponent[]): Json {
-  return { components } as Json;
+  return { components } as unknown as Json;
 }
 
 /**
@@ -42,7 +42,7 @@ export function jsonToResponses(json: Json): Record<string, ComponentResponse> {
     return {};
   }
 
-  return json as Record<string, ComponentResponse>;
+  return json as unknown as Record<string, ComponentResponse>;
 }
 
 /**
@@ -74,7 +74,8 @@ export function dbToInspectionTemplate(dbTemplate: any): InspectionTemplate {
     id: dbTemplate.id,
     name: dbTemplate.name,
     description: dbTemplate.description,
-    estimated_time: dbTemplate.estimated_time,
+    estimatedTime: dbTemplate.estimated_time || 0, // camelCase - required
+    estimated_time: dbTemplate.estimated_time,     // snake_case - optional
     is_active: dbTemplate.is_active,
     is_default: dbTemplate.is_default,
     fields: parseTemplateFields(dbTemplate.fields),

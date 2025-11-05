@@ -4,10 +4,10 @@
 // ============================================
 
 import { createBrowserClient } from '@supabase/ssr';
-import { Database } from '@/types/supabase';
+import type { Database as DB } from '@/core/types/supabase.types';
 
 export function createClient() {
-  return createBrowserClient<Database>(
+  return createBrowserClient<DB>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
@@ -20,12 +20,12 @@ export function createClient() {
 
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { Database } from '@/types/supabase';
+import type { Database as DB2 } from '@/core/types/supabase.types';
 
-export function createClient() {
+export function createServerClient2() {
   const cookieStore = cookies();
 
-  return createServerClient<Database>(
+  return createServerClient<DB2>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -57,9 +57,8 @@ export function createClient() {
 // Middleware client (use in middleware.ts)
 // ============================================
 
-import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-import { Database } from '@/types/supabase';
+import type { Database as DB3 } from '@/core/types/supabase.types';
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({
@@ -68,7 +67,7 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  const supabase = createServerClient<Database>(
+  const supabase = createServerClient<DB3>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {

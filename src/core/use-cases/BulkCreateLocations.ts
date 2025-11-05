@@ -2,7 +2,8 @@
 // 📁 src/core/use-cases/BulkCreateLocations.ts
 // ===================================
 import { ILocationRepository } from '@/core/repositories/ILocationRepository';
-import { Location, LocationFormData } from '@/core/entities/Location';
+import { Location } from '@/domain/entities/Location';
+import type { LocationFormData } from '@/core/repositories/ILocationRepository';
 
 interface BulkLocationConfig {
   building: string;
@@ -61,9 +62,9 @@ export class BulkCreateLocations {
               section,
               building: config.building,
               area: gender,
-              qr_code: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/scan/${baseCode}`,
               description: `Auto-generated - ${genderText} toilet`,
-              is_active: true,
+              isActive: true,
+              createdBy: 'system',
             });
           }
         }

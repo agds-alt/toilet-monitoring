@@ -34,7 +34,7 @@ export class UploadPhoto {
     }
 
     // Compress image if needed
-    let fileToUpload = request.file;
+    let fileToUpload: File | Blob = request.file;
     if (request.file.size > 2 * 1024 * 1024) { // If larger than 2MB
       fileToUpload = await PhotoService.compressImage(request.file, 0.8);
     }

@@ -20,7 +20,8 @@ import {
   AlertCircle,
   XCircle
 } from 'lucide-react';
-import { supabase } from '../../../infrastructure/auth/SupabaseAuthService';
+import { createClient } from '@/lib/supabase.client'
+const supabase = createClient();
 
 interface InspectionRecord {
   id: string;

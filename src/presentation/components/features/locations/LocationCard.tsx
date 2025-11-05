@@ -7,7 +7,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Building, MapPin, Copy, Trash2, Check, QrCode } from 'lucide-react';
-import { Location } from '@/core/entities/Location';
+import { Location } from '@/domain/entities/Location';
 import { deleteLocationUseCase } from '@/lib/di';
 import styles from './LocationCard.module.css';
 
@@ -97,7 +97,7 @@ export default function LocationCard({ location, onRefresh }: LocationCardProps)
         )}
       </div>
 
-      {location.qr_code && (
+      {location.qrCode && (
         <div className={styles.qrInfo}>
           <QrCode size={14} />
           <span>QR Code Available</span>

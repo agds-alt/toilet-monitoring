@@ -12,17 +12,16 @@ Sentry.init({
   // Enable debug mode in development
   debug: process.env.NODE_ENV !== 'production',
 
+  // Trace propagation targets
+  tracePropagationTargets: [
+    'localhost',
+    /^https:\/\/.*\.supabase\.co/,
+    /^https:\/\/.*\.vercel\.app/,
+  ],
+
   // Integrations for server-side
   integrations: [
-    Sentry.httpIntegration({
-      tracing: {
-        tracePropagationTargets: [
-          'localhost',
-          /^https:\/\/.*\.supabase\.co/,
-          /^https:\/\/.*\.vercel\.app/,
-        ],
-      },
-    }),
+    Sentry.httpIntegration(),
   ],
 
   // Filtering
@@ -32,10 +31,11 @@ Sentry.init({
       const error = hint.originalException;
 
       if (error && typeof error === 'object' && 'message' in error) {
+        const message = (error as { message?: string }).message;
         // Ignore expected errors
         if (
-          error.message?.includes('NEXT_NOT_FOUND') ||
-          error.message?.includes('ENOENT')
+          typeof message === 'string' &&
+          (message.includes('NEXT_NOT_FOUND') || message.includes('ENOENT'))
         ) {
           return null;
         }

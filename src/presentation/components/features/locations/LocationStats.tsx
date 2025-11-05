@@ -4,7 +4,7 @@
 'use client';
 
 import { Building, MapPin, Layers } from 'lucide-react';
-import { Location } from '@/core/entities/Location';
+import { Location } from '@/domain/entities/Location';
 import styles from './LocationStats.module.css';
 
 interface LocationStatsProps {

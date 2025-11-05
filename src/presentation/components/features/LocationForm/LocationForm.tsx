@@ -1,9 +1,10 @@
 // src/presentation/components/features/LocationForm/LocationForm.tsx
 import { useState, useEffect } from 'react';
-import { Location, LocationFormData } from '@/core/entities/Location';
+import { Location } from '@/domain/entities/Location';
+import type { LocationFormData } from '@/core/repositories/ILocationRepository';
 import { createLocationUseCase, updateLocationUseCase } from '@/lib/di';
 import { Input } from '@/presentation/components/ui/Input';
-import Button from '@/presentation/components/ui/Button';
+import { Button } from '@/presentation/components/ui/Button';
 
 interface LocationFormProps {
   location?: Location;
@@ -19,6 +20,8 @@ export function LocationForm({ location, onSuccess, onCancel }: LocationFormProp
     section: location?.section || 'front',
     building: location?.building || '',
     description: location?.description || '',
+    isActive: location?.isActive ?? true,
+    createdBy: location?.createdBy || '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -62,7 +65,7 @@ export function LocationForm({ location, onSuccess, onCancel }: LocationFormProp
       <Input
         label="Location Name *"
         value={formData.name}
-        onChange={(value) => handleChange('name', value)}
+        onChange={(e) => handleChange('name', e.target.value)}
         required
         placeholder="e.g., Lobby - Toilet Pria & Wanita"
         disabled={loading}
@@ -71,10 +74,9 @@ export function LocationForm({ location, onSuccess, onCancel }: LocationFormProp
       <Input
         label="Location Code *"
         value={formData.code}
-        onChange={(value) => handleChange('code', value)}
+        onChange={(e) => handleChange('code', e.target.value)}
         required
         placeholder="e.g., LOBBY"
-        helpText="Unique code for this location (will be converted to uppercase)"
         disabled={loading}
       />
 
@@ -119,7 +121,7 @@ export function LocationForm({ location, onSuccess, onCancel }: LocationFormProp
       <Input
         label="Building (Optional)"
         value={formData.building || ''}
-        onChange={(value) => handleChange('building', value)}
+        onChange={(e) => handleChange('building', e.target.value)}
         placeholder="e.g., Main Building, Tower A"
         disabled={loading}
       />

@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Download, Print, Share2, Plus } from 'lucide-react';
+import { ArrowLeft, Download, Printer, Share2, Plus } from 'lucide-react';
 import { Button } from '../../../presentation/components/ui/Button';
 import { BottomNav } from '../../../presentation/components/layout/BottomNav';
 import { QRCodeSVG } from 'qrcode.react';
@@ -128,7 +128,7 @@ export default function QRGeneratorPage() {
         <h1 className={styles.title}>QR Code Generator</h1>
         <div className={styles.headerActions}>
           <Button onClick={printAll} variant="outline" size="sm">
-            <Print size={16} />
+            <Printer size={16} />
             Print All
           </Button>
         </div>

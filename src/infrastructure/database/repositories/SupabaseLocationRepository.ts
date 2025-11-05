@@ -3,15 +3,40 @@
 // ===================================
 import { supabase } from '@/infrastructure/database/supabase';
 import { ILocationRepository } from '@/core/repositories/ILocationRepository';
-import { Location, LocationFormData, LocationWithDetails } from '@/core/entities/Location';
-import { Json } from '@/core/types/database.types';
+import { Location } from '@/domain/entities/Location';
+import type { LocationFormData, LocationWithDetails } from '@/core/repositories/ILocationRepository';
+import { Json } from '@/core/types/supabase.types';
+
+// Mapper to convert database format to domain format
+function mapToLocation(dbRecord: any): Location {
+  return {
+    id: dbRecord.id,
+    name: dbRecord.name,
+    code: dbRecord.code,
+    qrCode: dbRecord.qr_code,
+    building: dbRecord.building,
+    floor: dbRecord.floor,
+    area: dbRecord.area,
+    section: dbRecord.section,
+    description: dbRecord.description,
+    photoUrl: dbRecord.photo_url,
+    coordinates: dbRecord.coordinates,
+    isActive: dbRecord.is_active,
+    createdBy: dbRecord.created_by,
+    createdAt: new Date(dbRecord.created_at),
+    updatedAt: new Date(dbRecord.updated_at),
+  };
+}
 
 export class SupabaseLocationRepository implements ILocationRepository {
   async create(locationData: LocationFormData): Promise<Location> {
     // Validasi field required
-    if (!locationData.name || !locationData.qr_code) {
-      throw new Error('Name and QR code are required');
+    if (!locationData.name || !locationData.code) {
+      throw new Error('Name and code are required');
     }
+
+    // Generate QR code from code
+    const qrCode = `toilet-${locationData.code}-${Date.now()}`;
 
     const { data, error } = await supabase
       .from('locations')
@@ -22,18 +47,18 @@ export class SupabaseLocationRepository implements ILocationRepository {
         section: locationData.section,
         building: locationData.building,
         area: locationData.area,
-        qr_code: locationData.qr_code,
+        qr_code: qrCode,
         description: locationData.description,
-        is_active: locationData.is_active ?? true,
+        is_active: locationData.isActive ?? true,
         coordinates: locationData.coordinates as Json | null,
-        photo_url: locationData.photo_url,
-        created_by: locationData.created_by,
+        photo_url: locationData.photoUrl,
+        created_by: locationData.createdBy,
       })
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return mapToLocation(data);
   }
 
   async findById(id: string): Promise<Location | null> {
@@ -44,7 +69,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
       throw error;
     }
 
-    return data;
+    return data ? mapToLocation(data) : null;
   }
 
   async findByIdWithDetails(id: string): Promise<LocationWithDetails | null> {
@@ -67,11 +92,9 @@ export class SupabaseLocationRepository implements ILocationRepository {
 
     return {
       ...location,
-      inspection_stats: {
-        total_inspections: totalInspections,
-        clean_count: cleanCount,
-        dirty_count: dirtyCount,
-        needs_work_count: needsWorkCount,
+      stats: {
+        totalInspections: totalInspections,
+        averageRating: totalInspections > 0 ? cleanCount / totalInspections : 0,
       },
     };
   }
@@ -84,7 +107,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    return data ? data.map(mapToLocation) : [];
   }
 
   async findAllWithDetails(): Promise<LocationWithDetails[]> {
@@ -107,11 +130,9 @@ export class SupabaseLocationRepository implements ILocationRepository {
 
       locationsWithDetails.push({
         ...location,
-        inspection_stats: {
-          total_inspections: totalInspections,
-          clean_count: cleanCount,
-          dirty_count: dirtyCount,
-          needs_work_count: needsWorkCount,
+        stats: {
+          totalInspections: totalInspections,
+          averageRating: totalInspections > 0 ? cleanCount / totalInspections : 0,
         },
       });
     }
@@ -120,10 +141,23 @@ export class SupabaseLocationRepository implements ILocationRepository {
   }
 
   async update(id: string, locationData: Partial<LocationFormData>): Promise<Location> {
+    // Convert camelCase to snake_case
+    const dbData: any = {};
+    if (locationData.name) dbData.name = locationData.name;
+    if (locationData.code) dbData.code = locationData.code;
+    if (locationData.floor) dbData.floor = locationData.floor;
+    if (locationData.section) dbData.section = locationData.section;
+    if (locationData.building) dbData.building = locationData.building;
+    if (locationData.area) dbData.area = locationData.area;
+    if (locationData.description) dbData.description = locationData.description;
+    if (locationData.photoUrl !== undefined) dbData.photo_url = locationData.photoUrl;
+    if (locationData.isActive !== undefined) dbData.is_active = locationData.isActive;
+    if (locationData.coordinates) dbData.coordinates = locationData.coordinates;
+
     const { data, error } = await supabase
       .from('locations')
       .update({
-        ...locationData,
+        ...dbData,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
@@ -131,7 +165,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
       .single();
 
     if (error) throw error;
-    return data;
+    return mapToLocation(data);
   }
 
   async delete(id: string): Promise<void> {
@@ -154,7 +188,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
       .eq('is_active', true);
 
     if (error) throw error;
-    return data || [];
+    return data ? data.map(mapToLocation) : [];
   }
 
   async findBySection(section: string): Promise<Location[]> {
@@ -165,7 +199,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
       .eq('is_active', true);
 
     if (error) throw error;
-    return data || [];
+    return data ? data.map(mapToLocation) : [];
   }
 
   async findByBuilding(building: string): Promise<Location[]> {
@@ -176,7 +210,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
       .eq('is_active', true);
 
     if (error) throw error;
-    return data || [];
+    return data ? data.map(mapToLocation) : [];
   }
 
   async search(query: string): Promise<Location[]> {
@@ -189,7 +223,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
       .eq('is_active', true);
 
     if (error) throw error;
-    return data || [];
+    return data ? data.map(mapToLocation) : [];
   }
 
   async getLocationWithStats(id: string): Promise<LocationWithDetails> {

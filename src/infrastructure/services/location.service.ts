@@ -4,7 +4,28 @@
 // ============================================
 
 import { supabase } from '../database/supabase';
-import { Location } from '@/core/types/database.types';
+import { Location } from '@/domain/entities/Location';
+
+// Mapper to convert database format to domain format
+function mapToLocation(dbRecord: any): Location {
+  return {
+    id: dbRecord.id,
+    name: dbRecord.name,
+    code: dbRecord.code,
+    qrCode: dbRecord.qr_code,
+    building: dbRecord.building,
+    floor: dbRecord.floor,
+    area: dbRecord.area,
+    section: dbRecord.section,
+    description: dbRecord.description,
+    photoUrl: dbRecord.photo_url,
+    coordinates: dbRecord.coordinates,
+    isActive: dbRecord.is_active,
+    createdBy: dbRecord.created_by,
+    createdAt: new Date(dbRecord.created_at),
+    updatedAt: new Date(dbRecord.updated_at),
+  };
+}
 
 export const locationService = {
   async getLocationByQR(qrCode: string): Promise<Location | null> {
@@ -20,7 +41,7 @@ export const locationService = {
       return null;
     }
 
-    return data;
+    return data ? mapToLocation(data) : null;
   },
 
   async getLocationById(id: string): Promise<Location | null> {
@@ -31,7 +52,7 @@ export const locationService = {
       return null;
     }
 
-    return data;
+    return data ? mapToLocation(data) : null;
   },
 
   async getAllLocations(): Promise<Location[]> {
@@ -46,6 +67,6 @@ export const locationService = {
       return [];
     }
 
-    return data || [];
+    return data ? data.map(mapToLocation) : [];
   },
 };

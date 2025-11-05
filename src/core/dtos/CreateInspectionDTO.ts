@@ -1,5 +1,5 @@
 // 📁 src/core/dtos/CreateInspectionDTO.ts
-import { Json } from '@/core/types/database.types';
+import { Json } from '@/core/types/supabase.types';
 
 export interface CreateInspectionDTO {
   template_id: string;

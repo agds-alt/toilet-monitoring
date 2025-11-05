@@ -95,9 +95,9 @@ export function CreateInspectionExample() {
   return (
     <button
       onClick={handleCreate}
-      disabled={createMutation.isLoading}
+      disabled={createMutation.isPending}
     >
-      {createMutation.isLoading ? 'Creating...' : 'Create Inspection'}
+      {createMutation.isPending ? 'Creating...' : 'Create Inspection'}
     </button>
   );
 }
@@ -124,9 +124,9 @@ export function VerifyInspectionExample({ inspectionId }: { inspectionId: string
           verification_notes: 'Verified by supervisor',
         })
       }
-      disabled={verifyMutation.isLoading}
+      disabled={verifyMutation.isPending}
     >
-      {verifyMutation.isLoading ? 'Verifying...' : 'Verify Inspection'}
+      {verifyMutation.isPending ? 'Verifying...' : 'Verify Inspection'}
     </button>
   );
 }
@@ -244,9 +244,9 @@ export function ErrorHandlingExample() {
       if (error.data?.code === 'UNAUTHORIZED') {
         console.error('User not authenticated');
         // Redirect to login
-      } else if (error.data?.zodError) {
+      } else if ((error.data as any)?.zodError) {
         // Validation error
-        console.error('Validation failed:', error.data.zodError);
+        console.error('Validation failed:', (error.data as any).zodError);
       } else {
         // Generic error
         console.error('Something went wrong:', error.message);
@@ -265,7 +265,7 @@ export function OptimisticUpdateExample({ inspectionId }: { inspectionId: string
 
   const verifyMutation = trpc.inspection.verify.useMutation({
     // Before mutation
-    onMutate: async (newData) => {
+    onMutate: async (newData: any) => {
       // Cancel outgoing refetches
       await utils.inspection.getById.cancel({ id: newData.id });
 
@@ -291,7 +291,7 @@ export function OptimisticUpdateExample({ inspectionId }: { inspectionId: string
     },
 
     // On error, rollback
-    onError: (err, newData, context) => {
+    onError: (err, newData: any, context) => {
       if (context?.previousInspection) {
         utils.inspection.getById.setData(
           { id: newData.id },
@@ -301,7 +301,7 @@ export function OptimisticUpdateExample({ inspectionId }: { inspectionId: string
     },
 
     // Always refetch after success or error
-    onSettled: (data, error, variables) => {
+    onSettled: (data, error, variables: any) => {
       utils.inspection.getById.invalidate({ id: variables.id });
     },
   });

@@ -4,8 +4,9 @@
 // ============================================
 
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase, InspectionRecordInsert } from '@/infrastructure/database/supabase';
-import { CreateInspectionDTO } from '@/core/types/inspection.types';
+import { supabase, Database } from '@/infrastructure/database/supabase';
+
+type InspectionRecordInsert = Database['public']['Tables']['inspection_records']['Insert'];
 
 // ============================================
 // POST /api/inspections - Create New Inspection
@@ -14,7 +15,7 @@ import { CreateInspectionDTO } from '@/core/types/inspection.types';
 export async function POST(request: NextRequest) {
   try {
     // 1. Parse request body
-    const body: CreateInspectionDTO = await request.json();
+    const body: any = await request.json();
 
     // 2. Validate required fields
     if (!body.template_id) {
@@ -41,7 +42,6 @@ export async function POST(request: NextRequest) {
       photo_urls: body.photo_urls || [],
       notes: body.notes || null,
       duration_seconds: body.duration_seconds,
-      geolocation: (body.geolocation as any) || null, // JSONB
     };
 
     // 4. Insert into database

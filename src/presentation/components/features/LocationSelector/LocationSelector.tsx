@@ -4,8 +4,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '../../ui/Card/Card';
 import Button from '../../ui/Button/Button';
-import { Location } from '../../../../core/types/interfaces';
-import { LOCATIONS, searchLocations } from '../../../../lib/constants/locations';
+import { Location } from '@/domain/entities/Location';
+import { LOCATIONS } from '../../../../lib/constants/locations';
 import styles from './LocationSelector.module.css';
 
 interface LocationSelectorProps {
@@ -14,13 +14,23 @@ interface LocationSelectorProps {
   selectedLocationId?: string;
 }
 
+// Simple search function
+const searchLocations = (query: string): Location[] => {
+  const lowerQuery = query.toLowerCase();
+  return LOCATIONS.filter(loc =>
+    loc.name.toLowerCase().includes(lowerQuery) ||
+    (loc as any).code?.toLowerCase().includes(lowerQuery) ||
+    (loc as any).building?.toLowerCase().includes(lowerQuery)
+  ) as any;
+};
+
 export const LocationSelector: React.FC<LocationSelectorProps> = ({
   onSelect,
   onBack,
   selectedLocationId,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredLocations, setFilteredLocations] = useState<Location[]>(LOCATIONS);
+  const [filteredLocations, setFilteredLocations] = useState<Location[]>(LOCATIONS as any);
   const [isLoading, setIsLoading] = useState(false);
 
   // Filter locations when search query changes
@@ -28,7 +38,7 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
     if (searchQuery.trim()) {
       setFilteredLocations(searchLocations(searchQuery));
     } else {
-      setFilteredLocations(LOCATIONS);
+      setFilteredLocations(LOCATIONS as any);
     }
   }, [searchQuery]);
 
@@ -88,14 +98,10 @@ export const LocationSelector: React.FC<LocationSelectorProps> = ({
           {filteredLocations.map((location) => (
             <Card
               key={location.id}
-              variant={selectedLocationId === location.id ? 'selected' : 'default'}
+              variant={selectedLocationId === location.id ? 'elevated' : 'default'}
               padding="md"
               onClick={() => handleLocationSelect(location)}
-              onKeyDown={(e) => handleKeyPress(e, location)}
               className={styles.locationCard}
-              role="option"
-              aria-selected={selectedLocationId === location.id}
-              tabIndex={0}
             >
               <div className={styles.locationInfo}>
                 <h4 className={styles.locationName}>{location.name}</h4>

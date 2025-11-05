@@ -1,7 +1,7 @@
 // ===================================
 // 📁 src/core/use-cases/SearchLocations.ts
 // ===================================
-import { Location } from '@/core/entities/Location';
+import { Location } from '@/domain/entities/Location';
 import { ILocationRepository } from '@/core/repositories/ILocationRepository';
 
 export class SearchLocations {

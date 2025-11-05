@@ -55,22 +55,5 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-// ============================================
-// Alternative: Get default template
-// ============================================
-// GET /api/templates/default
-
-export async function getDefaultTemplate() {
-  const { data, error } = await supabase
-    .from('inspection_templates')
-    .select('*')
-    .eq('is_default', true)
-    .eq('is_active', true)
-    .single();
-
-  if (error) {
-    throw new Error(`Failed to fetch default template: ${error.message}`);
-  }
-
-  return data;
-}
+// Note: Helper functions moved to separate utility file
+// Route handlers can only export: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS

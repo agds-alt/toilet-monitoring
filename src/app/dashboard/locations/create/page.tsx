@@ -6,8 +6,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Save, ArrowLeft, QrCode, Plus, X } from 'lucide-react';
-import { createLocationUseCase } from '@/lib/di';
-import { LocationFormData } from '@/core/entities/Location';
 import styles from './create.module.css';
 
 const BUILDINGS = [
@@ -16,6 +14,21 @@ const BUILDINGS = [
   { id: '3', name: 'West Wing - Hospital' },
   { id: '4', name: 'Shopping Plaza - Mall' },
 ];
+
+// Simple form data type
+type LocationFormData = {
+  name: string;
+  code: string;
+  floor: string;
+  section: string;
+  building: string;
+  area: string;
+  qr_code: string;
+  description: string;
+  is_active: boolean;
+  coordinates: { lat: number; lng: number } | null;
+  photo_url?: string;
+};
 
 export default function CreateLocationPage() {
   const router = useRouter();
@@ -79,7 +92,16 @@ export default function CreateLocationPage() {
           (Object.keys(metadata).length > 0 ? `\nMetadata: ${JSON.stringify(metadata)}` : ''),
       };
 
-      await createLocationUseCase.execute(locationData);
+      // Create location via API
+      const response = await fetch('/api/locations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(locationData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create location');
+      }
 
       alert('✅ Lokasi berhasil ditambahkan!');
       router.push('/dashboard/locations');

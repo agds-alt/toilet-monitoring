@@ -9,9 +9,6 @@ import { useState, useRef, useEffect } from 'react';
 import { X, Flashlight, FlashlightOff, ScanLine } from 'lucide-react';
 import jsQR from 'jsqr';
 
-// In scanQRCode function:
-const code = jsQR(imageData.data, imageData.width, imageData.height);
-
 interface QRScannerProps {
   onScanSuccess: (qrCode: string) => void;
   onClose: () => void;

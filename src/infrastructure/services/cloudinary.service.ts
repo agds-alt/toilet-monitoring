@@ -24,9 +24,9 @@ export class CloudinaryService {
   // ============================================
 
   async uploadPhoto(
-    file: File,
+    file: File | Blob,
     fieldReference: string,
-    locationId: string
+    locationId: string = 'default'
   ): Promise<CloudinaryUploadResponse> {
     try {
       const formData = new FormData();
@@ -56,8 +56,8 @@ export class CloudinaryService {
       const data: CloudinaryUploadResponse = await response.json();
 
       console.log('✅ Cloudinary upload success:', {
-        public_id: data.public_id,
-        url: data.secure_url,
+        publicId: data.publicId,
+        url: data.secureUrl,
       });
 
       return data;
@@ -75,7 +75,7 @@ export class CloudinaryService {
     console.log(`📤 Uploading ${items.length} photos...`);
 
     const results = await Promise.allSettled(
-      items.map((item) => this.uploadPhoto(item.file, item.fieldReference, item.locationId))
+      items.map((item) => this.uploadPhoto(item.file, item.fieldReference))
     );
 
     const successful: CloudinaryUploadResponse[] = [];
@@ -85,8 +85,9 @@ export class CloudinaryService {
       if (result.status === 'fulfilled') {
         successful.push(result.value);
       } else {
-        failed.push(items[index].file.name);
-        console.error(`Failed to upload ${items[index].file.name}:`, result.reason);
+        const fileName = items[index].file instanceof File ? items[index].file.name : `file-${index}`;
+        failed.push(fileName);
+        console.error(`Failed to upload ${fileName}:`, result.reason);
       }
     });
 

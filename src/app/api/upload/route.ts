@@ -1,6 +1,14 @@
 // app/api/upload/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryUploadResult } from '@/lib/utils/cloudinary.client';
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,7 +36,7 @@ export async function POST(request: NextRequest) {
 
     // Upload to Cloudinary
     const result = await new Promise((resolve, reject) => {
-      cloudinary.upload(
+      cloudinary.uploader.upload(
         base64String,
         {
           folder: `toilet-monitoring/${folder}`,

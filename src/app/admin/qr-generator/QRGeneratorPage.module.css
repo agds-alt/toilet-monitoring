@@ -187,7 +187,6 @@
   
   .qrCard {
     @apply break-inside-avoid;
-    @apply page-break-inside-avoid;
   }
   
   .qrActions {

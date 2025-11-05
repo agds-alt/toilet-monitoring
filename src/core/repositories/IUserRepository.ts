@@ -1,5 +1,11 @@
 // 📁 src/core/repositories/IUserRepository.ts
-import { User, UserWithRoles } from '@/core/entities/User';
+import { User } from '@/domain/entities/User';
+
+// Type for user with roles information
+export type UserWithRoles = User & {
+  roles?: string[];
+  permissions?: string[];
+};
 
 export interface IUserRepository {
   findById(id: string): Promise<User | null>;

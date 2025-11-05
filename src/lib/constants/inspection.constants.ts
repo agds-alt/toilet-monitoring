@@ -181,3 +181,44 @@ export const PRIORITY_LEVELS = {
   HIGH: 'high',
   CRITICAL: 'critical',
 } as const;
+
+/**
+ * Rating Values
+ */
+export const RATING_VALUES = [1, 2, 3, 4, 5] as const;
+
+/**
+ * Validation Rules
+ */
+export const VALIDATION_RULES = {
+  MIN_RATING: 1,
+  MAX_RATING: 5,
+  REQUIRED_FIELDS: ['template_id', 'location_id', 'user_id'],
+  requiredFields: ['template_id', 'location_id', 'user_id'], // camelCase alias
+  MAX_NOTES_LENGTH: 500,
+  maxNotesLength: 500, // camelCase alias
+  MAX_PHOTOS: 10,
+  maxTotalPhotos: 10, // Alias for MAX_PHOTOS
+  maxPhotoSize: 10 * 1024 * 1024, // 10MB
+  allowedFileTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'],
+  minRatedComponents: 3,
+  minDurationSeconds: 30, // Minimum inspection duration in seconds
+};
+
+/**
+ * Error Messages
+ */
+export const ERROR_MESSAGES = {
+  MISSING_REQUIRED_FIELD: 'This field is required',
+  REQUIRED_FIELD: 'This field is required', // Alias for compatibility
+  INVALID_RATING: 'Rating must be between 1 and 5',
+  NOTES_TOO_LONG: `Notes cannot exceed ${VALIDATION_RULES.MAX_NOTES_LENGTH} characters`,
+  NOTES_LENGTH: `Notes cannot exceed ${VALIDATION_RULES.MAX_NOTES_LENGTH} characters`, // Alias
+  TOO_MANY_PHOTOS: `Maximum ${VALIDATION_RULES.MAX_PHOTOS} photos allowed`,
+  MAX_PHOTOS: `Maximum ${VALIDATION_RULES.MAX_PHOTOS} photos allowed`, // Alias
+  INVALID_TEMPLATE: 'Invalid inspection template',
+  INVALID_LOCATION: 'Invalid location',
+  PHOTO_SIZE: `Photo size cannot exceed ${VALIDATION_RULES.maxPhotoSize / (1024 * 1024)}MB`,
+  INVALID_FILE_TYPE: 'Invalid file type. Only JPEG, PNG, and WebP are allowed',
+  MIN_COMPONENTS: `At least ${VALIDATION_RULES.minRatedComponents} components must be rated`,
+};

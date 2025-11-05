@@ -1,7 +1,7 @@
 // Dari: src/infrastructure/storage/CloudinaryPhotoRepository.ts
-import { IPhotoRepository, PhotoMetadata } from '@/core/repositories/IPhotoRepository';
+import type { PhotoMetadata } from '@/core/repositories/IPhotoRepository';
 
-export class CloudinaryPhotoRepository implements IPhotoRepository {
+export class CloudinaryPhotoRepository {
   private cloudName: string;
   private uploadPreset: string;
 

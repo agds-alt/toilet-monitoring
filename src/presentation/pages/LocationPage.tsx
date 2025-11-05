@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Building, MapPin, Plus, Search, Printer } from 'lucide-react';
 import { getLocationsUseCase } from '@/lib/di';
-import { Location } from '@/core/entities/Location';
+import { Location } from '@/domain/entities/Location';
 import LocationCard from '@/presentation/components/features/locations/LocationCard';
 import LocationStats from '@/presentation/components/features/locations/LocationStats';
 import styles from './locations.module.css';

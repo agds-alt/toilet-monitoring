@@ -1,6 +1,6 @@
 // src/infrastructure/database/supabase.ts
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '@/supabase.types';
+import type { Database } from '@/core/types/supabase.types';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -11,4 +11,4 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 export type { Database };
-export type * from '@/core/types/database.types';
+export type * from '@/core/types/supabase.types';

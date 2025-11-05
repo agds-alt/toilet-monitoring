@@ -3,7 +3,7 @@
  * Tracks Core Web Vitals and sends to analytics
  */
 
-import { onCLS, onFCP, onFID, onINP, onLCP, onTTFB, Metric } from 'web-vitals';
+import { onCLS, onFCP, onINP, onLCP, onTTFB, Metric } from 'web-vitals';
 import { log } from '@/lib/logger';
 import { errorTracker } from '@/lib/sentry/error-tracker';
 
@@ -100,10 +100,10 @@ export function reportWebVitals() {
     // First Contentful Paint - measures loading performance
     onFCP(sendToAnalytics);
 
-    // First Input Delay - measures interactivity
-    onFID(sendToAnalytics);
+    // First Input Delay - deprecated, replaced by INP
+    // onFID(sendToAnalytics);
 
-    // Interaction to Next Paint - measures responsiveness
+    // Interaction to Next Paint - measures responsiveness (replaces FID)
     onINP(sendToAnalytics);
 
     // Largest Contentful Paint - measures loading performance

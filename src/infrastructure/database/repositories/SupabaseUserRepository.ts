@@ -1,7 +1,23 @@
 // 📁 src/infrastructure/database/repositories/SupabaseUserRepository.ts
 import { supabase } from '@/infrastructure/database/supabase';
 import { IUserRepository } from '@/core/repositories/IUserRepository';
-import { User, UserWithRoles } from '@/core/entities/User';
+import { User } from '@/domain/entities/User';
+import type { UserWithRoles } from '@/core/repositories/IUserRepository';
+
+// Mapper to convert database format to domain format
+function mapToUser(dbRecord: any): User {
+  return {
+    id: dbRecord.id,
+    email: dbRecord.email,
+    fullName: dbRecord.full_name,
+    phone: dbRecord.phone,
+    profilePhotoUrl: dbRecord.profile_photo_url,
+    isActive: dbRecord.is_active,
+    lastLoginAt: dbRecord.last_login_at ? new Date(dbRecord.last_login_at) : undefined,
+    createdAt: new Date(dbRecord.created_at),
+    updatedAt: new Date(dbRecord.updated_at),
+  };
+}
 
 export class SupabaseUserRepository implements IUserRepository {
   async findById(id: string): Promise<User | null> {
@@ -12,7 +28,7 @@ export class SupabaseUserRepository implements IUserRepository {
       throw error;
     }
 
-    return data;
+    return data ? mapToUser(data) : null;
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -23,7 +39,7 @@ export class SupabaseUserRepository implements IUserRepository {
       throw error;
     }
 
-    return data;
+    return data ? mapToUser(data) : null;
   }
 
   async findAll(): Promise<User[]> {
@@ -34,32 +50,41 @@ export class SupabaseUserRepository implements IUserRepository {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    return data ? data.map(mapToUser) : [];
   }
 
-  async create(userData: Omit<User, 'id' | 'created_at' | 'updated_at'>): Promise<User> {
+  async create(userData: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
     const { data, error } = await supabase
       .from('users')
       .insert({
         email: userData.email,
-        full_name: userData.full_name,
-        password_hash: userData.password_hash,
+        full_name: userData.fullName,
         phone: userData.phone,
-        profile_photo_url: userData.profile_photo_url,
-        is_active: userData.is_active ?? true,
-      })
+        profile_photo_url: userData.profilePhotoUrl,
+        is_active: userData.isActive ?? true,
+        password_hash: '', // Passwords handled by Supabase Auth, not stored in domain
+      } as any)
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return mapToUser(data);
   }
 
   async update(id: string, userData: Partial<User>): Promise<User> {
+    // Convert camelCase to snake_case
+    const dbData: any = {};
+    if (userData.email) dbData.email = userData.email;
+    if (userData.fullName) dbData.full_name = userData.fullName;
+    if (userData.phone !== undefined) dbData.phone = userData.phone;
+    if (userData.profilePhotoUrl !== undefined) dbData.profile_photo_url = userData.profilePhotoUrl;
+    if (userData.isActive !== undefined) dbData.is_active = userData.isActive;
+    if (userData.lastLoginAt) dbData.last_login_at = userData.lastLoginAt.toISOString();
+
     const { data, error } = await supabase
       .from('users')
       .update({
-        ...userData,
+        ...dbData,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)
@@ -67,7 +92,7 @@ export class SupabaseUserRepository implements IUserRepository {
       .single();
 
     if (error) throw error;
-    return data;
+    return mapToUser(data);
   }
 
   async delete(id: string): Promise<void> {
@@ -103,7 +128,7 @@ export class SupabaseUserRepository implements IUserRepository {
 
     if (error) throw error;
 
-    const roles = userRoles?.map((ur) => ur.role) || [];
+    const roles = userRoles?.map((ur: any) => ur.role.name) || [];
 
     return {
       ...user,

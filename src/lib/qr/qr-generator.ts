@@ -37,10 +37,14 @@ export class QRCodeGenerator {
     url: string;
     displayName: string;
   }> {
-    return locations.map(location => ({
-      location,
-      ...this.generateQRCode(location)
-    }));
+    return locations.map(location => {
+      const { data, ...rest } = this.generateQRCode(location);
+      return {
+        location,
+        qrData: data,
+        ...rest
+      };
+    });
   }
 
   static validateLocationCode(code: string): boolean {

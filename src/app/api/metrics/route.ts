@@ -154,11 +154,5 @@ function formatPrometheusMetrics(metrics: Metrics): string {
   return lines.join('\n');
 }
 
-// Export counter functions for use in middleware
-export function incrementRequestCount() {
-  requestCount++;
-}
-
-export function incrementErrorCount() {
-  errorCount++;
-}
+// Note: Counter functions are internal to this route
+// If needed in middleware, move to separate utility file

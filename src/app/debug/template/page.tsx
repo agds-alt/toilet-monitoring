@@ -71,8 +71,7 @@ export default function DebugTemplatePage() {
             ? {
                 id: defaultTemplate.id,
                 name: defaultTemplate.name,
-                is_default: defaultTemplate.is_default,
-                components_count: defaultTemplate.fields?.components?.length,
+                components_count: defaultTemplate.fields?.length,
               }
             : null,
         });

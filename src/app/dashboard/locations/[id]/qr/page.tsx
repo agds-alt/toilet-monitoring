@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Download, Printer } from 'lucide-react';
 import { getLocationsUseCase } from '@/lib/di';
-import { Location } from '@/core/entities/Location';
+import { Location } from '@/domain/entities/Location';
 import QRCodeDisplay from '@/presentation/components/features/locations/QRCodeDisplay';
 import styles from './qr.module.css';
 

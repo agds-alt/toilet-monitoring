@@ -1,5 +1,15 @@
 // 📁 src/core/repositories/ILocationRepository.ts
-import { Location, LocationFormData, LocationWithDetails } from '@/core/entities/Location';
+import { Location } from '@/domain/entities/Location';
+
+// Types for repository operations
+export type LocationFormData = Omit<Location, 'id' | 'qrCode' | 'createdAt' | 'updatedAt'>;
+export type LocationWithDetails = Location & {
+  stats?: {
+    totalInspections?: number;
+    lastInspection?: Date;
+    averageRating?: number;
+  };
+};
 
 export interface ILocationRepository {
   create(locationData: LocationFormData): Promise<Location>;

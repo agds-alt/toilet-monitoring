@@ -61,7 +61,7 @@ export function subscribeToTable<T = any>(
     channel = supabase.channel(`${table}-changes`);
 
     // Configure subscription
-    channel.on(
+    (channel as any).on(
       'postgres_changes',
       {
         event,
@@ -69,7 +69,7 @@ export function subscribeToTable<T = any>(
         table,
         filter,
       },
-      (payload) => {
+      (payload: any) => {
         log.debug('Real-time change received', {
           table,
           event: payload.eventType,
@@ -177,11 +177,11 @@ export function useRealtimeSubscription<T = any>(
   options: SubscriptionOptions<T>,
   deps: React.DependencyList = []
 ): void {
-  if (typeof window === 'undefined') return; // SSR guard
-
   const { useEffect } = require('react');
 
   useEffect(() => {
+    if (typeof window === 'undefined') return; // SSR guard
+
     const unsubscribe = subscribeToTable(options);
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps

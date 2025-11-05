@@ -1,6 +1,7 @@
 // 📁 src/core/use-cases/UpdateLocation.ts
 import { ILocationRepository } from '@/core/repositories/ILocationRepository';
-import { LocationFormData, Location } from '@/core/entities/Location';
+import type { LocationFormData } from '@/core/repositories/ILocationRepository';
+import { Location } from '@/domain/entities/Location';
 
 export class UpdateLocationUseCase {
   constructor(private locationRepository: ILocationRepository) {}

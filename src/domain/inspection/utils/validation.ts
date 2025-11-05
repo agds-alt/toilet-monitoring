@@ -13,7 +13,7 @@ import {
   VALIDATION_RULES,
   ERROR_MESSAGES,
   RATING_VALUES,
-} from '@/core/constants/inspection.constant';
+} from '@/lib/constants/inspection.constants';
 
 // ============================================
 // VALIDATION FUNCTIONS
@@ -94,14 +94,14 @@ export function validateResponses(
 /**
  * Calculate overall status from responses
  */
-export function calculateOverallStatus(responses: InspectionResponses): RatingValue {
+export function calculateOverallStatus(responses: InspectionResponses): string {
   const ratings = Object.values(responses)
     .map((r) => r.rating)
     .filter((r): r is RatingValue => r !== null);
 
   if (ratings.length === 0) return 'needs_work';
 
-  const ratingScores: Record<RatingValue, number> = {
+  const ratingScores: Record<string, number> = {
     clean: 3,
     needs_work: 2,
     dirty: 1,
@@ -137,7 +137,7 @@ export function validateInspectionForm(
 
   // Validate responses
   if (dto.responses) {
-    const responseValidation = validateResponses(dto.responses, requiredComponents);
+    const responseValidation = validateResponses(dto.responses as unknown as InspectionResponses, requiredComponents);
     if (!responseValidation.isValid) {
       responseValidation.errors.forEach((error) => {
         errors.push({

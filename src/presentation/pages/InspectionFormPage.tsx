@@ -17,7 +17,9 @@ import {
   Star,
   Loader2
 } from 'lucide-react';
-import { supabase } from '../../../infrastructure/auth/SupabaseAuthService';
+import { createClient } from '@/lib/supabase.client';
+
+const supabase = createClient();
 
 interface InspectionComponent {
   id: string;
@@ -81,8 +83,8 @@ export default function InspectionForm() {
         setTemplate(templateData);
 
         // Parse components from template
-        if (templateData?.fields?.components) {
-          setComponents(templateData.fields.components);
+        if (templateData && (templateData as any).fields?.components) {
+          setComponents((templateData as any).fields.components);
         }
       } catch (error) {
         console.error('Error fetching data:', error);

@@ -12,7 +12,7 @@ export interface NotificationOptions {
   badge?: string;
   tag?: string;
   requireInteraction?: boolean;
-  actions?: NotificationAction[];
+  actions?: any[];
   data?: any;
 }
 
@@ -87,7 +87,7 @@ export class NotificationService {
           requireInteraction: options.requireInteraction || false,
           actions: options.actions || [],
           data: options.data,
-        });
+        } as any);
       } else {
         // Fallback to regular notification
         new Notification(options.title, {

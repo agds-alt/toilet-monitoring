@@ -12,19 +12,19 @@ const protectedRoutes = ['/dashboard', '/scan', '/inspection', '/admin'];
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
-  
+
   // Get the pathname of the request
   const { pathname } = req.nextUrl;
-  
+
   console.log(`🔄 Middleware: ${pathname}`);
-  
+
+  // Check if the route is protected or public (outside try-catch for error handling)
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+  const isPublicRoute = publicRoutes.includes(pathname);
+
   try {
     // Refresh session if exists
     const { data: { session }, error } = await supabase.auth.getSession();
-    
-    // Check if the route is protected
-    const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-    const isPublicRoute = publicRoutes.includes(pathname);
     
     // If accessing protected route without session, redirect to login
     if (isProtectedRoute && !session) {

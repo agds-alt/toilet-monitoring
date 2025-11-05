@@ -93,10 +93,9 @@ export const ReportFilters: React.FC<ReportFiltersProps> = ({
           variant="primary"
           size="md"
           onClick={onExport}
-          icon="📥"
           className={styles.exportBtn}
         >
-          Export
+          📥 Export
         </Button>
       </div>
     </Card>

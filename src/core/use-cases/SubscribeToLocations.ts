@@ -2,7 +2,7 @@
 // 📁 src/core/use-cases/SubscribeToLocations.ts
 // ===================================
 import { ILocationRepository } from '@/core/repositories/ILocationRepository';
-import { Location } from '@/core/entities/Location';
+import { Location } from '@/domain/entities/Location';
 
 export class SubscribeToLocations {
   constructor(private locationRepository: ILocationRepository) {}
